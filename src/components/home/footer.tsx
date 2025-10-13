@@ -1,0 +1,223 @@
+import { Theme, Button, Input } from "@radix-ui/themes";
+import { Facebook, Instagram } from "lucide-react";
+import Link from "next/link";
+
+export function Footer() {
+  return (
+    <footer className="bg-surface-dark text-white">
+      {/* Newsletter Section */}
+      <div className="border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-2xl font-bold mb-2">
+                Sign Up To Our Newsletter.
+              </h3>
+              <p className="text-gray-400">
+                Be the first to hear about the latest offers.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="Your email"
+                className="bg-white text-foreground"
+              />
+              <Button className="bg-primary hover:bg-primary-hover">
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          {/* Information */}
+          <div>
+            <h4 className="font-bold mb-4">Information</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>
+                <Link href="/about" className="hover:text-white">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white">
+                  About Zip
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-white">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/search" className="hover:text-white">
+                  Search
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-white">
+                  Terms
+                </Link>
+              </li>
+              <li>
+                <Link href="/orders" className="hover:text-white">
+                  Orders and Returns
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* PC Parts */}
+          <div>
+            <h4 className="font-bold mb-4">PC Parts</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>
+                <Link href="/cpus" className="hover:text-white">
+                  CPUS
+                </Link>
+              </li>
+              <li>
+                <Link href="/add-on-cards" className="hover:text-white">
+                  Add On Cards
+                </Link>
+              </li>
+              <li>
+                <Link href="/hard-drives" className="hover:text-white">
+                  Hard Drives (Internal)
+                </Link>
+              </li>
+              <li>
+                <Link href="/graphic-cards" className="hover:text-white">
+                  Graphic Cards
+                </Link>
+              </li>
+              <li>
+                <Link href="/keyboards" className="hover:text-white">
+                  Keyboards / Mice
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Desktop PCs */}
+          <div>
+            <h4 className="font-bold mb-4">Desktop PCs</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>
+                <Link href="/custom-pcs" className="hover:text-white">
+                  Custom PCs
+                </Link>
+              </li>
+              <li>
+                <Link href="/servers" className="hover:text-white">
+                  Servers
+                </Link>
+              </li>
+              <li>
+                <Link href="/msi-all-in-one" className="hover:text-white">
+                  MSI All-In-One PCs
+                </Link>
+              </li>
+              <li>
+                <Link href="/hp-all-in-one" className="hover:text-white">
+                  HP/Compaq PCs
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Laptops */}
+          <div>
+            <h4 className="font-bold mb-4">Laptops</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>
+                <Link href="/everyday-use" className="hover:text-white">
+                  Everyday Use Notebooks
+                </Link>
+              </li>
+              <li>
+                <Link href="/msi-workstation" className="hover:text-white">
+                  MSI Workstation Series
+                </Link>
+              </li>
+              <li>
+                <Link href="/msi-prestige" className="hover:text-white">
+                  MSI Prestige Series
+                </Link>
+              </li>
+              <li>
+                <Link href="/tablets" className="hover:text-white">
+                  Tablets and Pads
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Address */}
+          <div>
+            <h4 className="font-bold mb-4">Address</h4>
+            <address className="text-sm text-gray-400 not-italic space-y-2">
+              <p>Address: 1234 Street Address</p>
+              <p>City Address, 1234</p>
+              <p className="mt-4">
+                Phones:{" "}
+                <a href="tel:0012345678" className="hover:text-white">
+                  (00) 1234 5678
+                </a>
+              </p>
+              <p>Monday-Thursday: 9:00 AM - 5:30 PM</p>
+              <p className="mt-4">
+                E-mail:{" "}
+                <a href="mailto:shop@email.com" className="hover:text-white">
+                  shop@email.com
+                </a>
+              </p>
+            </address>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Footer */}
+      <div className="border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <Link href="https://facebook.com" className="hover:text-primary">
+                <Facebook className="h-5 w-5" />
+              </Link>
+              <Link href="https://instagram.com" className="hover:text-primary">
+                <Instagram className="h-5 w-5" />
+              </Link>
+            </div>
+            <p className="text-sm text-gray-400">
+              Copyright © 2025 TechStore. All rights reserved.
+            </p>
+            <div className="flex gap-2">
+              <div className="w-12 h-8 bg-gray-700 rounded flex items-center justify-center text-xs">
+                VISA
+              </div>
+              <div className="w-12 h-8 bg-gray-700 rounded flex items-center justify-center text-xs">
+                MC
+              </div>
+              <div className="w-12 h-8 bg-gray-700 rounded flex items-center justify-center text-xs">
+                AMEX
+              </div>
+              <div className="w-12 h-8 bg-gray-700 rounded flex items-center justify-center text-xs">
+                PP
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
