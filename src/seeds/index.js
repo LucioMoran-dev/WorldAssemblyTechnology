@@ -1,0 +1,143 @@
+export const newProducts = [
+  {
+    id: "1",
+    name: "MSI Katana 15 Gaming Laptop - RTX 4070, Intel i7-13620H",
+    price: 1299.0,
+    originalPrice: 1499.0,
+    rating: 5,
+    reviews: 12,
+    image: "/msi-laptop.jpg",
+    inStock: true,
+  },
+  {
+    id: "2",
+    name: "MSI Cyborg 15 Gaming Laptop - RTX 4060, Intel i5-12450H",
+    price: 899.0,
+    originalPrice: 1099.0,
+    rating: 4,
+    reviews: 8,
+    image: "/gaming-laptop.png",
+    inStock: true,
+  },
+  {
+    id: "3",
+    name: "MSI MAG Infinite S3 Gaming Desktop - RTX 4060 Ti",
+    price: 1599.0,
+    originalPrice: 1799.0,
+    rating: 5,
+    reviews: 15,
+    image: "/desktop-pc.jpg",
+    inStock: true,
+  },
+  {
+    id: "4",
+    name: "MSI Thin GF63 Gaming Laptop - RTX 4050, Intel i5-12450H",
+    price: 799.0,
+    originalPrice: 999.0,
+    rating: 4,
+    reviews: 6,
+    image: "/gaming-laptop-red.jpg",
+    inStock: true,
+  },
+  {
+    id: "5",
+    name: "MSI Aegis RS Gaming Desktop - RTX 4070, Intel i7-13700F",
+    price: 1899.0,
+    originalPrice: 2199.0,
+    rating: 5,
+    reviews: 10,
+    image: "/desktop-tower.jpg",
+    inStock: true,
+  },
+];
+
+export const customBuilds = [
+  {
+    id: "6",
+    name: "Custom Gaming PC - RTX 4080, AMD Ryzen 9 7900X",
+    price: 2499.0,
+    rating: 5,
+    reviews: 20,
+    image: "/custom-gaming-pc.jpg",
+    badge: "CUSTOM BUILD",
+    inStock: true,
+  },
+  {
+    id: "7",
+    name: "Charlie 12 Custom Build - RTX 4070 Ti, Intel i7-13700K",
+    price: 2199.0,
+    rating: 5,
+    reviews: 14,
+    image: "/gaming-pc-orange.jpg",
+    badge: "CHARLIE 12",
+    inStock: true,
+  },
+  {
+    id: "8",
+    name: "Bravo 15 Custom Build - RTX 4060 Ti, AMD Ryzen 7 7700X",
+    price: 1799.0,
+    rating: 4,
+    reviews: 11,
+    image: "/gaming-pc-red.jpg",
+    badge: "BRAVO 15",
+    inStock: true,
+  },
+  {
+    id: "9",
+    name: "Alpha 12 Custom Build - RTX 4090, Intel i9-13900K",
+    price: 3499.0,
+    rating: 5,
+    reviews: 25,
+    image: "/gaming-pc-purple.jpg",
+    badge: "ALPHA 12",
+    inStock: true,
+  },
+];
+
+export const brands = [
+  { name: "ROCCAT", logo: "/roccat-logo.jpg" },
+  { name: "MSI", logo: "/msi-logo.png" },
+  { name: "Razer", logo: "/razer-logo.jpg" },
+  { name: "Thermaltake", logo: "/thermaltake-logo.jpg" },
+  { name: "ADATA", logo: "/adata-logo.jpg" },
+  { name: "HP", logo: "/generic-tech-logo.png" },
+  { name: "GIGABYTE", logo: "/gigabyte-logo.jpg" },
+];
+
+export const categories = [
+  {
+    name: "Everyday Use Notebooks",
+    href: "/category/everyday-notebooks",
+    hasSubmenu: true,
+  },
+  {
+    name: "MSI Workstation Series",
+    href: "/category/workstation",
+    hasSubmenu: true,
+  },
+  {
+    name: "MSI Prestige Series",
+    href: "/category/prestige",
+    hasSubmenu: false,
+  },
+  {
+    name: "Gaming Notebooks",
+    href: "/category/gaming",
+    hasSubmenu: false,
+  },
+  {
+    name: "Tablets And Pads",
+    href: "/category/tablets",
+    hasSubmenu: false,
+  },
+  {
+    name: "Netbooks",
+    href: "/category/netbooks",
+    hasSubmenu: false,
+  },
+  {
+    name: "Infinity Gaming Notebooks",
+    href: "/category/infinity-gaming",
+    hasSubmenu: false,
+  },
+];

@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
   generateEtags: true,
+  swcMinify: true,
   httpAgentOptions: {
     keepAlive: true,
   },
@@ -26,7 +29,7 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     serverActions: {
       bodySizeLimit: "2mb",
-      allowedOrigins: ["localhost:3000"],
+      allowedOrigins: isDev ? ["localhost:3000"] : [],
     },
     optimisticClientCache: true,
   },
@@ -34,10 +37,9 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
-        protocol: "https", // Solo HTTPS (seguro)
-        hostname: "res.cloudinary.com", // Dominio exacto
-        port: "", // Puerto vacío = cualquiera
-        pathname: "/**", // Cualquier ruta
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -76,7 +78,7 @@ const nextConfig: NextConfig = {
        - Reduce carga del servidor dramáticamente
        - Después de 1 año se regenera la imagen
     */
-    minimumCacheTTL: 60 * 60 * 24 * 365,
+    minimumCacheTTL: 60 * 60 * 24 * 90,
 
     /* ---------------------------------------------------------------
        DANGEROUSLY ALLOW SVG
@@ -124,10 +126,6 @@ const nextConfig: NextConfig = {
             value: "nosniff",
           },
           {
-            key: "X-XSS-Protection",
-            value: "1; mode=block",
-          },
-          {
             key: "Referrer-Policy",
             value: "origin-when-cross-origin",
           },
@@ -139,16 +137,18 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value: [
-              "default-src 'self'", // Por defecto solo mismo origen
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com", // Scripts
-              "style-src 'self' 'unsafe-inline'", // Estilos (unsafe-inline para Tailwind)
-              "img-src 'self' data: blob: https://*.cloudinary.com https://images.unsplash.com", // Imágenes
-              "font-src 'self' data:", // Fuentes
-              "connect-src 'self' https://api.mapbox.com https://*.tiles.mapbox.com", // APIs
-              "frame-ancestors 'self'", // iframes
-              "base-uri 'self'", // Base tag
-              "form-action 'self'", // Forms
+              "default-src 'self'",
+              // ✅ CAMBIO CRÍTICO: unsafe-eval solo en desarrollo
+              isDev
+                ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com"
+                : "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
               "style-src 'self' 'unsafe-inline' https://api.mapbox.com",
+              "img-src 'self' data: blob: https://*.cloudinary.com https://images.unsplash.com",
+              "font-src 'self' data:",
+              "connect-src 'self' https://api.mapbox.com https://*.tiles.mapbox.com",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self'",
               "worker-src 'self' blob:",
             ].join("; "),
           },
@@ -292,17 +292,6 @@ const nextConfig: NextConfig = {
       /Critical dependency: the request of a dependency is an expression/,
     ];
 
-    if (process.env.ANALYZE === "true") {
-      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: "static",
-          openAnalyzer: true,
-          reportFilename: "../bundle-report.html",
-        })
-      );
-    }
-
     return config;
   },
 
@@ -337,7 +326,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["react-map-gl", "@mapbox/mapbox-gl-geocoder"],
   devIndicators: {
-    position: "bottom-right", // ← Nueva API
+    position: "bottom-right",
   },
   typescript: {
     ignoreBuildErrors: false,
@@ -389,5 +378,14 @@ const nextConfig: NextConfig = {
   //   additionalData: `@import "variables";`,
   // },
 };
+
+let config = nextConfig;
+
+if (process.env.ANALYZE === "true") {
+  const withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: true,
+  });
+  config = withBundleAnalyzer(config);
+}
 
 export default nextConfig;

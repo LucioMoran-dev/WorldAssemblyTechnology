@@ -251,24 +251,6 @@ const config: Config = {
           alignItems: "center",
           justifyContent: "center",
         },
-        ".line-clamp-2": {
-          display: "-webkit-box",
-          WebkitLineClamp: "2",
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        },
-        ".line-clamp-3": {
-          display: "-webkit-box",
-          WebkitLineClamp: "3",
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        },
-        ".line-clamp-4": {
-          display: "-webkit-box",
-          WebkitLineClamp: "4",
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        },
         ".no-select": {
           userSelect: "none",
           WebkitUserSelect: "none",

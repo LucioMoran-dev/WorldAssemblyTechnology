@@ -5,20 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import type { ProductCardProps } from "@/types";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-interface ProductCardProps {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviews: number;
-  image: string;
-  badge?: string;
-  inStock?: boolean;
-}
 
 export function ProductCard({
   id,
@@ -35,21 +25,21 @@ export function ProductCard({
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-lg overflow-hidden hover-lift"
+      className="group hover-lift relative overflow-hidden rounded-lg border border-gray-200 bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Badge */}
       {badge && (
-        <Badge className="absolute top-3 left-3 z-10 gradient-accent text-white border-0 text-xs font-bold">
+        <Badge className="gradient-accent absolute top-3 left-3 z-10 border-0 text-xs font-bold text-white">
           {badge}
         </Badge>
       )}
 
       {/* Stock Status */}
       {inStock && (
-        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-          <div className="w-1.5 h-1.5 bg-green-600 rounded-full" />
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
+          <div className="h-1.5 w-1.5 rounded-full bg-green-600" />
           <span className="font-medium">In stock</span>
         </div>
       )}
@@ -57,28 +47,28 @@ export function ProductCard({
       {/* Hover Actions */}
       <div
         className={`absolute top-12 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${
-          isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"
+          isHovered ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"
         }`}
       >
         <Button
           size="icon"
           variant="secondary"
-          className="bg-white hover:bg-blue-600 hover:text-white shadow-md"
+          className="bg-white shadow-md hover:bg-blue-600 hover:text-white"
         >
           <Heart className="h-4 w-4" />
         </Button>
         <Button
           size="icon"
           variant="secondary"
-          className="bg-white hover:bg-blue-600 hover:text-white shadow-md"
+          className="bg-white shadow-md hover:bg-blue-600 hover:text-white"
         >
           <BarChart3 className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Product Image */}
-      <Link href={`/product/${id}`} className="block p-6 bg-gray-50">
-        <div className="aspect-square relative">
+      <Link href={`/product/${id}`} className="block bg-gray-50 p-6">
+        <div className="relative aspect-square">
           <Image
             src={image || "/placeholder.svg"}
             alt={name}
@@ -91,14 +81,14 @@ export function ProductCard({
       {/* Product Info */}
       <div className="p-4">
         {/* Rating */}
-        <div className="flex items-center gap-2 mb-2">
+        <div className="mb-2 flex items-center gap-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                className={`w-3.5 h-3.5 ${
+                className={`h-3.5 w-3.5 ${
                   i < Math.floor(rating)
-                    ? "text-orange-400 fill-orange-400"
+                    ? "fill-orange-400 text-orange-400"
                     : "text-gray-300"
                 }`}
                 fill="currentColor"
@@ -113,13 +103,13 @@ export function ProductCard({
 
         {/* Product Name */}
         <Link href={`/product/${id}`}>
-          <h3 className="text-sm font-medium text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors leading-snug">
+          <h3 className="mb-3 line-clamp-2 text-sm leading-snug font-medium text-gray-900 transition-colors hover:text-blue-600">
             {name}
           </h3>
         </Link>
 
         {/* Price */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="mb-3 flex items-center gap-2">
           {originalPrice && (
             <span className="text-sm text-gray-400 line-through">
               ${originalPrice.toFixed(2)}
@@ -132,15 +122,15 @@ export function ProductCard({
 
         {/* Add to Cart Button */}
         <div
-          className={`transition-all duration-300 overflow-hidden ${
+          className={`overflow-hidden transition-all duration-300 ${
             isHovered ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <Button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full bg-blue-600 text-white hover:bg-blue-700"
             size="sm"
           >
-            <ShoppingCart className="h-4 w-4 mr-2" />
+            <ShoppingCart className="mr-2 h-4 w-4" />
             Add To Cart
           </Button>
         </div>

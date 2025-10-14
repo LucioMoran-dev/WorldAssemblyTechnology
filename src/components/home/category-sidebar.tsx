@@ -3,62 +3,26 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-const categories = [
-  {
-    name: "Everyday Use Notebooks",
-    href: "/category/everyday-notebooks",
-    hasSubmenu: true,
-  },
-  {
-    name: "MSI Workstation Series",
-    href: "/category/workstation",
-    hasSubmenu: true,
-  },
-  {
-    name: "MSI Prestige Series",
-    href: "/category/prestige",
-    hasSubmenu: false,
-  },
-  {
-    name: "Gaming Notebooks",
-    href: "/category/gaming",
-    hasSubmenu: false,
-  },
-  {
-    name: "Tablets And Pads",
-    href: "/category/tablets",
-    hasSubmenu: false,
-  },
-  {
-    name: "Netbooks",
-    href: "/category/netbooks",
-    hasSubmenu: false,
-  },
-  {
-    name: "Infinity Gaming Notebooks",
-    href: "/category/infinity-gaming",
-    hasSubmenu: false,
-  },
-];
+import { categories } from "@/seeds";
 
 export function CategorySidebar() {
   return (
-    <div className="bg-white rounded-lg border border-border overflow-hidden">
-      <div className="bg-primary text-white px-4 py-3">
-        <h2 className="font-bold text-lg">Laptops</h2>
+    <div className="border-border overflow-hidden rounded-lg border bg-white">
+      <div className="bg-primary px-4 py-3 text-white">
+        <h2 className="text-lg font-bold">Laptops</h2>
       </div>
-      <nav className="divide-y divide-border">
+      <nav className="divide-border divide-y">
         {categories.map((category) => (
           <Link
             key={category.name}
             href={category.href}
-            className="flex items-center justify-between px-4 py-3 hover:bg-surface transition-colors group"
+            className="hover:bg-surface group flex items-center justify-between px-4 py-3 transition-colors"
           >
-            <span className="text-sm font-medium text-foreground group-hover:text-primary">
+            <span className="text-foreground group-hover:text-primary text-sm font-medium">
               {category.name}
             </span>
             {category.hasSubmenu && (
-              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+              <ChevronRight className="text-muted-foreground group-hover:text-primary h-4 w-4" />
             )}
           </Link>
         ))}
