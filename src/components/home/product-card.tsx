@@ -5,10 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import type { ProductCardProps } from "@/types";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { ProductCardProps } from "@/types";
 
 export function ProductCard({
   id,
@@ -73,7 +72,8 @@ export function ProductCard({
             src={image || "/placeholder.svg"}
             alt={name}
             fill
-            className="object-contain transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+            className="object-contain"
           />
         </div>
       </Link>

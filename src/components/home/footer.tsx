@@ -2,16 +2,17 @@ import { Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function Footer() {
   return (
-    <footer className="bg-surface-dark text-white">
+    <footer className="bg-gray-900 text-white">
       {/* Newsletter Section */}
       <div className="border-b border-gray-800">
         <div className="mx-auto max-w-7xl px-4 py-12">
           <div className="grid items-center gap-8 md:grid-cols-2">
             <div>
-              <h3 className="mb-2 text-2xl font-bold">
+              <h3 className="mb-2 text-2xl font-bold text-white">
                 Sign Up To Our Newsletter.
               </h3>
               <p className="text-gray-400">
@@ -22,9 +23,9 @@ export function Footer() {
               <Input
                 type="email"
                 placeholder="Your email"
-                className="text-foreground bg-white"
+                className="bg-white text-gray-900"
               />
-              <Button className="bg-primary hover:bg-primary-hover">
+              <Button className="bg-blue-600 text-white hover:bg-blue-700">
                 Subscribe
               </Button>
             </div>
@@ -37,7 +38,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {/* Information */}
           <div>
-            <h4 className="mb-4 font-bold">Information</h4>
+            <h4 className="mb-4 font-bold text-white">Information</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/about" className="hover:text-white">
@@ -79,7 +80,7 @@ export function Footer() {
 
           {/* PC Parts */}
           <div>
-            <h4 className="mb-4 font-bold">PC Parts</h4>
+            <h4 className="mb-4 font-bold text-white">PC Parts</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/cpus" className="hover:text-white">
@@ -111,7 +112,7 @@ export function Footer() {
 
           {/* Desktop PCs */}
           <div>
-            <h4 className="mb-4 font-bold">Desktop PCs</h4>
+            <h4 className="mb-4 font-bold text-white">Desktop PCs</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/custom-pcs" className="hover:text-white">
@@ -138,7 +139,7 @@ export function Footer() {
 
           {/* Laptops */}
           <div>
-            <h4 className="mb-4 font-bold">Laptops</h4>
+            <h4 className="mb-4 font-bold text-white">Laptops</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/everyday-use" className="hover:text-white">
@@ -165,7 +166,7 @@ export function Footer() {
 
           {/* Address */}
           <div>
-            <h4 className="mb-4 font-bold">Address</h4>
+            <h4 className="mb-4 font-bold text-white">Address</h4>
             <address className="space-y-2 text-sm text-gray-400 not-italic">
               <p>Address: 1234 Street Address</p>
               <p>City Address, 1234</p>
@@ -192,10 +193,13 @@ export function Footer() {
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <div className="flex items-center gap-4">
-              <Link href="https://facebook.com" className="hover:text-primary">
+              <Link href="https://facebook.com" className="hover:text-blue-500">
                 <Facebook className="h-5 w-5" />
               </Link>
-              <Link href="https://instagram.com" className="hover:text-primary">
+              <Link
+                href="https://instagram.com"
+                className="hover:text-pink-500"
+              >
                 <Instagram className="h-5 w-5" />
               </Link>
             </div>
@@ -203,16 +207,16 @@ export function Footer() {
               Copyright © 2025 TechStore. All rights reserved.
             </p>
             <div className="flex gap-2">
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs">
+              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
                 VISA
               </div>
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs">
+              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
                 MC
               </div>
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs">
+              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
                 AMEX
               </div>
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs">
+              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
                 PP
               </div>
             </div>

@@ -14,65 +14,65 @@ export function HeroBanner() {
   }, []);
 
   return (
-    <div className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-black rounded-xl overflow-hidden shadow-xl">
-      <div className="max-w-7xl mx-auto px-8 py-12 lg:py-16">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-gray-900 via-gray-800 to-black shadow-xl">
+      <div className="mx-auto max-w-7xl px-8 py-12 lg:py-16">
+        <div className="grid items-center gap-8 lg:grid-cols-2">
           {/* Left Content */}
-          <div className="space-y-6 z-10">
+          <div className="z-10 space-y-6">
             <Badge
-              className={`gradient-accent text-white border-0 font-bold px-4 py-1.5 transition-all duration-500 ${
+              className={`gradient-accent border-0 px-4 py-1.5 font-bold text-white transition-all duration-500 ${
                 isVisible
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-10"
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-10 opacity-0"
               }`}
             >
               OFERTA EXCLUSIVA
             </Badge>
 
             <h1
-              className={`text-3xl lg:text-5xl font-bold leading-tight text-white text-balance transition-all duration-500 delay-75 ${
+              className={`text-3xl leading-tight font-bold text-balance text-white transition-all delay-75 duration-500 lg:text-5xl ${
                 isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-10 opacity-0"
               }`}
             >
               CONSIGUE UN MONITOR GAMING DE REGALO
             </h1>
 
             <p
-              className={`text-base lg:text-lg text-gray-300 leading-relaxed transition-all duration-500 delay-150 ${
+              className={`text-base leading-relaxed text-gray-300 transition-all delay-150 duration-500 lg:text-lg ${
                 isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-10 opacity-0"
               }`}
             >
               AL COMPRAR CUALQUIER DESKTOP GAMING MSI SELECCIONADO
             </p>
 
             <div
-              className={`flex flex-wrap gap-3 transition-all duration-500 delay-200 ${
+              className={`flex flex-wrap gap-3 transition-all delay-200 duration-500 ${
                 isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-10 opacity-0"
               }`}
             >
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 shadow-lg"
+                className="bg-blue-600 px-8 font-semibold text-white shadow-lg hover:bg-blue-700"
               >
                 COMPRAR AHORA
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 bg-transparent"
+                className="border-2 border-white bg-transparent px-8 font-semibold text-white hover:bg-white hover:text-gray-900"
               >
                 MÁS INFORMACIÓN
               </Button>
             </div>
 
             <p
-              className={`text-xs text-gray-400 transition-all duration-500 delay-300 ${
+              className={`text-xs text-gray-400 transition-all delay-300 duration-500 ${
                 isVisible ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -82,17 +82,19 @@ export function HeroBanner() {
 
           {/* Right Image */}
           <div
-            className={`relative h-64 lg:h-80 transition-all duration-700 delay-150 ${
-              isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            className={`relative h-64 transition-all delay-150 duration-700 lg:h-80 ${
+              isVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
             <Image
               src="/msi-gaming-laptop-with-rgb-lighting.jpg"
               alt="Gaming Setup"
               fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-contain drop-shadow-2xl"
             />
-            <div className="absolute top-4 right-4 bg-white rounded-lg p-3 shadow-lg">
+            <div className="absolute top-4 right-4 rounded-lg bg-white p-3 shadow-lg">
               <div className="text-xs font-bold text-blue-600">
                 Intel® Core™
               </div>
