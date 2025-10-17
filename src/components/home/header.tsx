@@ -24,11 +24,11 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
-              <span className="text-xl font-bold text-white">T</span>
+            <div className="flex h-10 items-center justify-center rounded-xl bg-blue-600 px-6">
+              <span className="text-xl font-bold text-white">WAT</span>
             </div>
-            <span className="hidden text-xl font-bold text-gray-900 md:inline">
-              TechStore
+            <span className="mr-8 hidden text-xl font-bold text-gray-900 md:inline">
+              WorldAssemblyTech
             </span>
           </Link>
 
@@ -127,13 +127,10 @@ export function Header() {
 
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link href="/account">Mi Cuenta</Link>
+                  <Link href="/dashboard">Mi Cuenta</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/wishlist">Mi Lista de Deseos (0)</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/compare">Comparar (0)</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

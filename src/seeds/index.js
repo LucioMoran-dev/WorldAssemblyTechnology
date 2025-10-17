@@ -141,3 +141,10 @@ export const categories = [
     hasSubmenu: false,
   },
 ];
+
+export const customer = [
+  { number: "15K+", label: "Clientes Satisfechos" },
+  { number: "98%", label: "Tasa de Satisfacción" },
+  { number: "24/7", label: "Soporte Técnico" },
+  { number: "500+", label: "Productos Disponibles" },
+];

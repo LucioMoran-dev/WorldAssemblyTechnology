@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   generateEtags: true,
-  swcMinify: true,
   httpAgentOptions: {
     keepAlive: true,
   },
@@ -32,7 +31,22 @@ const nextConfig: NextConfig = {
       allowedOrigins: isDev ? ["localhost:3000"] : [],
     },
     optimisticClientCache: true,
+    // ✅ REMOVIDO: turbo (movido a la raíz del config como "turbopack")
   },
+
+  /* =================================================================
+     TURBOPACK CONFIGURATION
+     =================================================================
+     ✅ MOVIDO AQUÍ: De experimental.turbo a turbopack (raíz)
+     - Turbopack es el nuevo bundler de Next.js
+     - Más rápido que Webpack en desarrollo
+  */
+  turbopack: {
+    resolveAlias: {
+      "mapbox-gl": "mapbox-gl/dist/mapbox-gl.js",
+    },
+  },
+
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
@@ -138,7 +152,6 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              // ✅ CAMBIO CRÍTICO: unsafe-eval solo en desarrollo
               isDev
                 ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com"
                 : "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
@@ -201,19 +214,18 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [];
   },
+
   async rewrites() {
     return [];
   },
 
   /* =================================================================
-     WEBPACK CUSTOMIZATION
+     WEBPACK (solo se usa cuando NO usas --turbopack)
      =================================================================
+     Si usas --turbopack, esta configuración se ignora
+     Útil mantenerla para builds de producción si no usas turbo
   */
   webpack: (config, { dev, isServer }) => {
-    /* ---------------------------------------------------------------
-       OPTIMIZACIONES DE PRODUCCIÓN
-       ---------------------------------------------------------------
-    */
     if (!dev && !isServer) {
       // Split chunks inteligente
       config.optimization.splitChunks = {
@@ -271,9 +283,8 @@ const nextConfig: NextConfig = {
             reuseExistingChunk: true,
           },
         },
-        // Configuración de límites
-        minSize: 20000, // Tamaño mínimo para crear chunk
-        maxSize: 244000, // Intenta dividir chunks más grandes
+        minSize: 20000,
+        maxSize: 244000,
       };
 
       // Minimizar IDs de módulos
@@ -282,13 +293,13 @@ const nextConfig: NextConfig = {
       // Minimizar nombres de chunks
       config.optimization.chunkIds = "deterministic";
     }
+
     config.resolve.alias = {
       ...config.resolve.alias,
-      // Fix para mapbox-gl
       "mapbox-gl": "mapbox-gl/dist/mapbox-gl.js",
     };
+
     config.ignoreWarnings = [
-      // Ignora warnings de mapbox sobre eval
       /Critical dependency: the request of a dependency is an expression/,
     ];
 
@@ -302,36 +313,39 @@ const nextConfig: NextConfig = {
             exclude: ["error", "warn", "info"],
           }
         : false,
-
-    /* ---------------------------------------------------------------
-       STYLED COMPONENTS (si usas styled-components)
-       ---------------------------------------------------------------
-    */
-    // styledComponents: true,
-
-    /* ---------------------------------------------------------------
-       EMOTION (si usas @emotion/react)
-       ---------------------------------------------------------------
-    */
-    // emotion: true,
-
-    /* ---------------------------------------------------------------
-       RELAY (si usas GraphQL Relay)
-       ---------------------------------------------------------------
-    */
-    // relay: {
-    //   src: "./",
-    //   language: "typescript",
-    // },
   },
+  /* ---------------------------------------------------------------
+     STYLED COMPONENTS (si usas styled-components)
+     ---------------------------------------------------------------
+  */
+  // styledComponents: true,
+
+  /* ---------------------------------------------------------------
+     EMOTION (si usas @emotion/react)
+     ---------------------------------------------------------------
+  */
+  // emotion: true,
+
+  /* ---------------------------------------------------------------
+     RELAY (si usas GraphQL Relay)
+     ---------------------------------------------------------------
+  */
+  // relay: {
+  //   src: "./",
+  //   language: "typescript",
+  // },
+
   transpilePackages: ["react-map-gl", "@mapbox/mapbox-gl-geocoder"],
+
   devIndicators: {
     position: "bottom-right",
   },
+
   typescript: {
     ignoreBuildErrors: false,
     tsconfigPath: "./tsconfig.json",
   },
+
   eslint: {
     ignoreDuringBuilds: false,
     dirs: ["src", "app", "components", "lib"],

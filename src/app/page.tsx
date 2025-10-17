@@ -8,16 +8,14 @@ import { Header } from "@/components/home/header";
 import { HeroBanner } from "@/components/home/hero-banner";
 import { ProductCard } from "@/components/home/product-card";
 import { Button } from "@/components/ui/button";
-import { newProducts, customBuilds } from "@/seeds";
+import { newProducts, customBuilds, customer } from "@/seeds";
 
 import { BrandShowcase } from "../components/home/brand-showcase";
 
 export default function Home() {
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const [customBuildsTab, setCustomBuildsTab] = useState("MSI GS Series");
   const [laptopsTab, setLaptopsTab] = useState("MSI GS Series");
   const [desktopsTab, setDesktopsTab] = useState("MSI Infinite Series");
-  const [monitorsTab, setMonitorsTab] = useState("All Monitors");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,7 +49,6 @@ export default function Home() {
             <HeroBanner />
           </div>
         </section>
-
         <section className="border-b border-gray-200 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="mb-6 flex items-center justify-between">
@@ -70,7 +67,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <section className="border-b border-gray-200 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -103,7 +99,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <section className="border-b border-gray-200 bg-gray-50 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -157,7 +152,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <section className="border-b border-gray-200 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -211,7 +205,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <section className="border-b border-gray-200 bg-gray-50 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -244,17 +237,11 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <BrandShowcase />
-
+        customer
         <section className="animate-on-scroll mx-auto max-w-7xl px-4 py-12 opacity-0">
           <div className="grid gap-6 md:grid-cols-4">
-            {[
-              { number: "15K+", label: "Clientes Satisfechos" },
-              { number: "98%", label: "Tasa de Satisfacción" },
-              { number: "24/7", label: "Soporte Técnico" },
-              { number: "500+", label: "Productos Disponibles" },
-            ].map((stat, index) => (
+            {customer.map((stat, index) => (
               <div
                 key={index}
                 className={`hover-lift animate-scale-in rounded-lg border border-gray-200 bg-white p-6 text-center opacity-0 stagger-${
@@ -269,7 +256,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-
         <section className="border-y border-gray-200 bg-white py-12">
           <div className="animate-on-scroll mx-auto max-w-4xl px-4 opacity-0">
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center md:p-12">
@@ -308,7 +294,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <section className="border-b border-gray-200 bg-gray-50 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 md:grid-cols-3">
