@@ -14,16 +14,17 @@ import { BrandShowcase } from "../components/home/brand-showcase";
 
 export default function Home() {
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [customBuildsTab, setCustomBuildsTab] = useState("MSI GS Series");
   const [laptopsTab, setLaptopsTab] = useState("MSI GS Series");
   const [desktopsTab, setDesktopsTab] = useState("MSI Infinite Series");
+  const [monitorsTab, setMonitorsTab] = useState("All Monitors");
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-in-up");
-            observer.unobserve(entry.target);
           }
         });
       },
@@ -31,12 +32,9 @@ export default function Home() {
     );
 
     const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observer.observe(el));
+    elements.forEach((el) => observerRef.current?.observe(el));
 
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-      observer.disconnect();
-    };
+    return () => observerRef.current?.disconnect();
   }, []);
 
   return (
@@ -49,6 +47,7 @@ export default function Home() {
             <HeroBanner />
           </div>
         </section>
+
         <section className="border-b border-gray-200 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="mb-6 flex items-center justify-between">
@@ -60,13 +59,14 @@ export default function Home() {
                 See All New Products →
               </Button>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            <div className="grid grid-cols-2 gap-4 py-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
               {newProducts.map((product) => (
                 <ProductCard key={product.id} {...product} />
               ))}
             </div>
           </div>
         </section>
+
         <section className="border-b border-gray-200 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -99,6 +99,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <section className="border-b border-gray-200 bg-gray-50 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -152,6 +153,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <section className="border-b border-gray-200 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -205,6 +207,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <section className="border-b border-gray-200 bg-gray-50 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -237,16 +240,15 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <BrandShowcase />
-        customer
+
         <section className="animate-on-scroll mx-auto max-w-7xl px-4 py-12 opacity-0">
           <div className="grid gap-6 md:grid-cols-4">
             {customer.map((stat, index) => (
               <div
                 key={index}
-                className={`hover-lift animate-scale-in rounded-lg border border-gray-200 bg-white p-6 text-center opacity-0 stagger-${
-                  index + 1
-                }`}
+                className={`hover-lift animate-scale-in rounded-lg border border-gray-200 bg-white p-6 text-center opacity-0 stagger-${index + 1}`}
               >
                 <div className="mb-2 text-3xl font-bold text-blue-600">
                   {stat.number}
@@ -256,6 +258,7 @@ export default function Home() {
             ))}
           </div>
         </section>
+
         <section className="border-y border-gray-200 bg-white py-12">
           <div className="animate-on-scroll mx-auto max-w-4xl px-4 opacity-0">
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center md:p-12">
@@ -269,13 +272,11 @@ export default function Home() {
                 </svg>
               </div>
               <blockquote className="mb-6 text-lg leading-relaxed text-gray-700">
-                <h3>
-                  &quot;Mi primera orden llegó hoy en perfectas condiciones.
-                  Desde que envié una pregunta sobre el producto hasta realizar
-                  la compra, el envío y ahora la entrega, TechStore se mantuvo
-                  en contacto. Un servicio excepcional. Espero comprar
-                  nuevamente y lo recomiendo ampliamente.&quot;
-                </h3>
+                &quot;Mi primera orden llegó hoy en perfectas condiciones. Desde
+                que envié una pregunta sobre el producto hasta realizar la
+                compra, el envío y ahora la entrega, TechStore se mantuvo en
+                contacto. Un servicio excepcional. Espero comprar nuevamente y
+                lo recomiendo ampliamente.&quot;
               </blockquote>
               <cite className="text-sm font-semibold text-blue-600">
                 — Tama Brown
@@ -294,6 +295,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <section className="border-b border-gray-200 bg-gray-50 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-6 md:grid-cols-3">
@@ -361,9 +363,7 @@ export default function Home() {
               ].map((feature, index) => (
                 <div
                   key={index}
-                  className={`hover-lift animate-scale-in rounded-lg border border-gray-200 bg-white p-8 text-center opacity-0 stagger-${
-                    index + 1
-                  }`}
+                  className={`hover-lift animate-scale-in rounded-lg border border-gray-200 bg-white p-8 text-center opacity-0 stagger-${index + 1}`}
                 >
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg bg-blue-600 text-white">
                     {feature.icon}

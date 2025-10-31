@@ -4,19 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-
-const menuItems = [
-  { label: "Panel de Cuenta", href: "/dashboard" },
-  { label: "Información de Cuenta", href: "/dashboard/account-info" },
-  { label: "Libreta de Direcciones", href: "/dashboard/addresses" },
-  { label: "Mis Pedidos", href: "/dashboard/orders" },
-  { label: "Mis Productos Descargables", href: "/dashboard/downloads" },
-  { label: "Métodos de Pago Guardados", href: "/dashboard/payment-methods" },
-  { label: "Acuerdos de Facturación", href: "/dashboard/billing" },
-  { label: "Mi Lista de Deseos", href: "/dashboard/wishlist" },
-  { label: "Mis Reseñas de Productos", href: "/dashboard/reviews" },
-  { label: "Suscripciones al Boletín", href: "/dashboard/newsletter" },
-];
+import { menuItems } from "@/seeds";
 
 export function DashboardSidebar() {
   const pathname = usePathname();

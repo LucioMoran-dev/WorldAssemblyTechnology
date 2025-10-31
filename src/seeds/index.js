@@ -148,3 +148,134 @@ export const customer = [
   { number: "24/7", label: "Soporte Técnico" },
   { number: "500+", label: "Productos Disponibles" },
 ];
+
+export const addresses = [
+  {
+    id: 1,
+    type: "Facturación",
+    name: "Alex Driver",
+    street: "1234 Street Address",
+    city: "City Address",
+    state: "State",
+    zip: "1234",
+    country: "País",
+    phone: "(00) 1234 5678",
+    isDefault: true,
+  },
+];
+
+export const orders = [
+  {
+    id: "#000123",
+    date: "15 Enero 2024",
+    status: "Entregado",
+    total: "$1,497.00",
+    items: 3,
+    statusColor: "bg-green-100 text-green-700",
+  },
+  {
+    id: "#000122",
+    date: "10 Enero 2024",
+    status: "En Tránsito",
+    total: "$499.00",
+    items: 1,
+    statusColor: "bg-blue-100 text-blue-700",
+  },
+  {
+    id: "#000121",
+    date: "5 Enero 2024",
+    status: "Procesando",
+    total: "$998.00",
+    items: 2,
+    statusColor: "bg-yellow-100 text-yellow-700",
+  },
+];
+
+export const menuItems = [
+  { label: "Panel de Cuenta", href: "/dashboard" },
+  { label: "Información de Cuenta", href: "/dashboard/account-info" },
+  { label: "Libreta de Direcciones", href: "/dashboard/addresses" },
+  { label: "Mis Pedidos", href: "/dashboard/orders" },
+  { label: "Mis Productos Descargables", href: "/dashboard/downloads" },
+  { label: "Métodos de Pago Guardados", href: "/dashboard/payment-methods" },
+  { label: "Acuerdos de Facturación", href: "/dashboard/billing" },
+  { label: "Mi Lista de Deseos", href: "/dashboard/wishlist" },
+  { label: "Mis Reseñas de Productos", href: "/dashboard/reviews" },
+  { label: "Suscripciones al Boletín", href: "/dashboard/newsletter" },
+];
+
+export const relatedProducts = [
+  {
+    id: "2",
+    name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-In-On...",
+    price: 499.0,
+    originalPrice: 599.0,
+    rating: 4,
+    reviews: 28,
+    image: "/msi-laptop.jpg",
+    badge: "INTEL i7",
+    inStock: true,
+  },
+  {
+    id: "3",
+    name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-In-On...",
+    price: 499.0,
+    rating: 5,
+    reviews: 35,
+    image: "/msi-desktop-tower.jpg",
+    badge: "BRAVO 15",
+    inStock: true,
+  },
+  {
+    id: "4",
+    name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-In-On...",
+    price: 499.0,
+    rating: 4,
+    reviews: 19,
+    image: "/msi-monitor.jpg",
+    badge: "ALPHA 15",
+    inStock: true,
+  },
+  {
+    id: "5",
+    name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-In-On...",
+    price: 499.0,
+    rating: 4,
+    reviews: 22,
+    image: "/msi-gaming-pc.jpg",
+    badge: "DELTA 15",
+    inStock: true,
+  },
+];
+
+export const cartItems = [
+  {
+    id: "1",
+    name: "MSI MEG Trident X 10SD-1012AU Intel i7 10700K, 2070 SUPER, 32GB RAM, 1TB SSD, Windows 10 Home, Gaming Keyboard and Mouse 3 Years Warranty",
+    price: 4349.0,
+    image: "/msi-desktop-front.jpg",
+  },
+  {
+    id: "2",
+    name: "MSI MEG Trident X 10SD-1012AU Intel i7 10700K, 2070 SUPER, 32GB RAM, 1TB SSD, Windows 10 Home, Gaming Keyboard and Mouse 3 Years Warranty",
+    price: 4349.0,
+    image: "/msi-laptop.jpg",
+  },
+];
+
+export const cartItemsCheckout = [
+  {
+    id: "1",
+    name: "MSI MEG Trident X 10SD-1012AU Intel i7 10700K, 2070 SUPER...",
+    price: 3799.0,
+    quantity: 1,
+    image: "/msi-desktop-front.jpg",
+  },
+  {
+    id: "2",
+    name: "MSI MEG Trident X 10SD-1012AU Intel i7 10700K, 2070 SUPER...",
+    price: 3799.0,
+    quantity: 1,
+    image: "/msi-laptop.jpg",
+  },
+];

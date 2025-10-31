@@ -3,11 +3,11 @@
 import { Heart, BarChart3, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { ProductCardProps } from "@/types";
+import type { IProductCardProps } from "@/types";
 
 export function ProductCard({
   id,
@@ -17,14 +17,41 @@ export function ProductCard({
   rating,
   reviews,
   image,
+  images,
   badge,
   inStock = true,
-}: ProductCardProps) {
+}: IProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const imageArray = images || [image, image, image];
+
+  useEffect(() => {
+    if (!isHovered) {
+      setCurrentImageIndex(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % imageArray.length);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isHovered, imageArray.length]);
 
   return (
     <div
-      className="group hover-lift relative overflow-hidden rounded-lg border border-gray-200 bg-white"
+      className="group relative overflow-visible rounded-lg border border-gray-200 bg-white transition-all duration-300"
+      style={{
+        transformOrigin: "top center",
+        transform: isHovered
+          ? "translateY(-35px) scale(1.06)"
+          : "translateY(0) scale(1)",
+        boxShadow: isHovered
+          ? "0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(0, 102, 255, 0.15)"
+          : "0 1px 3px rgba(0, 0, 0, 0.1)",
+        zIndex: isHovered ? 20 : 1,
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -46,7 +73,9 @@ export function ProductCard({
       {/* Hover Actions */}
       <div
         className={`absolute top-12 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${
-          isHovered ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"
+          isHovered
+            ? "translate-x-0 opacity-100"
+            : "pointer-events-none translate-x-4 opacity-0"
         }`}
       >
         <Button
@@ -65,32 +94,48 @@ export function ProductCard({
         </Button>
       </div>
 
-      {/* Product Image */}
-      <Link href={`/product/${id}`} className="block bg-gray-50 p-6">
-        <div className="relative aspect-square">
-          <Image
-            src={image || "/placeholder.svg"}
-            alt={name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-            className="object-contain"
-          />
+      {/* Product Image - SIN ERROR DE HIDRATACIÓN ✅ */}
+      <Link href={`/product/${id}`} className="block bg-gray-50">
+        <div
+          className={`transition-all duration-300 ${isHovered ? "p-3" : "p-6"}`}
+        >
+          <div className="relative aspect-square overflow-hidden rounded-xl border border-gray-100 transition-all duration-300 hover:border-gray-300 hover:shadow-md">
+            <Image
+              src={imageArray[currentImageIndex] || "/placeholder.svg"}
+              alt={name}
+              fill
+              className="object-contain transition-opacity duration-500"
+              key={currentImageIndex}
+            />
+          </div>
         </div>
       </Link>
 
+      {/* Image Indicators */}
+      {isHovered && imageArray.length > 1 && (
+        <div className="absolute bottom-[135px] left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+          {imageArray.map((_, index) => (
+            <div
+              key={index}
+              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                index === currentImageIndex ? "w-4 bg-blue-600" : "bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Product Info */}
-      <div className="p-4">
+      <div
+        className={`transition-all duration-300 ${isHovered ? "p-2.5" : "p-4"}`}
+      >
         {/* Rating */}
         <div className="mb-2 flex items-center gap-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                className={`h-3.5 w-3.5 ${
-                  i < Math.floor(rating)
-                    ? "fill-orange-400 text-orange-400"
-                    : "text-gray-300"
-                }`}
+                className={`h-3.5 w-3.5 ${i < Math.floor(rating) ? "fill-orange-400 text-orange-400" : "text-gray-300"}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -103,13 +148,17 @@ export function ProductCard({
 
         {/* Product Name */}
         <Link href={`/product/${id}`}>
-          <h3 className="mb-3 line-clamp-2 text-sm leading-snug font-medium text-gray-900 transition-colors hover:text-blue-600">
+          <h3
+            className={`line-clamp-2 text-sm leading-snug font-medium text-gray-900 transition-all hover:text-blue-600 ${isHovered ? "mb-2" : "mb-3"}`}
+          >
             {name}
           </h3>
         </Link>
 
         {/* Price */}
-        <div className="mb-3 flex items-center gap-2">
+        <div
+          className={`flex items-center gap-2 transition-all duration-300 ${isHovered ? "mb-1.5" : "mb-3"}`}
+        >
           {originalPrice && (
             <span className="text-sm text-gray-400 line-through">
               ${originalPrice.toFixed(2)}
@@ -121,13 +170,13 @@ export function ProductCard({
         </div>
 
         {/* Add to Cart Button */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ${
-            isHovered ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
+        <div className="relative h-0">
           <Button
-            className="w-full bg-blue-600 text-white hover:bg-blue-700"
+            className={`w-full bg-blue-600 text-white transition-all duration-300 hover:bg-blue-700 ${
+              isHovered
+                ? "translate-y-0 opacity-100"
+                : "pointer-events-none translate-y-2 opacity-0"
+            }`}
             size="sm"
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
