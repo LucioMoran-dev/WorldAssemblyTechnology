@@ -1,20 +1,9 @@
-"use client";
-
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import type { CartSummaryCollapsedProps } from "@/types";
 
-interface CartSummaryCollapsedProps {
-  subtotal: number;
-  shipping: number;
-  tax: number;
-  gst: number;
-  total: number;
-  onExpandShipping: () => void;
-  onExpandDiscount: () => void;
-}
-
-export function CartSummaryCollapsed({
+function CartSummaryCollapsed({
   subtotal,
   shipping,
   tax,
@@ -113,3 +102,5 @@ export function CartSummaryCollapsed({
     </div>
   );
 }
+
+export default CartSummaryCollapsed;

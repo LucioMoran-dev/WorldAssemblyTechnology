@@ -42,3 +42,83 @@ export interface IWishlistItems {
   price: string;
   image?: string;
 }
+
+export interface IUserBodyDto {
+  name: string;
+  email: string;
+  birthdate: Date;
+  phone: number;
+  address: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ICartItems {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+}
+
+export interface SummarySidebarProps {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  gst: number;
+  total: number;
+  selectedCountry: string;
+  shippingMethod: string;
+  discountExpanded: boolean;
+  shippingExpanded: boolean;
+  onCountryChange: (country: string) => void;
+  onShippingMethodChange: (method: string) => void;
+  onCollapseShipping: () => void;
+  onToggleDiscount: () => void;
+  onExpandShipping: () => void;
+  onExpandDiscount: () => void;
+}
+
+export interface CartItemProps {
+  item: ICartItems;
+  quantity: number;
+  onUpdateQuantity: (id: string, delta: number) => void;
+}
+
+export interface CartItemsListProps {
+  items: ICartItems[];
+  quantities: { [key: string]: number };
+  onUpdateQuantity: (id: string, delta: number) => void;
+}
+
+export interface CartSummaryCollapsedProps {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  gst: number;
+  total: number;
+  onExpandShipping: () => void;
+  onExpandDiscount: () => void;
+}
+
+export interface CartSummaryExpandedProps {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  gst: number;
+  total: number;
+  selectedCountry: string;
+  shippingMethod: string;
+  discountExpanded: boolean;
+  onCountryChange: (country: string) => void;
+  onShippingMethodChange: (method: string) => void;
+  onCollapseShipping: () => void;
+  onToggleDiscount: () => void;
+}
+
+export interface QuantityControllerProps {
+  quantity: number;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  onChange: (quantity: number) => void;
+}

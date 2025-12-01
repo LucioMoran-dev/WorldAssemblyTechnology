@@ -1,26 +1,10 @@
-"use client";
-
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { CartSummaryExpandedProps } from "@/types";
 
-interface CartSummaryExpandedProps {
-  subtotal: number;
-  shipping: number;
-  tax: number;
-  gst: number;
-  total: number;
-  selectedCountry: string;
-  shippingMethod: string;
-  discountExpanded: boolean;
-  onCountryChange: (country: string) => void;
-  onShippingMethodChange: (method: string) => void;
-  onCollapseShipping: () => void;
-  onToggleDiscount: () => void;
-}
-
-export function CartSummaryExpanded({
+function CartSummaryExpanded({
   subtotal,
   shipping,
   tax,
@@ -194,3 +178,5 @@ export function CartSummaryExpanded({
     </div>
   );
 }
+
+export default CartSummaryExpanded;

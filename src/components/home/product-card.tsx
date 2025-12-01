@@ -3,13 +3,13 @@
 import { Heart, BarChart3, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { IProductCardProps } from "@/types";
 
-export function ProductCard({
+export const ProductCard = memo(function ProductCard({
   id,
   name,
   price,
@@ -22,38 +22,26 @@ export function ProductCard({
   inStock = true,
 }: IProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const imageArray = images || [image, image, image];
+  // Memoizar el array de imágenes
+  const imageArray = useMemo(() => images || [image], [images, image]);
 
-  useEffect(() => {
-    if (!isHovered) {
-      setCurrentImageIndex(0);
-      return;
-    }
+  // Usar solo la primera imagen para evitar intervals costosos
+  // En hover, mostraremos la segunda imagen con CSS si existe
+  const primaryImage = imageArray[0] || image || "/placeholder.svg";
+  const hoverImage = imageArray[1] || primaryImage;
 
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % imageArray.length);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isHovered, imageArray.length]);
+  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
 
   return (
     <div
-      className="group relative overflow-visible rounded-lg border border-gray-200 bg-white transition-all duration-300"
+      className="group relative overflow-visible rounded-lg border border-gray-200 bg-white transition-all duration-300 hover:z-20 hover:-translate-y-[35px] hover:scale-[1.06] hover:shadow-[0_25px_50px_rgba(0,0,0,0.2),0_0_0_2px_rgba(0,102,255,0.15)]"
       style={{
         transformOrigin: "top center",
-        transform: isHovered
-          ? "translateY(-35px) scale(1.06)"
-          : "translateY(0) scale(1)",
-        boxShadow: isHovered
-          ? "0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(0, 102, 255, 0.15)"
-          : "0 1px 3px rgba(0, 0, 0, 0.1)",
-        zIndex: isHovered ? 20 : 1,
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Badge */}
       {badge && (
@@ -94,36 +82,41 @@ export function ProductCard({
         </Button>
       </div>
 
-      {/* Product Image - SIN ERROR DE HIDRATACIÓN ✅ */}
+      {/* Product Image - Optimizado sin intervals */}
       <Link href={`/product/${id}`} className="block bg-gray-50">
         <div
           className={`transition-all duration-300 ${isHovered ? "p-3" : "p-6"}`}
         >
           <div className="relative aspect-square overflow-hidden rounded-xl border border-gray-100 transition-all duration-300 hover:border-gray-300 hover:shadow-md">
+            {/* Imagen principal */}
             <Image
-              src={imageArray[currentImageIndex] || "/placeholder.svg"}
+              src={primaryImage}
               alt={name}
               fill
-              className="object-contain transition-opacity duration-500"
-              key={currentImageIndex}
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+              className={`object-contain transition-opacity duration-300 ${
+                isHovered && hoverImage !== primaryImage
+                  ? "opacity-0"
+                  : "opacity-100"
+              }`}
+              loading="lazy"
             />
+            {/* Imagen de hover (solo si existe una segunda imagen) */}
+            {hoverImage !== primaryImage && (
+              <Image
+                src={hoverImage}
+                alt={name}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                className={`object-contain transition-opacity duration-300 ${
+                  isHovered ? "opacity-100" : "opacity-0"
+                }`}
+                loading="lazy"
+              />
+            )}
           </div>
         </div>
       </Link>
-
-      {/* Image Indicators */}
-      {isHovered && imageArray.length > 1 && (
-        <div className="absolute bottom-[135px] left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
-          {imageArray.map((_, index) => (
-            <div
-              key={index}
-              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                index === currentImageIndex ? "w-4 bg-blue-600" : "bg-gray-300"
-              }`}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Product Info */}
       <div
@@ -186,4 +179,4 @@ export function ProductCard({
       </div>
     </div>
   );
-}
+});

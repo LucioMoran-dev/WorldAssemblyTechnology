@@ -2,7 +2,7 @@
 
 import { Search, ShoppingCart, User, X, Menu } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,12 +14,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 
-import { MiniCart } from "../cart/mini-cart";
+import { MiniCart } from "../cart/miniCartHome/mini-cart";
 
-export function Header() {
+const Header = memo(function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
+
+  const toggleSearch = useCallback(() => setIsSearchOpen(prev => !prev), []);
+  const toggleMobileMenu = useCallback(() => setIsMobileMenuOpen(prev => !prev), []);
+  const toggleMiniCart = useCallback(() => setIsMiniCartOpen(prev => !prev), []);
+  const closeMiniCart = useCallback(() => setIsMiniCartOpen(false), []);
 
   return (
     <>
@@ -95,7 +100,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                onClick={toggleSearch}
                 className="hover:bg-gray-100"
               >
                 {isSearchOpen ? (
@@ -110,7 +115,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 className="relative hover:bg-gray-100"
-                onClick={() => setIsMiniCartOpen(!isMiniCartOpen)}
+                onClick={toggleMiniCart}
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs text-white">
@@ -139,10 +144,10 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/register">Crear una Cuenta</Link>
+                    <Link href="/auth/signup">Crear una Cuenta</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/signin">Iniciar Sesión</Link>
+                    <Link href="/auth/signin">Iniciar Sesión</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -152,7 +157,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 className="lg:hidden"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={toggleMobileMenu}
               >
                 <Menu className="h-5 w-5" />
               </Button>
@@ -226,8 +231,10 @@ export function Header() {
       </header>
       <MiniCart
         isOpen={isMiniCartOpen}
-        onClose={() => setIsMiniCartOpen(false)}
+        onClose={closeMiniCart}
       />
     </>
   );
-}
+});
+
+export default Header;

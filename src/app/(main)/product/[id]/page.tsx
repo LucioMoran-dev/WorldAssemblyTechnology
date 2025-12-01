@@ -17,8 +17,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
-import { Footer } from "@/components/home/footer";
-import { Header } from "@/components/home/header";
 import { ProductCard } from "@/components/home/product-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -84,22 +82,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <nav className="mb-6 flex items-center gap-2 text-sm text-gray-600">
-          <Link href="/" className="hover:text-blue-600">
-            Inicio
-          </Link>
-          <ChevronRight className="h-4 w-4" />
-          <Link href="/" className="hover:text-blue-600">
-            Productos
-          </Link>
-          <ChevronRight className="h-4 w-4" />
-          <span className="font-medium text-gray-900">{product.brand}</span>
-        </nav>
-
         {/* Product Detail Section */}
         <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Image Gallery */}
@@ -438,8 +421,6 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

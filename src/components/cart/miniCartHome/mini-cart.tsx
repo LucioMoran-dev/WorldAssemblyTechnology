@@ -1,10 +1,9 @@
-"use client";
-
 import { X, Edit2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { cartItemsMiniCart } from "@/seeds";
 
 interface MiniCartProps {
   isOpen: boolean;
@@ -13,21 +12,6 @@ interface MiniCartProps {
 
 export function MiniCart({ isOpen, onClose }: MiniCartProps) {
   if (!isOpen) return null;
-
-  const cartItems = [
-    {
-      id: "1",
-      name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-in-On...",
-      quantity: 1,
-      image: "/msi-desktop-front.jpg",
-    },
-    {
-      id: "2",
-      name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-in-On...",
-      quantity: 1,
-      image: "/msi-laptop.jpg",
-    },
-  ];
 
   return (
     <>
@@ -39,7 +23,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
         <div className="border-b border-gray-200 p-4">
           <h3 className="text-center text-lg font-bold">My Cart</h3>
           <p className="text-center text-sm text-gray-600">
-            {cartItems.length} item in cart
+            {cartItemsMiniCart.length} item in cart
           </p>
         </div>
 
@@ -55,7 +39,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
 
           {/* Cart Items - Made more compact */}
           <div className="mb-4 max-h-[300px] space-y-2 overflow-y-auto">
-            {cartItems.map((item) => (
+            {cartItemsMiniCart.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center gap-2 rounded border border-gray-200 p-2"
@@ -91,14 +75,11 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
 
           {/* Checkout Buttons - Made smaller */}
           <div className="space-y-2">
-            <Link href="/checkout" onClick={onClose}>
+            <Link href="/cart/checkout" onClick={onClose}>
               <Button className="h-10 w-full bg-blue-600 text-sm text-white hover:bg-blue-700">
                 Go to Checkout
               </Button>
             </Link>
-            <Button className="h-10 w-full bg-yellow-400 text-sm font-semibold text-gray-900 hover:bg-yellow-500">
-              Check out with <span className="ml-1 font-bold">PayPal</span>
-            </Button>
           </div>
         </div>
       </div>

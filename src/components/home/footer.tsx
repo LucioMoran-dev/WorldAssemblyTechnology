@@ -1,10 +1,11 @@
 import { Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function Footer() {
+const Footer = memo(function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       {/* Newsletter Section */}
@@ -225,4 +226,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+export default Footer;

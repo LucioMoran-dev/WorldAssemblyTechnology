@@ -279,3 +279,95 @@ export const cartItemsCheckout = [
     image: "/msi-laptop.jpg",
   },
 ];
+
+export const cartItemsMiniCart = [
+  {
+    id: "1",
+    name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-in-On...",
+    quantity: 1,
+    image: "/msi-desktop-front.jpg",
+  },
+  {
+    id: "2",
+    name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-in-On...",
+    quantity: 1,
+    image: "/msi-laptop.jpg",
+  },
+];
+
+export const laptopTabs = [
+  "MSI GS Series",
+  "MSI GT Series",
+  "MSI GL Series",
+  "MSI GE Series",
+];
+
+export const desktopTabs = [
+  "MSI Infinite Series",
+  "MSI Trident",
+  "MSI GL Series",
+  "MSI Nightblade",
+];
+
+export const features = [
+  {
+    icon: (
+      <svg
+        className="h-10 w-10"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+    title: "Soporte de Producto",
+    description:
+      "Hasta 3 años de garantía en sitio disponible para tu tranquilidad.",
+  },
+  {
+    icon: (
+      <svg
+        className="h-10 w-10"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
+      </svg>
+    ),
+    title: "Cuenta Personal",
+    description:
+      "Con grandes descuentos, envío gratis y un especialista de soporte dedicado.",
+  },
+  {
+    icon: (
+      <svg
+        className="h-10 w-10"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+    title: "Ahorros Increíbles",
+    description:
+      "Hasta 70% de descuento en productos nuevos, garantizamos el mejor precio.",
+  },
+];
