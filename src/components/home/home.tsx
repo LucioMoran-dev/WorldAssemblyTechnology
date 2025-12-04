@@ -10,8 +10,8 @@ import {
 import { BrandShowcase } from "./brand-showcase";
 import { CustomerStats } from "./customer-stats";
 import { FeaturesGrid } from "./features-grid";
-import Footer from "./footer";
-import Header from "./header";
+import Footer from "./footer/footer";
+import Header from "./header/header";
 import { CategoryProductsSection } from "./sections/category-products-section";
 import { CategoryWithTabsSection } from "./sections/category-with-tabs-section";
 import { HeroSection } from "./sections/hero-section";

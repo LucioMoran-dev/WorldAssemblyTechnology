@@ -102,6 +102,7 @@ export const brands = [
   { name: "ADATA", logo: "/adata-logo.jpg" },
   { name: "HP", logo: "/generic-tech-logo.png" },
   { name: "GIGABYTE", logo: "/gigabyte-logo.jpg" },
+  { name: "Intel", logo: "/intel-logo.png" },
 ];
 
 export const categories = [

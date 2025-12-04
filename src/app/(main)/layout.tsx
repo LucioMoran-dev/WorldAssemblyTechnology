@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type React from "react";
 
-import Footer from "@/components/home/footer";
-import Header from "@/components/home/header";
+import Footer from "@/components/home/footer/footer";
+import Header from "@/components/home/header/header";
 
 export default function MainLayout({
   children,

@@ -1,7 +1,7 @@
-import HeaderWithSignIn from "./header.with.singin";
-import OrderSummarySidebar from "./order.summary.sidebar";
-import ProgressSteps from "./progress.steps";
-import ShippingForm from "./shipping.form";
+import HeaderWithSignIn from "./header-with-signin";
+import OrderSummarySidebar from "./order-summary-sidebar";
+import ProgressSteps from "./progress-steps";
+import ShippingForm from "./shipping-form";
 
 function Checkout() {
   return (

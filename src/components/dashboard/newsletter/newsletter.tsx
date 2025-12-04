@@ -1,7 +1,7 @@
 import GeneralBulletin from "./general.bulletin";
-import NewsletterBenefits from "./newslleter.benefits";
-import PreferencesInformation from "./preferences.information";
-import ReceiveNewsletter from "./receive.newslleter";
+import NewsletterBenefits from "./newsletter-benefits";
+import PreferencesInformation from "./preferences-information";
+import ReceiveNewsletter from "./receive-newsletter";
 
 function Newsletter() {
   return (

@@ -1,4 +1,4 @@
-import type { IProduct } from "@/types";
+import type { IProductCardProps } from "@/types";
 
 import { CategoryCard } from "../category-card";
 import { ProductCard } from "../product-card";
@@ -7,7 +7,7 @@ interface CategoryProductsSectionProps {
   categoryImage: string;
   categoryAlt: string;
   categoryTitle: string;
-  products: IProduct[];
+  products: IProductCardProps[];
   bgColor?: "white" | "gray";
 }
 

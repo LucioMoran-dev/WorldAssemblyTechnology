@@ -4,11 +4,11 @@ import { useState, useCallback } from "react";
 
 import { ProductCard } from "./product-card";
 
-import type { IProduct } from "@/types";
+import type { IProductCardProps } from "@/types";
 
 interface ProductSectionWithTabsProps {
   tabs: string[];
-  products: IProduct[];
+  products: IProductCardProps[];
   defaultTab?: string;
 }
 

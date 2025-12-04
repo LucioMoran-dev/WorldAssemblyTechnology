@@ -10,7 +10,7 @@ function ProgressSteps() {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
               <Check className="h-5 w-5" />
             </div>
-            <span className="font-semibold text-blue-600">Shipping</span>
+            <span className="font-semibold text-blue-600">Envío</span>
           </div>
 
           {/* Connector Line */}
@@ -21,7 +21,7 @@ function ProgressSteps() {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-600">
               2
             </div>
-            <span className="text-gray-600">Review & Payments</span>
+            <span className="text-gray-600">Revisión y Pagos</span>
           </div>
         </div>
       </div>

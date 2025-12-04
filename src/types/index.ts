@@ -47,7 +47,7 @@ export interface IUserBodyDto {
   name: string;
   email: string;
   birthdate: Date;
-  phone: number;
+  phone: string;
   address: string;
   username: string;
   password: string;

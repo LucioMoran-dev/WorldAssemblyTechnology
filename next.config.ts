@@ -5,8 +5,8 @@ const isDev = process.env.NODE_ENV === "development";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  compress: true,
-  generateEtags: true,
+  compress: !isDev, // Solo comprimir en producción
+  generateEtags: !isDev, // Solo ETags en producción
   httpAgentOptions: {
     keepAlive: true,
   },
@@ -24,13 +24,13 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-toast",
       "recharts",
     ],
-    optimizeCss: true,
-    reactCompiler: true,
+    optimizeCss: !isDev, // Solo optimizar CSS en producción
+    reactCompiler: false, // ❌ DESACTIVADO: Causa problemas de hidratación
     serverActions: {
       bodySizeLimit: "2mb",
       allowedOrigins: isDev ? ["localhost:3000"] : [],
     },
-    optimisticClientCache: true,
+    optimisticClientCache: false, // ❌ DESACTIVADO: Causa errores de hidratación
     // ✅ REMOVIDO: turbo (movido a la raíz del config como "turbopack")
   },
 
@@ -119,6 +119,22 @@ const nextConfig: NextConfig = {
   },
 
   async headers() {
+    // En desarrollo, usar headers mínimos sin caché
+    if (isDev) {
+      return [
+        {
+          source: "/(.*)",
+          headers: [
+            {
+              key: "Cache-Control",
+              value: "no-store, no-cache, must-revalidate, max-age=0",
+            },
+          ],
+        },
+      ];
+    }
+
+    // En producción, usar headers completos con caché
     return [
       {
         source: "/(.*)",

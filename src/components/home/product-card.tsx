@@ -3,13 +3,25 @@
 import { Heart, BarChart3, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useEffect } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { IProductCardProps } from "@/types";
 
-export const ProductCard = memo(function ProductCard({
+interface ProductCardProps {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviews: number;
+  image?: string;
+  images?: string[];
+  badge?: string;
+  inStock?: boolean;
+}
+
+export function ProductCard({
   id,
   name,
   price,
@@ -20,28 +32,40 @@ export const ProductCard = memo(function ProductCard({
   images,
   badge,
   inStock = true,
-}: IProductCardProps) {
+}: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Memoizar el array de imágenes
-  const imageArray = useMemo(() => images || [image], [images, image]);
+  const imageArray = images || [image, image, image];
 
-  // Usar solo la primera imagen para evitar intervals costosos
-  // En hover, mostraremos la segunda imagen con CSS si existe
-  const primaryImage = imageArray[0] || image || "/placeholder.svg";
-  const hoverImage = imageArray[1] || primaryImage;
+  useEffect(() => {
+    if (!isHovered) {
+      setCurrentImageIndex(0);
+      return;
+    }
 
-  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
-  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % imageArray.length);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isHovered, imageArray.length]);
 
   return (
     <div
-      className="group relative overflow-visible rounded-lg border border-gray-200 bg-white transition-all duration-300 hover:z-20 hover:-translate-y-[35px] hover:scale-[1.06] hover:shadow-[0_25px_50px_rgba(0,0,0,0.2),0_0_0_2px_rgba(0,102,255,0.15)]"
+      className="group relative overflow-visible rounded-lg border border-gray-200 bg-white transition-all duration-300"
       style={{
         transformOrigin: "top center",
+        transform: isHovered
+          ? "translateY(-35px) scale(1.06)"
+          : "translateY(0) scale(1)",
+        boxShadow: isHovered
+          ? "0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(0, 102, 255, 0.15)"
+          : "0 1px 3px rgba(0, 0, 0, 0.1)",
+        zIndex: isHovered ? 20 : 1,
       }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Badge */}
       {badge && (
@@ -54,7 +78,7 @@ export const ProductCard = memo(function ProductCard({
       {inStock && (
         <div className="absolute top-3 right-3 z-10 flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
           <div className="h-1.5 w-1.5 rounded-full bg-green-600" />
-          <span className="font-medium">In stock</span>
+          <span className="font-medium">En Stock</span>
         </div>
       )}
 
@@ -82,41 +106,33 @@ export const ProductCard = memo(function ProductCard({
         </Button>
       </div>
 
-      {/* Product Image - Optimizado sin intervals */}
+      {/* Product Image */}
       <Link href={`/product/${id}`} className="block bg-gray-50">
         <div
-          className={`transition-all duration-300 ${isHovered ? "p-3" : "p-6"}`}
+          className={`relative aspect-square transition-all duration-300 ${isHovered ? "p-3" : "p-6"}`}
         >
-          <div className="relative aspect-square overflow-hidden rounded-xl border border-gray-100 transition-all duration-300 hover:border-gray-300 hover:shadow-md">
-            {/* Imagen principal */}
-            <Image
-              src={primaryImage}
-              alt={name}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-              className={`object-contain transition-opacity duration-300 ${
-                isHovered && hoverImage !== primaryImage
-                  ? "opacity-0"
-                  : "opacity-100"
-              }`}
-              loading="lazy"
-            />
-            {/* Imagen de hover (solo si existe una segunda imagen) */}
-            {hoverImage !== primaryImage && (
-              <Image
-                src={hoverImage}
-                alt={name}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                className={`object-contain transition-opacity duration-300 ${
-                  isHovered ? "opacity-100" : "opacity-0"
-                }`}
-                loading="lazy"
-              />
-            )}
-          </div>
+          <Image
+            src={imageArray[currentImageIndex] || "/placeholder.svg"}
+            alt={name}
+            fill
+            className="object-contain transition-opacity duration-500"
+            key={currentImageIndex}
+          />
         </div>
       </Link>
+
+      {isHovered && imageArray.length > 1 && (
+        <div className="absolute bottom-[135px] left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+          {imageArray.map((_, index) => (
+            <div
+              key={index}
+              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                index === currentImageIndex ? "w-4 bg-blue-600" : "bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Product Info */}
       <div
@@ -136,7 +152,7 @@ export const ProductCard = memo(function ProductCard({
               </svg>
             ))}
           </div>
-          <span className="text-xs text-gray-500">Reviews ({reviews})</span>
+          <span className="text-xs text-gray-500">Reseñas ({reviews})</span>
         </div>
 
         {/* Product Name */}
@@ -162,7 +178,6 @@ export const ProductCard = memo(function ProductCard({
           </span>
         </div>
 
-        {/* Add to Cart Button */}
         <div className="relative h-0">
           <Button
             className={`w-full bg-blue-600 text-white transition-all duration-300 hover:bg-blue-700 ${
@@ -173,10 +188,10 @@ export const ProductCard = memo(function ProductCard({
             size="sm"
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Add To Cart
+            Agregar al Carrito
           </Button>
         </div>
       </div>
     </div>
   );
-});
+}

@@ -6,7 +6,13 @@
       "Bash(timeout /t 10 /nobreak)",
       "Bash(timeout /t 5 /nobreak)",
       "Bash(taskkill:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(dir)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(npm run clean:*)"
     ],
     "deny": [],
     "ask": []

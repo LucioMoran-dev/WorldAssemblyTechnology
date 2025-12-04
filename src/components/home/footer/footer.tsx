@@ -14,20 +14,20 @@ const Footer = memo(function Footer() {
           <div className="grid items-center gap-8 md:grid-cols-2">
             <div>
               <h3 className="mb-2 text-2xl font-bold text-white">
-                Sign Up To Our Newsletter.
+                Suscríbete a Nuestro Boletín.
               </h3>
               <p className="text-gray-400">
-                Be the first to hear about the latest offers.
+                Sé el primero en enterarte de las últimas ofertas.
               </p>
             </div>
             <div className="flex gap-2">
               <Input
                 type="email"
-                placeholder="Your email"
+                placeholder="Tu correo electrónico"
                 className="bg-white text-gray-900"
               />
               <Button className="bg-blue-600 text-white hover:bg-blue-700">
-                Subscribe
+                Suscribirse
               </Button>
             </div>
           </div>
@@ -39,41 +39,41 @@ const Footer = memo(function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {/* Information */}
           <div>
-            <h4 className="mb-4 font-bold text-white">Information</h4>
+            <h4 className="mb-4 font-bold text-white">Información</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/about" className="hover:text-white">
-                  About Us
+                  Sobre Nosotros
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-white">
-                  About Zip
+                  Sobre Zip
                 </Link>
               </li>
               <li>
                 <Link href="/privacy" className="hover:text-white">
-                  Privacy Policy
+                  Política de Privacidad
                 </Link>
               </li>
               <li>
                 <Link href="/search" className="hover:text-white">
-                  Search
+                  Buscar
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="hover:text-white">
-                  Terms
+                  Términos
                 </Link>
               </li>
               <li>
                 <Link href="/orders" className="hover:text-white">
-                  Orders and Returns
+                  Pedidos y Devoluciones
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-white">
-                  Contact Us
+                  Contáctanos
                 </Link>
               </li>
             </ul>
@@ -81,31 +81,31 @@ const Footer = memo(function Footer() {
 
           {/* PC Parts */}
           <div>
-            <h4 className="mb-4 font-bold text-white">PC Parts</h4>
+            <h4 className="mb-4 font-bold text-white">Partes de PC</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/cpus" className="hover:text-white">
-                  CPUS
+                  Procesadores
                 </Link>
               </li>
               <li>
                 <Link href="/add-on-cards" className="hover:text-white">
-                  Add On Cards
+                  Tarjetas de Expansión
                 </Link>
               </li>
               <li>
                 <Link href="/hard-drives" className="hover:text-white">
-                  Hard Drives (Internal)
+                  Discos Duros (Internos)
                 </Link>
               </li>
               <li>
                 <Link href="/graphic-cards" className="hover:text-white">
-                  Graphic Cards
+                  Tarjetas Gráficas
                 </Link>
               </li>
               <li>
                 <Link href="/keyboards" className="hover:text-white">
-                  Keyboards / Mice
+                  Teclados / Ratones
                 </Link>
               </li>
             </ul>
@@ -113,26 +113,26 @@ const Footer = memo(function Footer() {
 
           {/* Desktop PCs */}
           <div>
-            <h4 className="mb-4 font-bold text-white">Desktop PCs</h4>
+            <h4 className="mb-4 font-bold text-white">PCs de Escritorio</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/custom-pcs" className="hover:text-white">
-                  Custom PCs
+                  PCs Personalizadas
                 </Link>
               </li>
               <li>
                 <Link href="/servers" className="hover:text-white">
-                  Servers
+                  Servidores
                 </Link>
               </li>
               <li>
                 <Link href="/msi-all-in-one" className="hover:text-white">
-                  MSI All-In-One PCs
+                  PCs Todo en Uno MSI
                 </Link>
               </li>
               <li>
                 <Link href="/hp-all-in-one" className="hover:text-white">
-                  HP/Compaq PCs
+                  PCs HP/Compaq
                 </Link>
               </li>
             </ul>
@@ -144,22 +144,22 @@ const Footer = memo(function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/everyday-use" className="hover:text-white">
-                  Everyday Use Notebooks
+                  Portátiles de Uso Diario
                 </Link>
               </li>
               <li>
                 <Link href="/msi-workstation" className="hover:text-white">
-                  MSI Workstation Series
+                  Serie Workstation MSI
                 </Link>
               </li>
               <li>
                 <Link href="/msi-prestige" className="hover:text-white">
-                  MSI Prestige Series
+                  Serie Prestige MSI
                 </Link>
               </li>
               <li>
                 <Link href="/tablets" className="hover:text-white">
-                  Tablets and Pads
+                  Tablets y Pads
                 </Link>
               </li>
             </ul>
@@ -167,19 +167,19 @@ const Footer = memo(function Footer() {
 
           {/* Address */}
           <div>
-            <h4 className="mb-4 font-bold text-white">Address</h4>
+            <h4 className="mb-4 font-bold text-white">Dirección</h4>
             <address className="space-y-2 text-sm text-gray-400 not-italic">
-              <p>Address: 1234 Street Address</p>
-              <p>City Address, 1234</p>
+              <p>Dirección: Calle 1234</p>
+              <p>Ciudad, 1234</p>
               <p className="mt-4">
-                Phones:{" "}
+                Teléfonos:{" "}
                 <a href="tel:0012345678" className="hover:text-white">
                   (00) 1234 5678
                 </a>
               </p>
-              <p>Monday-Thursday: 9:00 AM - 5:30 PM</p>
+              <p>Lunes-Jueves: 9:00 AM - 5:30 PM</p>
               <p className="mt-4">
-                E-mail:{" "}
+                Correo:{" "}
                 <a href="mailto:shop@email.com" className="hover:text-white">
                   shop@email.com
                 </a>
@@ -205,7 +205,7 @@ const Footer = memo(function Footer() {
               </Link>
             </div>
             <p className="text-sm text-gray-400">
-              Copyright © 2025 TechStore. All rights reserved.
+              Copyright © 2025 TechStore. Todos los derechos reservados.
             </p>
             <div className="flex gap-2">
               <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">

@@ -5,25 +5,29 @@ import Link from "next/link";
 import { useState, useCallback, memo } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 
-import { MiniCart } from "../cart/miniCartHome/mini-cart";
+import { MiniCart } from "../../cart/miniCartHome/mini-cart";
 
 const Header = memo(function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
 
-  const toggleSearch = useCallback(() => setIsSearchOpen(prev => !prev), []);
-  const toggleMobileMenu = useCallback(() => setIsMobileMenuOpen(prev => !prev), []);
-  const toggleMiniCart = useCallback(() => setIsMiniCartOpen(prev => !prev), []);
+  const toggleSearch = useCallback(() => setIsSearchOpen((prev) => !prev), []);
+  const toggleMobileMenu = useCallback(
+    () => setIsMobileMenuOpen((prev) => !prev),
+    []
+  );
+  const toggleAccountMenu = useCallback(
+    () => setIsAccountMenuOpen((prev) => !prev),
+    []
+  );
+  const toggleMiniCart = useCallback(
+    () => setIsMiniCartOpen((prev) => !prev),
+    []
+  );
   const closeMiniCart = useCallback(() => setIsMiniCartOpen(false), []);
 
   return (
@@ -44,43 +48,43 @@ const Header = memo(function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden items-center gap-6 lg:flex">
               <Link
-                href="/laptops"
+                href="/catalog/laptops"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Laptops
               </Link>
               <Link
-                href="/desktop-pcs"
+                href="/catalog/desktop-pcs"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Desktop PCs
+                PCs de Escritorio
               </Link>
               <Link
-                href="/networking"
+                href="/catalog/networking"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Dispositivos de Red
               </Link>
               <Link
-                href="/printers"
+                href="/catalog/printers"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Impresoras y Scanners
+                Impresoras y Escáneres
               </Link>
               <Link
-                href="/pc-parts"
+                href="/catalog/pc-parts"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Componentes PC
+                Partes de PC
               </Link>
               <Link
-                href="/accessories"
+                href="/catalog/products"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Todos los Productos
+                Todos los demás productos
               </Link>
               <Link
-                href="/repairs"
+                href="/catalog/repairs"
                 className="text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Reparaciones
@@ -123,34 +127,54 @@ const Header = memo(function Header() {
                 </span>
               </Button>
 
-              {/* Account Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="hover:bg-gray-100"
-                  >
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
+              {/* Account Menu */}
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleAccountMenu}
+                  className="hover:bg-gray-100"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
 
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Mi Cuenta</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/wishlist">Mi Lista de Deseos (0)</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/auth/signup">Crear una Cuenta</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/auth/signin">Iniciar Sesión</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                {/* Account Dropdown */}
+                {isAccountMenuOpen && (
+                  <div className="absolute right-0 z-50 mt-2 w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-xl">
+                    <Link
+                      href="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Mi Cuenta
+                    </Link>
+                    <Link
+                      href="/wishlist"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Mi Lista de Deseos (0)
+                    </Link>
+                    <Link
+                      href="/compare"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Comparar (0)
+                    </Link>
+                    <div className="my-2 border-t border-gray-200" />
+                    <Link
+                      href="/register"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Crear una Cuenta
+                    </Link>
+                    <Link
+                      href="/signin"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Iniciar Sesión
+                    </Link>
+                  </div>
+                )}
+              </div>
 
               {/* Mobile Menu */}
               <Button
@@ -184,43 +208,43 @@ const Header = memo(function Header() {
           <div className="border-t border-gray-200 bg-white lg:hidden">
             <nav className="flex flex-col gap-2 p-4">
               <Link
-                href="/laptops"
+                href="/catalog/laptops"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Laptops
               </Link>
               <Link
-                href="/desktop-pcs"
+                href="/catalog/desktop-pcs"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Desktop PCs
+                PCs de Escritorio
               </Link>
               <Link
-                href="/networking"
+                href="/catalog/networking"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Dispositivos de Red
               </Link>
               <Link
-                href="/printers"
+                href="/catalog/printers"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Impresoras y Scanners
+                Impresoras y Escáneres
               </Link>
               <Link
-                href="/pc-parts"
+                href="/catalog/pc-parts"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Componentes PC
+                Partes de PC
               </Link>
               <Link
-                href="/accessories"
+                href="/catalog/products"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
-                Todos los Productos
+                Todos los demás productos
               </Link>
               <Link
-                href="/repairs"
+                href="/catalog/repairs"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Reparaciones
@@ -229,10 +253,7 @@ const Header = memo(function Header() {
           </div>
         )}
       </header>
-      <MiniCart
-        isOpen={isMiniCartOpen}
-        onClose={closeMiniCart}
-      />
+      <MiniCart isOpen={isMiniCartOpen} onClose={closeMiniCart} />
     </>
   );
 });

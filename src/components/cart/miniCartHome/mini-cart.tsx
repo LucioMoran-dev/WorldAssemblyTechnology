@@ -21,9 +21,9 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
       {/* Mini Cart - Made smaller and more responsive */}
       <div className="fixed top-16 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] rounded-lg border border-gray-200 bg-white shadow-2xl">
         <div className="border-b border-gray-200 p-4">
-          <h3 className="text-center text-lg font-bold">My Cart</h3>
+          <h3 className="text-center text-lg font-bold">Mi Carrito</h3>
           <p className="text-center text-sm text-gray-600">
-            {cartItemsMiniCart.length} item in cart
+            {cartItemsMiniCart.length} artículo en el carrito
           </p>
         </div>
 
@@ -33,7 +33,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
               variant="outline"
               className="mb-4 h-10 w-full border-blue-600 bg-transparent text-sm text-blue-600 hover:bg-blue-50"
             >
-              View or Edit Your Cart
+              Ver o Editar Tu Carrito
             </Button>
           </Link>
 
@@ -77,7 +77,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
           <div className="space-y-2">
             <Link href="/cart/checkout" onClick={onClose}>
               <Button className="h-10 w-full bg-blue-600 text-sm text-white hover:bg-blue-700">
-                Go to Checkout
+                Ir al Pago
               </Button>
             </Link>
           </div>

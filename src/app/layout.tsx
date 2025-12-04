@@ -13,7 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "TechStore - Premium Computer Hardware & Gaming Products",
+  title:
+    "WorldAssemblyTech - Hardware de Computadora Premium y Productos para Gaming",
   description:
     "Compra las últimas laptops, desktops, monitores gaming y componentes de PC de marcas top como MSI, ASUS y más.",
 };

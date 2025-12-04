@@ -2,8 +2,8 @@ import type React from "react";
 
 import { DashboardBreadcrumb } from "@/components/dashboard/breadcrumb";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
-import Footer from "@/components/home/footer";
-import Header from "@/components/home/header";
+import Footer from "@/components/home/footer/footer";
+import Header from "@/components/home/header/header";
 
 export default function DashboardLayout({
   children,
