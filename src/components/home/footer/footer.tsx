@@ -205,7 +205,8 @@ const Footer = memo(function Footer() {
               </Link>
             </div>
             <p className="text-sm text-gray-400">
-              Copyright © 2025 TechStore. Todos los derechos reservados.
+              Copyright © 2025 WorldAssemblyTechnology. Todos los derechos
+              reservados.
             </p>
             <div className="flex gap-2">
               <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">

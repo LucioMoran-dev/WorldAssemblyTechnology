@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, ShoppingCart, User, X, Menu } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useCallback, memo } from "react";
 
@@ -32,69 +33,76 @@ const Header = memo(function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-16 items-center justify-between">
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto max-w-7xl px-1 sm:px-4">
+          <div className="flex h-24 items-center justify-between gap-2 md:gap-4">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-10 items-center justify-center rounded-xl bg-blue-600 px-6">
-                <span className="text-xl font-bold text-white">WAT</span>
+            <Link href="/" className="flex items-center gap-2 flex-shrink-0 -ml-1 sm:-ml-2 md:ml-0">
+              <div className="relative h-16 w-40 sm:h-16 sm:w-48 md:h-18 md:w-56 lg:h-18 lg:w-64 xl:w-72 overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <Image
+                  src="/WorldAsseblyTechnology.png"
+                  alt="World Assembly Technology"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 640px) 160px, (max-width: 768px) 192px, (max-width: 1024px) 224px, (max-width: 1280px) 256px, 288px"
+                />
               </div>
-              <span className="mr-8 hidden text-xl font-bold text-gray-900 md:inline">
+              <span className="hidden xl:inline text-lg xl:text-xl font-extrabold text-gray-900">
                 WorldAssemblyTech
               </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden items-center gap-6 lg:flex">
+            <nav className="hidden items-center gap-3 xl:gap-5 lg:flex flex-1 justify-end">
               <Link
-                href="/catalog/laptops"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/laptops"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
                 Laptops
               </Link>
               <Link
-                href="/catalog/desktop-pcs"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/desktop-pcs"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
-                PCs de Escritorio
+                PCs
               </Link>
               <Link
-                href="/catalog/networking"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/networking"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
-                Dispositivos de Red
+                Redes
               </Link>
               <Link
-                href="/catalog/printers"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/printers"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
-                Impresoras y Escáneres
+                Impresoras
               </Link>
               <Link
-                href="/catalog/pc-parts"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/pc-parts"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
-                Partes de PC
+                Componentes
               </Link>
               <Link
-                href="/catalog/products"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/products"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
-                Todos los demás productos
+                Más
               </Link>
               <Link
-                href="/catalog/repairs"
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                href="/products/catalog/repairs"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
               >
                 Reparaciones
               </Link>
               <Button
                 variant="default"
                 size="sm"
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-md hover:shadow-lg transition-all whitespace-nowrap text-sm px-5"
               >
-                Nuestras Ofertas
+                🔥 Ofertas
               </Button>
             </nav>
 
@@ -122,7 +130,7 @@ const Header = memo(function Header() {
                 onClick={toggleMiniCart}
               >
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs text-white">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
                   2
                 </span>
               </Button>
@@ -208,43 +216,43 @@ const Header = memo(function Header() {
           <div className="border-t border-gray-200 bg-white lg:hidden">
             <nav className="flex flex-col gap-2 p-4">
               <Link
-                href="/catalog/laptops"
+                href="/products/catalog/laptops"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Laptops
               </Link>
               <Link
-                href="/catalog/desktop-pcs"
+                href="/products/catalog/desktop-pcs"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 PCs de Escritorio
               </Link>
               <Link
-                href="/catalog/networking"
+                href="/products/catalog/networking"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Dispositivos de Red
               </Link>
               <Link
-                href="/catalog/printers"
+                href="/products/catalog/printers"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Impresoras y Escáneres
               </Link>
               <Link
-                href="/catalog/pc-parts"
+                href="/products/catalog/pc-parts"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Partes de PC
               </Link>
               <Link
-                href="/catalog/products"
+                href="/products/catalog/products"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Todos los demás productos
               </Link>
               <Link
-                href="/catalog/repairs"
+                href="/products/catalog/repairs"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Reparaciones
