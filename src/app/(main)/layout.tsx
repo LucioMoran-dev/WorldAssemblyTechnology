@@ -18,6 +18,7 @@ export default function MainLayout({
   // Configuración de nombres de rutas
   const routeNames: Record<string, string> = {
     "/products": "Productos",
+    "/products/catalog": "Catálogo",
     "/about": "Sobre Nosotros",
     "/contact": "Contacto",
     "/cart": "Carrito de Compras",
@@ -48,7 +49,7 @@ export default function MainLayout({
       currentPath += `/${segment}`;
 
       // Verificar si es una ruta de producto con ID
-      if (segments[index - 1] === "product" && !isNaN(Number(segment))) {
+      if (segments[index - 1] === "products" && !isNaN(Number(segment))) {
         breadcrumbs.push({
           name: "Detalle del Producto",
           href: currentPath,
