@@ -107,7 +107,7 @@ export function ProductCard({
       </div>
 
       {/* Product Image */}
-      <Link href={`/product/${id}`} className="block bg-gray-50">
+      <Link href={`/products/${id}`} className="block bg-gray-50">
         <div
           className={`relative aspect-square transition-all duration-300 ${isHovered ? "p-3" : "p-6"}`}
         >
@@ -156,7 +156,7 @@ export function ProductCard({
         </div>
 
         {/* Product Name */}
-        <Link href={`/product/${id}`}>
+        <Link href={`/products/${id}`}>
           <h3
             className={`line-clamp-2 text-sm leading-snug font-medium text-gray-900 transition-all hover:text-blue-600 ${isHovered ? "mb-2" : "mb-3"}`}
           >

@@ -2,9 +2,9 @@
 
 import { useState, useCallback } from "react";
 
-import { ProductCard } from "./product-card";
-
 import type { IProductCardProps } from "@/types";
+
+import { ProductCard } from "./product-card";
 
 interface ProductSectionWithTabsProps {
   tabs: string[];

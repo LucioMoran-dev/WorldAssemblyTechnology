@@ -3,12 +3,10 @@
 import { ChevronDown, Grid3x3, List, X, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, use } from "react";
 
-import { Button } from "@/components/ui/button";
-import Footer from "@/components/home/footer/footer";
-import Header from "@/components/home/header/header";
 import { ProductCard } from "@/components/home/product-card";
+import { Button } from "@/components/ui/button";
 import { features } from "@/seeds";
 
 const categoryConfig: Record<string, { title: string; breadcrumb: string }> = {
@@ -69,11 +67,11 @@ const mockProducts = Array.from({ length: 20 }, (_, i) => ({
 }));
 
 interface PageProps {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }
 
 export default function CatalogPage({ params }: PageProps) {
-  const category = params.category;
+  const { category } = use(params);
   const config = categoryConfig[category] || {
     title: "Productos",
     breadcrumb: "Productos",
@@ -117,8 +115,6 @@ export default function CatalogPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-
       {/* Banner */}
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4">
@@ -767,8 +763,6 @@ export default function CatalogPage({ params }: PageProps) {
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   );
 }
