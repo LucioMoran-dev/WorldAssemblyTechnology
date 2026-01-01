@@ -1,12 +1,3 @@
-import {
-  newProducts,
-  customBuilds,
-  customer,
-  laptopTabs,
-  desktopTabs,
-  features,
-} from "@/seeds";
-
 import { BrandShowcase } from "./brand-showcase";
 import { CustomerStats } from "./customer-stats";
 import { FeaturesGrid } from "./features-grid";
@@ -17,6 +8,13 @@ import { CategoryWithTabsSection } from "./sections/category-with-tabs-section";
 import { HeroSection } from "./sections/hero-section";
 import { NewProductsSection } from "./sections/new-products-section";
 import { Testimonial } from "./testimonial";
+import {
+  features,
+  testimonials,
+  laptopTabs,
+  desktopTabs,
+  customerStats,
+} from "@/seeds";
 
 export function Home() {
   return (
@@ -28,15 +26,15 @@ export function Home() {
         <HeroSection />
 
         {/* New Products Section */}
-        <NewProductsSection products={newProducts} />
+        <NewProductsSection />
 
         {/* Custom Builds Section */}
         <CategoryProductsSection
           categoryImage="/custom-pc-build-icon.jpg"
           categoryAlt="Custom Builds"
           categoryTitle="Custom Builds"
-          products={customBuilds}
           bgColor="white"
+          limit={10}
         />
 
         {/* MSI Laptops Section with Tabs */}
@@ -46,8 +44,8 @@ export function Home() {
           categoryTitle="MSI Laptops"
           tabs={laptopTabs}
           defaultTab="MSI GS Series"
-          products={newProducts}
           bgColor="gray"
+          limit={10}
         />
 
         {/* Desktops Section with Tabs */}
@@ -57,8 +55,8 @@ export function Home() {
           categoryTitle="Desktops"
           tabs={desktopTabs}
           defaultTab="MSI Infinite Series"
-          products={newProducts}
           bgColor="white"
+          limit={10}
         />
 
         {/* Gaming Monitors Section */}
@@ -66,22 +64,22 @@ export function Home() {
           categoryImage="/msi-logo-white.jpg"
           categoryAlt="Gaming Monitors"
           categoryTitle="Gaming Monitors"
-          products={newProducts}
           bgColor="gray"
+          limit={10}
         />
 
         {/* Brand Showcase */}
         <BrandShowcase />
 
         {/* Customer Stats */}
-        <CustomerStats stats={customer} />
+        <CustomerStats stats={customerStats} />
 
         {/* Testimonial */}
         <Testimonial
-          quote="Mi primera orden llegó hoy en perfectas condiciones. Desde que envié una pregunta sobre el producto hasta realizar la compra, el envío y ahora la entrega, TechStore se mantuvo en contacto. Un servicio excepcional. Espero comprar nuevamente y lo recomiendo ampliamente."
-          author="— Tama Brown"
+          quote={testimonials[0].quote}
+          author={testimonials[0].author}
           activeSlide={0}
-          totalSlides={3}
+          totalSlides={testimonials.length}
         />
 
         {/* Features Grid */}

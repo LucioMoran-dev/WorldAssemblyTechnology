@@ -4,9 +4,11 @@ import { Heart, BarChart3, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAddToCart } from "@/hooks";
 
 interface ProductCardProps {
   id: string;
@@ -35,8 +37,24 @@ export function ProductCard({
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const addToCart = useAddToCart();
 
   const imageArray = images || [image, image, image];
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!inStock) {
+      toast.error("Producto fuera de stock");
+      return;
+    }
+
+    addToCart.mutate({
+      productId: id,
+      quantity: 1,
+    });
+  };
 
   useEffect(() => {
     if (!isHovered) {
@@ -67,14 +85,12 @@ export function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Badge */}
       {badge && (
         <Badge className="gradient-accent absolute top-3 left-3 z-10 border-0 text-xs font-bold text-white">
           {badge}
         </Badge>
       )}
 
-      {/* Stock Status */}
       {inStock && (
         <div className="absolute top-3 right-3 z-10 flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
           <div className="h-1.5 w-1.5 rounded-full bg-green-600" />
@@ -82,7 +98,6 @@ export function ProductCard({
         </div>
       )}
 
-      {/* Hover Actions */}
       <div
         className={`absolute top-12 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${
           isHovered
@@ -112,7 +127,10 @@ export function ProductCard({
           className={`relative aspect-square transition-all duration-300 ${isHovered ? "p-3" : "p-6"}`}
         >
           <Image
-            src={imageArray[currentImageIndex] || "/placeholder.svg"}
+            src={
+              imageArray[currentImageIndex] ||
+              "modern-office-showroom-with-computers.jpg"
+            }
             alt={name}
             fill
             className="object-contain transition-opacity duration-500"
@@ -186,9 +204,11 @@ export function ProductCard({
                 : "pointer-events-none translate-y-2 opacity-0"
             }`}
             size="sm"
+            onClick={handleAddToCart}
+            disabled={!inStock || addToCart.isPending}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Agregar al Carrito
+            {addToCart.isPending ? "Agregando..." : "Agregar al Carrito"}
           </Button>
         </div>
       </div>

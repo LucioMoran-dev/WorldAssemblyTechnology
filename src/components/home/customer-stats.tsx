@@ -1,5 +1,7 @@
+import Image from "next/image";
+
 interface CustomerStat {
-  number: string;
+  value: string;
   label: string;
 }
 
@@ -9,19 +11,41 @@ interface CustomerStatsProps {
 
 export function CustomerStats({ stats }: CustomerStatsProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      <div className="grid gap-6 md:grid-cols-4">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className="rounded-lg border border-gray-200 bg-white p-6 text-center transition-transform hover:scale-105"
-          >
-            <div className="mb-2 text-3xl font-bold text-blue-600">
-              {stat.number}
+    <section className="border-b border-gray-200 bg-white py-12">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* Left side - Stats */}
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <p className="text-sm font-medium uppercase tracking-wide text-gray-600">
+                Desde 2021
+              </p>
+              <h2 className="text-4xl font-bold text-gray-900">
+                Brindando lo Mejor para los Clientes
+              </h2>
             </div>
-            <div className="text-sm text-gray-600">{stat.label}</div>
+            <div className="grid grid-cols-2 gap-6">
+              {stats.map((stat, index) => (
+                <div key={index} className="text-center">
+                  <div className="mb-2 text-4xl font-bold text-blue-600">
+                    {stat.value}
+                  </div>
+                  <p className="text-sm text-gray-600">{stat.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+
+          {/* Right side - Image */}
+          <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
+            <Image
+              src="/modern-office-showroom-with-computers.jpg"
+              alt="Servicio al Cliente"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

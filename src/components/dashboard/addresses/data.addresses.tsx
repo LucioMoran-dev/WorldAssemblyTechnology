@@ -1,12 +1,26 @@
+"use client";
+
 import { Edit, MapPin, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { addresses } from "@/seeds";
+import { useMyAddresses } from "@/hooks";
 
 function DataAddresses() {
+  const { data: addresses, isLoading } = useMyAddresses();
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="h-48 animate-pulse rounded-lg bg-gray-200" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <>
-      {addresses.length > 0 ? (
+      {addresses && addresses.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2">
           {addresses.map((address) => (
             <div

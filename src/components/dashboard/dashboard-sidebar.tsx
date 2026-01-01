@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { menuItems } from "@/seeds";
+import { dashboardMenuItems } from "@/seeds";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export function DashboardSidebar() {
   return (
     <aside className="overflow-hidden rounded-lg border border-gray-200 bg-white">
       <nav className="flex flex-col">
-        {menuItems.map((item, index) => {
+        {dashboardMenuItems.map((item, index) => {
           const isActive = pathname === item.href;
           return (
             <Link

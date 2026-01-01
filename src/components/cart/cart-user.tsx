@@ -1,13 +1,15 @@
 "use client";
 
+import { useCartQuery } from "@/hooks";
 import { useCart } from "@/hooks/use-cart";
-import { cartItems } from "@/seeds";
 
 import CartHeader from "./cart-header";
 import CartItemsList from "./cart-items-list";
 import { SummarySidebar } from "./summary-sidebar";
 
 function CartUser() {
+  const { data: cart, isLoading } = useCartQuery();
+
   const {
     quantities,
     updateQuantity,
@@ -21,14 +23,25 @@ function CartUser() {
     setShippingMethod,
   } = useCart();
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * (quantities[item.id] || 1),
-    0
-  );
+  const items = cart?.items || [];
+  const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
   const shipping = shippingMethod === "standard" ? 21.0 : 0.0;
-  const tax = 1.91;
-  const gst = 1.91;
+  const tax = subtotal * 0.05; // 5% tax
+  const gst = subtotal * 0.05; // 5% GST
   const total = subtotal + shipping + tax + gst;
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-gray-50">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 w-1/3 rounded bg-gray-200" />
+            <div className="h-64 rounded bg-gray-200" />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
@@ -37,7 +50,7 @@ function CartUser() {
 
         <div className="grid gap-8 lg:grid-cols-3">
           <CartItemsList
-            items={cartItems}
+            items={items}
             quantities={quantities}
             onUpdateQuantity={updateQuantity}
           />

@@ -52,18 +52,13 @@ const Footer = memo(function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-white">
-                  Política de Privacidad
+                <Link href="/privacy-term" className="hover:text-white">
+                  Política de Privacidad Y Términos
                 </Link>
               </li>
               <li>
                 <Link href="/search" className="hover:text-white">
                   Buscar
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="hover:text-white">
-                  Términos
                 </Link>
               </li>
               <li>
