@@ -1,3 +1,11 @@
+import {
+  features,
+  testimonials,
+  laptopTabs,
+  desktopTabs,
+  customerStats,
+} from "@/seeds";
+
 import { BrandShowcase } from "./brand-showcase";
 import { CustomerStats } from "./customer-stats";
 import { FeaturesGrid } from "./features-grid";
@@ -8,13 +16,6 @@ import { CategoryWithTabsSection } from "./sections/category-with-tabs-section";
 import { HeroSection } from "./sections/hero-section";
 import { NewProductsSection } from "./sections/new-products-section";
 import { Testimonial } from "./testimonial";
-import {
-  features,
-  testimonials,
-  laptopTabs,
-  desktopTabs,
-  customerStats,
-} from "@/seeds";
 
 export function Home() {
   return (

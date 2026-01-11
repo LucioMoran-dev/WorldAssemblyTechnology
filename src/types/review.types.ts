@@ -2,19 +2,25 @@
  * Tipos relacionados con reviews y calificaciones
  */
 
-export type Rating = 1 | 2 | 3 | 4 | 5;
+// Rating Enum
+export enum Rating {
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5,
+}
 
+// Review
 export interface Review {
   id: string;
   rating: Rating;
   message: string;
-  isVisible: boolean;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: string;
+  updatedAt: string;
   user: {
     id: string;
     name: string;
-    email: string;
   };
   product: {
     id: string;
@@ -22,12 +28,19 @@ export interface Review {
   };
 }
 
+// DTOs
 export interface CreateReviewDto {
   productId: string;
   rating: Rating;
   message: string;
 }
 
+export interface UpdateReviewDto {
+  rating?: Rating;
+  message?: string;
+}
+
+// Legacy compatibility
 export interface ReviewResponse {
   id: string;
   rating: number;

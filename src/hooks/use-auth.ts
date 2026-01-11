@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { User } from '@/types';
+import { authLogger } from '@/utils/logger';
 
 /**
  * Store de autenticación con Zustand
@@ -30,7 +31,7 @@ export const useAuth = create<AuthStore>((set) => ({
    * Login: Guarda token y user en localStorage y actualiza el estado
    */
   login: (token, user) => {
-    localStorage.setItem('accessToken', token);
+    localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
     set({ token, user, isAuthenticated: true, isLoading: false });
   },
@@ -39,7 +40,7 @@ export const useAuth = create<AuthStore>((set) => ({
    * Logout: Limpia localStorage y resetea el estado
    */
   logout: () => {
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
     set({ token: null, user: null, isAuthenticated: false, isLoading: false });
   },
@@ -57,7 +58,7 @@ export const useAuth = create<AuthStore>((set) => ({
    */
   initialize: () => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem('token');
       const userStr = localStorage.getItem('user');
 
       if (token && userStr) {
@@ -67,7 +68,7 @@ export const useAuth = create<AuthStore>((set) => ({
         set({ isLoading: false });
       }
     } catch (error) {
-      console.error('Error initializing auth:', error);
+      authLogger.error('Error initializing auth', error);
       set({ isLoading: false });
     }
   },

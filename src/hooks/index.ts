@@ -5,7 +5,6 @@
 // Auth & User
 export * from './use-auth';
 export * from './use-user';
-export * from './use-addresses';
 
 // Products
 export * from './use-products';

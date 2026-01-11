@@ -1,10 +1,15 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { orderService } from '@/services';
-import { OrderListParams, UpdateOrderStatusDto, ConfirmPaymentDto } from '@/types';
-import { toast } from 'sonner';
-import { AxiosError } from 'axios';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { toast } from "sonner";
+
+import { orderService } from "@/services";
+import type {
+  OrderListParams,
+  UpdateOrderStatusDto,
+  ConfirmPaymentDto,
+} from "@/types";
 
 /**
  * Type guard para verificar si un error es de Axios
@@ -22,7 +27,7 @@ function isAxiosError(error: unknown): error is AxiosError {
  */
 export function useMyOrders() {
   return useQuery({
-    queryKey: ['orders', 'my-orders'],
+    queryKey: ["orders", "my-orders"],
     queryFn: () => orderService.getMyOrders(),
     staleTime: 1 * 60 * 1000, // 1 minuto
   });
@@ -33,7 +38,7 @@ export function useMyOrders() {
  */
 export function useOrder(id: string) {
   return useQuery({
-    queryKey: ['orders', id],
+    queryKey: ["orders", id],
     queryFn: () => orderService.getById(id),
     enabled: !!id,
   });
@@ -44,7 +49,7 @@ export function useOrder(id: string) {
  */
 export function useAllOrders(params?: OrderListParams) {
   return useQuery({
-    queryKey: ['orders', 'all', params],
+    queryKey: ["orders", "all", params],
     queryFn: () => orderService.getAllOrders(params),
     staleTime: 30 * 1000, // 30 segundos
   });
@@ -55,7 +60,7 @@ export function useAllOrders(params?: OrderListParams) {
  */
 export function useOrderStats() {
   return useQuery({
-    queryKey: ['orders', 'stats'],
+    queryKey: ["orders", "stats"],
     queryFn: () => orderService.getStats(),
     staleTime: 2 * 60 * 1000, // 2 minutos
   });
@@ -71,14 +76,14 @@ export function useUpdateOrderStatus() {
     mutationFn: ({ id, data }: { id: string; data: UpdateOrderStatusDto }) =>
       orderService.updateStatus(id, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      queryClient.invalidateQueries({ queryKey: ['orders', variables.id] });
-      toast.success('Estado de orden actualizado');
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["orders", variables.id] });
+      toast.success("Estado de orden actualizado");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al actualizar orden'
-        : 'Error al actualizar orden';
+        ? (error.response?.data as { message?: string })?.message || "Error al actualizar orden"
+        : "Error al actualizar orden";
       toast.error(message);
     },
   });
@@ -94,14 +99,14 @@ export function useConfirmPayment() {
     mutationFn: ({ id, data }: { id: string; data: ConfirmPaymentDto }) =>
       orderService.confirmPayment(id, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      queryClient.invalidateQueries({ queryKey: ['orders', variables.id] });
-      toast.success('Pago confirmado exitosamente');
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["orders", variables.id] });
+      toast.success("Pago confirmado exitosamente");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al confirmar pago'
-        : 'Error al confirmar pago';
+        ? (error.response?.data as { message?: string })?.message || "Error al confirmar pago"
+        : "Error al confirmar pago";
       toast.error(message);
     },
   });
@@ -117,13 +122,13 @@ export function useCancelOrder() {
     mutationFn: ({ orderId, userId }: { orderId: string; userId: string }) =>
       orderService.cancelOrder(orderId, userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success('Orden cancelada exitosamente');
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      toast.success("Orden cancelada exitosamente");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al cancelar orden'
-        : 'Error al cancelar orden';
+        ? (error.response?.data as { message?: string })?.message || "Error al cancelar orden"
+        : "Error al cancelar orden";
       toast.error(message);
     },
   });

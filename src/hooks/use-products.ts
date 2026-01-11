@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { productService } from '@/services';
-import { ProductFilters, CreateProductDto, UpdateProductDto } from '@/types';
-import { AxiosError } from 'axios';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { toast } from "sonner";
+
+import { productService } from "@/services";
+import type {
+  ProductFilters,
+  CreateProductDto,
+  UpdateProductDto,
+} from "@/types";
 
 /**
  * React Query hooks para productos
@@ -17,12 +23,28 @@ function isAxiosError(error: unknown): error is AxiosError {
 }
 
 /**
+ * Hook para listar todos los productos sin filtros ni paginación
+ * PÚBLICO - No requiere autenticación
+ */
+export function useAllProducts() {
+  return useQuery({
+    queryKey: ["products", "all"],
+    queryFn: () => productService.getProductsAll(),
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    retry: (failureCount, error: unknown) => {
+      if (isAxiosError(error) && error.response?.status === 401) return false;
+      return failureCount < 2;
+    },
+  });
+}
+
+/**
  * Hook para listar productos con filtros y paginación
  * PÚBLICO - No requiere autenticación
  */
 export function useProducts(filters?: ProductFilters) {
   return useQuery({
-    queryKey: ['products', filters],
+    queryKey: ["products", filters],
     queryFn: () => productService.getProducts(filters),
     staleTime: 2 * 60 * 1000, // 2 minutos
     retry: (failureCount, error: unknown) => {
@@ -39,7 +61,7 @@ export function useProducts(filters?: ProductFilters) {
  */
 export function useFeaturedProducts(limit = 10) {
   return useQuery({
-    queryKey: ['products', 'featured', limit],
+    queryKey: ["products", "featured", limit],
     queryFn: () => productService.getFeatured(limit),
     staleTime: 5 * 60 * 1000, // 5 minutos
     retry: (failureCount, error: unknown) => {
@@ -54,7 +76,7 @@ export function useFeaturedProducts(limit = 10) {
  */
 export function useProductsByBrand(brand: string) {
   return useQuery({
-    queryKey: ['products', 'brand', brand],
+    queryKey: ["products", "brand", brand],
     queryFn: () => productService.getByBrand(brand),
     enabled: !!brand,
     staleTime: 3 * 60 * 1000, // 3 minutos
@@ -66,7 +88,7 @@ export function useProductsByBrand(brand: string) {
  */
 export function useProduct(id: string) {
   return useQuery({
-    queryKey: ['products', id],
+    queryKey: ["products", id],
     queryFn: () => productService.getById(id),
     enabled: !!id,
     staleTime: 1 * 60 * 1000, // 1 minuto
@@ -78,7 +100,7 @@ export function useProduct(id: string) {
  */
 export function useProductPrice(productId: string, variantIds?: string[]) {
   return useQuery({
-    queryKey: ['products', productId, 'price', variantIds],
+    queryKey: ["products", productId, "price", variantIds],
     queryFn: () => productService.calculatePrice(productId, variantIds),
     enabled: !!productId,
   });
@@ -89,7 +111,7 @@ export function useProductPrice(productId: string, variantIds?: string[]) {
  */
 export function useProductStock(productId: string, variantIds?: string[]) {
   return useQuery({
-    queryKey: ['products', productId, 'stock', variantIds],
+    queryKey: ["products", productId, "stock", variantIds],
     queryFn: () => productService.getStock(productId, variantIds),
     enabled: !!productId,
   });
@@ -104,7 +126,7 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: (data: CreateProductDto) => productService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 }
@@ -119,8 +141,8 @@ export function useUpdateProduct() {
     mutationFn: ({ id, data }: { id: string; data: UpdateProductDto }) =>
       productService.update(id, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      queryClient.invalidateQueries({ queryKey: ['products', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["products", variables.id] });
     },
   });
 }
@@ -134,7 +156,30 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: (id: string) => productService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+}
+
+export function useSeedProducts() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => productService.seedProducts(),
+    onSuccess: (data) => {
+      // 1. Invalidar la caché de productos para que se refresque la lista
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+
+      // 2. Mensaje de éxito correcto
+      toast.success(data.message || "Productos precargados exitosamente");
+    },
+    onError: (error: unknown) => {
+      // 3. Manejo de errores con mensajes de Productos
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al precargar productos"
+        : "Error al precargar productos";
+      toast.error(message);
     },
   });
 }

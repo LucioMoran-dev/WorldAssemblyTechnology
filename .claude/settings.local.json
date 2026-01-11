@@ -8,7 +8,16 @@
       "Bash(echo:*)",
       "Bash(cat:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(grep:*)",
+      "Bash(done)",
+      "Bash(wc:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 10 tail:*)",
+      "Bash(exit:*)",
+      "Bash(taskkill:*)",
+      "Bash(if exist .env type .env)"
     ],
     "deny": [],
     "ask": []

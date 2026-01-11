@@ -22,7 +22,12 @@ import { ProductCard } from "@/components/home/product-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useProduct, useProducts, useAddToCart, useProductReviews } from "@/hooks";
+import {
+  useProduct,
+  useProducts,
+  useAddToCart,
+  useProductReviews,
+} from "@/hooks";
 import { mapProductToCardProps, mapProductToDetailView } from "@/lib/mappers";
 
 export default function ProductDetailPage() {
@@ -459,6 +464,7 @@ export default function ProductDetailPage() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {relatedProductsData?.items.map((relatedProduct) => (
               <ProductCard
+                basePrice={0}
                 key={relatedProduct.id}
                 {...mapProductToCardProps(relatedProduct)}
               />

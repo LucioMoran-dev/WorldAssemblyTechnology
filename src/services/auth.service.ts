@@ -1,69 +1,92 @@
-import { apiClient } from '@/lib/api';
-import {
-  AuthResponse,
-  User,
-  SignupDto,
-  SigninDto,
-  ForgotPasswordDto,
-  ResetPasswordDto,
-} from '@/types';
+import { apiClient, API_BASE_URL } from "@/lib/api";
+import type { AuthResponse, SignupDto, LoginDto, User } from "@/types";
 
 /**
  * Servicio de autenticación
- * Endpoints del módulo /auth
+ * Endpoints del módulo /auth según guía de integración
  */
 export const authService = {
   /**
-   * POST /auth/signup - Registro de usuario nuevo
-   * Público | Rate Limit: 3/min
+   * POST /auth/signup - Registro de usuario
+   * Público - No requiere autenticación
    */
-  signup: async (data: SignupDto): Promise<User> => {
-    const response = await apiClient.post<User>('/auth/signup', data);
+  async signup(data: SignupDto): Promise<AuthResponse> {
+    const response = await apiClient.post<AuthResponse>("/auth/signup", data);
     return response.data;
   },
 
   /**
-   * POST /auth/signin/user - Login de usuario
-   * Público | Rate Limit: 5/min
+   * POST /auth/signin/user - Login
+   * Público - No requiere autenticación
    */
-  signin: async (credentials: SigninDto): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/signin/user', credentials);
+  async login(data: LoginDto): Promise<AuthResponse> {
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/signin/user",
+      data
+    );
     return response.data;
   },
 
   /**
-   * GET /auth/google - Iniciar autenticación con Google
-   * Público | Sin Rate Limit
-   * Redirige automáticamente a Google OAuth
+   * GET /auth/google - Iniciar OAuth con Google
+   * Público - Redirige a Google OAuth
    */
-  googleLogin: (): void => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  initiateGoogleLogin(): void {
     window.location.href = `${API_BASE_URL}/auth/google`;
   },
 
   /**
-   * POST /users/forgot-password - Solicitar reset de contraseña
-   * Público | Rate Limit: 60/min
+   * Guardar token en localStorage
    */
-  forgotPassword: async (data: ForgotPasswordDto): Promise<{ message: string }> => {
-    const response = await apiClient.post<{ message: string }>('/users/forgot-password', data);
-    return response.data;
+  saveToken(token: string): void {
+    localStorage.setItem("token", token);
+    // Mantener compatibilidad con código existente
+    localStorage.setItem("accessToken", token);
   },
 
   /**
-   * POST /users/reset-password - Resetear contraseña con token
-   * Público | Rate Limit: 60/min
+   * Obtener token desde localStorage
    */
-  resetPassword: async (data: ResetPasswordDto): Promise<{ message: string }> => {
-    const response = await apiClient.post<{ message: string }>('/users/reset-password', data);
-    return response.data;
+  getToken(): string | null {
+    return localStorage.getItem("token") || localStorage.getItem("accessToken");
   },
 
   /**
-   * Logout local (limpia token y user del localStorage)
+   * Logout - Limpiar token y usuario
    */
-  logout: (): void => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
+  logout(): void {
+    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+  },
+
+  /**
+   * Verificar si está autenticado
+   */
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  },
+
+  /**
+   * Guardar información del usuario en localStorage
+   */
+  saveUser(user: User): void {
+    localStorage.setItem("user", JSON.stringify(user));
+  },
+
+  /**
+   * Obtener información del usuario desde localStorage
+   */
+  getUser(): User | null {
+    const userStr = localStorage.getItem("user");
+    if (!userStr) return null;
+    try {
+      return JSON.parse(userStr);
+    } catch {
+      return null;
+    }
   },
 };
+
+// Exports adicionales para compatibilidad
+export default authService;

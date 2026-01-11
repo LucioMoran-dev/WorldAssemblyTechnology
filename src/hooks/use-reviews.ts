@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { reviewService } from '@/services';
-import { CreateReviewDto } from '@/types';
-import { toast } from 'sonner';
-import { AxiosError } from 'axios';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { toast } from "sonner";
+
+import { reviewService } from "@/services";
+import type { CreateReviewDto } from "@/types";
 
 /**
  * Type guard para verificar si un error es de Axios
@@ -22,7 +23,7 @@ function isAxiosError(error: unknown): error is AxiosError {
  */
 export function useReview(id: string) {
   return useQuery({
-    queryKey: ['reviews', id],
+    queryKey: ["reviews", id],
     queryFn: () => reviewService.getById(id),
     enabled: !!id,
   });
@@ -33,7 +34,7 @@ export function useReview(id: string) {
  */
 export function useProductReviews(productId: string) {
   return useQuery({
-    queryKey: ['reviews', 'product', productId],
+    queryKey: ["reviews", "product", productId],
     queryFn: () => reviewService.getByProduct(productId),
     enabled: !!productId,
     staleTime: 2 * 60 * 1000, // 2 minutos
@@ -45,7 +46,7 @@ export function useProductReviews(productId: string) {
  */
 export function useAllReviews() {
   return useQuery({
-    queryKey: ['reviews'],
+    queryKey: ["reviews"],
     queryFn: () => reviewService.getAll(),
     staleTime: 1 * 60 * 1000, // 1 minuto
   });
@@ -60,14 +61,17 @@ export function useCreateReview() {
   return useMutation({
     mutationFn: (data: CreateReviewDto) => reviewService.create(data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['reviews'] });
-      queryClient.invalidateQueries({ queryKey: ['reviews', 'product', variables.productId] });
-      toast.success('Review creada exitosamente');
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", "product", variables.productId],
+      });
+      toast.success("Review creada exitosamente");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al crear review'
-        : 'Error al crear review';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al crear review"
+        : "Error al crear review";
       toast.error(message);
     },
   });
@@ -82,13 +86,14 @@ export function useDeleteReview() {
   return useMutation({
     mutationFn: (id: string) => reviewService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reviews'] });
-      toast.success('Review eliminada exitosamente');
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      toast.success("Review eliminada exitosamente");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al eliminar review'
-        : 'Error al eliminar review';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al eliminar review"
+        : "Error al eliminar review";
       toast.error(message);
     },
   });

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
-import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useState, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useFeaturedProducts } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
+
 import { ProductCard } from "../product-card";
 
 export function FeaturedProductsSection() {
@@ -93,7 +94,7 @@ export function FeaturedProductsSection() {
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg transition-all hover:bg-gray-100"
+              className="absolute top-1/2 left-0 z-10 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg transition-all hover:bg-gray-100"
               aria-label="Scroll left"
             >
               <ChevronLeft className="h-6 w-6 text-gray-800" />
@@ -104,7 +105,7 @@ export function FeaturedProductsSection() {
           <div
             ref={scrollContainerRef}
             onScroll={checkScroll}
-            className="flex gap-4 overflow-x-auto scroll-smooth py-8 scrollbar-hide"
+            className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth py-8"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",
@@ -121,7 +122,7 @@ export function FeaturedProductsSection() {
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg transition-all hover:bg-gray-100"
+              className="absolute top-1/2 right-0 z-10 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg transition-all hover:bg-gray-100"
               aria-label="Scroll right"
             >
               <ChevronRight className="h-6 w-6 text-gray-800" />

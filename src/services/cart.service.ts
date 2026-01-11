@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/api';
-import {
+import { apiClient } from "@/lib/api";
+import type {
   Cart,
   CartSummary,
   AddToCartDto,
@@ -9,7 +9,7 @@ import {
   SelectedAddressResponse,
   CheckoutDto,
   Order,
-} from '@/types';
+} from "@/types";
 
 /**
  * Servicio de carrito
@@ -21,7 +21,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   getCart: async (): Promise<Cart> => {
-    const response = await apiClient.get<Cart>('/cart/id');
+    const response = await apiClient.get<Cart>("/cart/id");
     return response.data;
   },
 
@@ -30,7 +30,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   getSummary: async (): Promise<CartSummary> => {
-    const response = await apiClient.get<CartSummary>('/cart/summary');
+    const response = await apiClient.get<CartSummary>("/cart/summary");
     return response.data;
   },
 
@@ -39,7 +39,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   addItem: async (data: AddToCartDto): Promise<Cart> => {
-    const response = await apiClient.post<Cart>('/cart/add', data);
+    const response = await apiClient.post<Cart>("/cart/add", data);
     return response.data;
   },
 
@@ -47,8 +47,14 @@ export const cartService = {
    * PUT /cart/items/:cartItemId - Actualizar cantidad de item
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  updateItemQuantity: async (cartItemId: string, data: UpdateCartItemDto): Promise<Cart> => {
-    const response = await apiClient.put<Cart>(`/cart/items/${cartItemId}`, data);
+  updateItemQuantity: async (
+    cartItemId: string,
+    data: UpdateCartItemDto
+  ): Promise<Cart> => {
+    const response = await apiClient.put<Cart>(
+      `/cart/items/${cartItemId}`,
+      data
+    );
     return response.data;
   },
 
@@ -56,9 +62,11 @@ export const cartService = {
    * DELETE /cart/items/:cartItemId - Eliminar item del carrito
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  removeItem: async (cartItemId: string): Promise<{ message: string; cart: Cart }> => {
+  removeItem: async (
+    cartItemId: string
+  ): Promise<{ message: string; cart: Cart }> => {
     const response = await apiClient.delete<{ message: string; cart: Cart }>(
-      `/cart/items/${cartItemId}`,
+      `/cart/items/${cartItemId}`
     );
     return response.data;
   },
@@ -68,7 +76,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   clearCart: async (): Promise<{ message: string }> => {
-    const response = await apiClient.delete<{ message: string }>('/cart/clear');
+    const response = await apiClient.delete<{ message: string }>("/cart/clear");
     return response.data;
   },
 
@@ -77,7 +85,9 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   validateStock: async (): Promise<StockValidationResponse> => {
-    const response = await apiClient.post<StockValidationResponse>('/cart/validate-stock');
+    const response = await apiClient.post<StockValidationResponse>(
+      "/cart/validate-stock"
+    );
     return response.data;
   },
 
@@ -85,8 +95,13 @@ export const cartService = {
    * POST /cart/select-address - Seleccionar dirección guardada para checkout
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  selectAddress: async (data: SelectAddressDto): Promise<{ message: string }> => {
-    const response = await apiClient.post<{ message: string }>('/cart/select-address', data);
+  selectAddress: async (
+    data: SelectAddressDto
+  ): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>(
+      "/cart/select-address",
+      data
+    );
     return response.data;
   },
 
@@ -95,7 +110,9 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   getSelectedAddress: async (): Promise<SelectedAddressResponse> => {
-    const response = await apiClient.get<SelectedAddressResponse>('/cart/selected-address');
+    const response = await apiClient.get<SelectedAddressResponse>(
+      "/cart/selected-address"
+    );
     return response.data;
   },
 
@@ -104,7 +121,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   checkout: async (data: CheckoutDto): Promise<Order> => {
-    const response = await apiClient.post<Order>('/cart/checkout', data);
+    const response = await apiClient.post<Order>("/cart/checkout", data);
     return response.data;
   },
 };

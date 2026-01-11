@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { Cart } from '@/types';
+import { create } from "zustand";
+
+import type { Cart } from "@/types";
 
 /**
  * Store del carrito de compras con Zustand

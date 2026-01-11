@@ -1,13 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { AxiosError } from "axios";
 
 import CollectionSection from "@/components/auth/singin/collection-section";
 import NewCostumer from "@/components/auth/singin/new-costumer";
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks";
 import { authService } from "@/services";
+import { authLogger } from "@/utils/logger";
 
 const loginSchema = z.object({
   email: z.string().email("Por favor ingresa una dirección de email válida"),
@@ -41,9 +42,18 @@ function FormSignin() {
     setIsLoading(true);
 
     try {
-      const { accessToken, user } = await authService.signin({
+      const response = await authService.login({
         email: data.email,
         password: data.password,
+      });
+
+      // ✅ El backend devuelve 'accessToken', no 'token'
+      const { accessToken, user } = response;
+
+      authLogger.info('Login successful', {
+        hasToken: !!accessToken,
+        user: user.name,
+        role: user.role
       });
 
       login(accessToken, user);
@@ -61,7 +71,7 @@ function FormSignin() {
   };
 
   const handleGoogleLogin = () => {
-    authService.googleLogin();
+    authService.initiateGoogleLogin();
   };
 
   return (
@@ -146,7 +156,7 @@ function FormSignin() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-muted-foreground">
+                    <span className="text-muted-foreground bg-white px-2">
                       O continuar con
                     </span>
                   </div>
@@ -172,7 +182,7 @@ function FormSignin() {
                     <path
                       fill="currentColor"
                       d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                    ></path>
+                    />
                   </svg>
                   Google
                 </Button>

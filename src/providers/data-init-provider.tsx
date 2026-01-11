@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { initializeAppData } from "@/lib/init-data";
+import { logger } from "@/utils/logger";
 
 /**
  * Provider que inicializa los datos de la aplicación
@@ -18,7 +19,7 @@ export function DataInitProvider({ children }: { children: React.ReactNode }) {
           setIsInitialized(true);
         })
         .catch((error) => {
-          console.error("Error initializing app data:", error);
+          logger.error("Error initializing app data", error);
           // Marcamos como inicializado de todos modos para no bloquear la app
           setIsInitialized(true);
         });

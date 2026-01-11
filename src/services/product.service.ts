@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/api';
-import {
+import { apiClient } from "@/lib/api";
+import type {
   Product,
   PaginatedResponse,
   ProductFilters,
@@ -8,9 +8,7 @@ import {
   CreateVariantDto,
   UpdateVariantDto,
   ProductVariant,
-  PriceCalculation,
-  StockInfo,
-} from '@/types';
+} from "@/types";
 
 /**
  * Servicio de productos
@@ -18,13 +16,33 @@ import {
  */
 export const productService = {
   /**
+   * GET /products - Todos los productos sin filtros ni paginación
+   * Público | Rate Limit: 60/min
+   * ⚠️ Backend requiere page + limit para paginar
+   */
+  getProductsAll: async (): Promise<PaginatedResponse<Product>> => {
+    const response = await apiClient.get<PaginatedResponse<Product>>(
+      "/products",
+      {
+        params: { page: 1, limit: 100 }, // page es obligatorio, limit alto para traer todos
+      }
+    );
+    return response.data;
+  },
+
+  /**
    * GET /products - Listar productos con filtros y paginación
    * Público | Rate Limit: 60/min
    */
-  getProducts: async (filters?: ProductFilters): Promise<PaginatedResponse<Product>> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>('/products', {
-      params: filters,
-    });
+  getProducts: async (
+    filters?: ProductFilters
+  ): Promise<PaginatedResponse<Product>> => {
+    const response = await apiClient.get<PaginatedResponse<Product>>(
+      "/products",
+      {
+        params: filters,
+      }
+    );
     return response.data;
   },
 
@@ -33,7 +51,7 @@ export const productService = {
    * Público | Rate Limit: 60/min
    */
   getFeatured: async (limit = 10): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>('/products/featured', {
+    const response = await apiClient.get<Product[]>("/products/featured", {
       params: { limit },
     });
     return response.data;
@@ -61,10 +79,16 @@ export const productService = {
    * GET /products/category/:categoryId - Productos por categoría
    * Público | Rate Limit: 60/min
    */
-  getByCategory: async (categoryId: string, filters?: ProductFilters): Promise<PaginatedResponse<Product>> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>(`/products/category/${categoryId}`, {
-      params: filters,
-    });
+  getByCategory: async (
+    categoryId: string,
+    filters?: ProductFilters
+  ): Promise<PaginatedResponse<Product>> => {
+    const response = await apiClient.get<PaginatedResponse<Product>>(
+      `/products/category/${categoryId}`,
+      {
+        params: filters,
+      }
+    );
     return response.data;
   },
 
@@ -73,7 +97,7 @@ export const productService = {
    * Público | Rate Limit: 60/min
    */
   search: async (query: string): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>('/products/search', {
+    const response = await apiClient.get<Product[]>("/products/search", {
       params: { q: query },
     });
     return response.data;
@@ -94,11 +118,19 @@ export const productService = {
    * GET /products/:id/price?variants=uuid1,uuid2 - Calcular precio final
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  calculatePrice: async (productId: string, variantIds?: string[]): Promise<PriceCalculation> => {
-    const params = variantIds?.length ? { variants: variantIds.join(',') } : undefined;
-    const response = await apiClient.get<PriceCalculation>(`/products/${productId}/price`, {
-      params,
-    });
+  calculatePrice: async (
+    productId: string,
+    variantIds?: string[]
+  ): Promise<PriceCalculation> => {
+    const params = variantIds?.length
+      ? { variants: variantIds.join(",") }
+      : undefined;
+    const response = await apiClient.get<PriceCalculation>(
+      `/products/${productId}/price`,
+      {
+        params,
+      }
+    );
     return response.data;
   },
 
@@ -106,9 +138,17 @@ export const productService = {
    * GET /products/:id/stock?variants=uuid1,uuid2 - Obtener stock disponible
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  getStock: async (productId: string, variantIds?: string[]): Promise<StockInfo> => {
-    const params = variantIds?.length ? { variants: variantIds.join(',') } : undefined;
-    const response = await apiClient.get<StockInfo>(`/products/${productId}/stock`, { params });
+  getStock: async (
+    productId: string,
+    variantIds?: string[]
+  ): Promise<StockInfo> => {
+    const params = variantIds?.length
+      ? { variants: variantIds.join(",") }
+      : undefined;
+    const response = await apiClient.get<StockInfo>(
+      `/products/${productId}/stock`,
+      { params }
+    );
     return response.data;
   },
 
@@ -117,7 +157,7 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   create: async (data: CreateProductDto): Promise<Product> => {
-    const response = await apiClient.post<Product>('/products', data);
+    const response = await apiClient.post<Product>("/products", data);
     return response.data;
   },
 
@@ -135,7 +175,9 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   delete: async (id: string): Promise<{ id: string; message: string }> => {
-    const response = await apiClient.delete<{ id: string; message: string }>(`/products/${id}`);
+    const response = await apiClient.delete<{ id: string; message: string }>(
+      `/products/${id}`
+    );
     return response.data;
   },
 
@@ -143,8 +185,14 @@ export const productService = {
    * POST /products/:id/variants - Agregar variante a producto
    * Requiere: ADMIN | Rate Limit: 60/min
    */
-  addVariant: async (productId: string, data: CreateVariantDto): Promise<ProductVariant> => {
-    const response = await apiClient.post<ProductVariant>(`/products/${productId}/variants`, data);
+  addVariant: async (
+    productId: string,
+    data: CreateVariantDto
+  ): Promise<ProductVariant> => {
+    const response = await apiClient.post<ProductVariant>(
+      `/products/${productId}/variants`,
+      data
+    );
     return response.data;
   },
 
@@ -152,8 +200,14 @@ export const productService = {
    * PUT /products/variants/:variantId - Actualizar variante
    * Requiere: ADMIN | Rate Limit: 60/min
    */
-  updateVariant: async (variantId: string, data: UpdateVariantDto): Promise<ProductVariant> => {
-    const response = await apiClient.put<ProductVariant>(`/products/variants/${variantId}`, data);
+  updateVariant: async (
+    variantId: string,
+    data: UpdateVariantDto
+  ): Promise<ProductVariant> => {
+    const response = await apiClient.put<ProductVariant>(
+      `/products/variants/${variantId}`,
+      data
+    );
     return response.data;
   },
 
@@ -163,7 +217,7 @@ export const productService = {
    */
   deleteVariant: async (variantId: string): Promise<{ message: string }> => {
     const response = await apiClient.delete<{ message: string }>(
-      `/products/variants/${variantId}`,
+      `/products/variants/${variantId}`
     );
     return response.data;
   },
@@ -173,7 +227,9 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   seedProducts: async (): Promise<{ message: string; total: number }> => {
-    const response = await apiClient.post<{ message: string; total: number }>('/products/seeder');
+    const response = await apiClient.post<{ message: string; total: number }>(
+      "/products/seeder"
+    );
     return response.data;
   },
 };

@@ -3,22 +3,23 @@
  * Mantiene compatibilidad con componentes existentes
  */
 
-import { Product, CartItem, Order, Review } from '@/types';
+import type { Product, CartItem, Review } from "@/types";
 
 /**
- * Convierte Product del backend a IProductCardProps del frontend
+ * Convierte Product del backend a ProductCardProps del frontend
  */
 export function mapProductToCardProps(product: Product) {
   return {
     id: product.id,
     name: product.name,
-    price: product.basePrice,
+    basePrice: product.basePrice, // ✅ Propiedad correcta según ProductCardProps
     originalPrice: undefined, // Calcular si hay descuento
     rating: 0, // TODO: Implementar promedio de reviews
     reviews: 0, // TODO: Contar reviews
     image: product.imgUrls[0],
     images: product.imgUrls,
-    badge: product.featured ? 'Destacado' : undefined,
+    imgUrls: product.imgUrls, // ✅ Agregado para compatibilidad
+    badge: product.featured ? "Destacado" : undefined,
     inStock: product.baseStock > 0,
   };
 }
@@ -67,7 +68,7 @@ export function mapProductToDetailView(product: Product, reviews?: Review[]) {
   // Extraer características del objeto specifications
   const features = product.specifications
     ? Object.entries(product.specifications)
-        .filter(([key]) => key !== 'ports')
+        .filter(([key]) => key !== "ports")
         .map(([key, value]) => `${key}: ${value}`)
     : [];
 
@@ -88,9 +89,9 @@ export function mapProductToDetailView(product: Product, reviews?: Review[]) {
     reviews: reviewCount,
     inStock: product.baseStock > 0,
     sku: product.model || product.id.slice(0, 8).toUpperCase(),
-    badge: product.featured ? 'DESTACADO' : undefined,
+    badge: product.featured ? "DESTACADO" : undefined,
     features,
-    category: product.category.categoryName,
+    category: product.category?.name || "Sin categoría",
     variants: product.variants,
     hasVariants: product.hasVariants,
   };

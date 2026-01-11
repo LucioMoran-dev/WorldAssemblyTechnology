@@ -3,7 +3,8 @@
  * Este archivo contiene funciones para precargar categorías y otros datos iniciales
  */
 
-import { categoryService } from '@/services';
+import { categoryService } from "@/services";
+import { categoryLogger, logger } from "@/utils/logger";
 
 /**
  * Verifica si las categorías ya están cargadas en la BD
@@ -11,9 +12,9 @@ import { categoryService } from '@/services';
 export async function checkCategoriesExist(): Promise<boolean> {
   try {
     const categories = await categoryService.getAll();
-    return categories.length > 0;
+    return (categories.items?.length ?? 0) > 0;
   } catch (error) {
-    console.error('Error checking categories:', error);
+    categoryLogger.error("Error checking categories", error);
     return false;
   }
 }
@@ -27,14 +28,14 @@ export async function seedCategoriesIfNeeded(): Promise<void> {
     const exist = await checkCategoriesExist();
 
     if (!exist) {
-      console.log('No categories found, seeding initial categories...');
+      categoryLogger.info("No categories found, seeding initial categories...");
       await categoryService.seedCategories();
-      console.log('✅ Categories seeded successfully');
+      categoryLogger.info("Categories seeded successfully");
     } else {
-      console.log('✅ Categories already exist');
+      categoryLogger.info("Categories already exist");
     }
   } catch (error) {
-    console.error('❌ Error seeding categories:', error);
+    categoryLogger.error("Error seeding categories", error);
     // No lanzamos el error para no romper la app si falla
   }
 }
@@ -43,7 +44,7 @@ export async function seedCategoriesIfNeeded(): Promise<void> {
  * Inicializa todos los datos necesarios de la aplicación
  */
 export async function initializeAppData(): Promise<void> {
-  console.log('🚀 Initializing app data...');
+  logger.info("initializeAppData", "Initializing app data...");
 
   // Precargar categorías
   await seedCategoriesIfNeeded();
@@ -52,5 +53,5 @@ export async function initializeAppData(): Promise<void> {
   // await seedProductsIfNeeded();
   // await seedBrandsIfNeeded();
 
-  console.log('✅ App data initialized');
+  logger.info("initializeAppData", "App data initialized");
 }

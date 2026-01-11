@@ -3,8 +3,19 @@
 import { Save, Database, Shield, Bell } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { AuthDebug } from "@/components/admin/auth-debug";
+import { useSeedCategories, useSeedProducts } from "@/hooks";
+
+// Asegúrate de importar el hook desde donde lo tengas definido (o si está en el mismo archivo)
+// import { useSeedCategories } from "@/hooks/useCategories";
 
 export default function AdminSettingsPage() {
+  // 1. Instanciamos el hook para obtener la función mutate y el estado de carga
+  const { mutate: seedCategories, isPending: isSeedingCategory } =
+    useSeedCategories();
+  const { mutate: seedProducts, isPending: isSeedingProducts } =
+    useSeedProducts();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -16,6 +27,9 @@ export default function AdminSettingsPage() {
           Guardar Cambios
         </Button>
       </div>
+
+      {/* DEBUG: Quitar esto después de resolver el problema */}
+      <AuthDebug />
 
       {/* Seeders - Solo SUPER_ADMIN */}
       <section className="rounded-lg border border-gray-200 bg-white p-6">
@@ -37,22 +51,32 @@ export default function AdminSettingsPage() {
           <Button
             variant="outline"
             className="flex items-center gap-2 bg-transparent"
+            onClick={() => seedCategories()}
+            disabled={isSeedingCategory}
           >
-            <Database className="h-4 w-4" />
-            Seed Categorías
+            <Database
+              className={`h-4 w-4 ${isSeedingCategory ? "animate-pulse text-purple-600" : ""}`}
+            />
+            {isSeedingCategory ? "Cargando..." : "Seed Categorías"}
           </Button>
+
           <Button
             variant="outline"
             className="flex items-center gap-2 bg-transparent"
+            onClick={() => seedProducts()}
+            disabled={isSeedingProducts}
           >
-            <Database className="h-4 w-4" />
-            Seed Productos
+            <Database
+              className={`h-4 w-4 ${isSeedingProducts ? "animate-pulse text-purple-600" : ""}`}
+            />
+            {isSeedingProducts ? "Cargando..." : "Seed Productos"}
           </Button>
         </div>
       </section>
 
       {/* Configuración General */}
       <section className="rounded-lg border border-gray-200 bg-white p-6">
+        {/* ... Resto del código de configuración general ... */}
         <div className="mb-6 flex items-center gap-3">
           <div className="rounded-lg bg-blue-50 p-2">
             <Shield className="h-6 w-6 text-blue-600" />
@@ -93,6 +117,7 @@ export default function AdminSettingsPage() {
 
       {/* Notificaciones */}
       <section className="rounded-lg border border-gray-200 bg-white p-6">
+        {/* ... Resto del código de notificaciones ... */}
         <div className="mb-6 flex items-center gap-3">
           <div className="rounded-lg bg-green-50 p-2">
             <Bell className="h-6 w-6 text-green-600" />

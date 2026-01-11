@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks";
 import { userService } from "@/services";
 import type { User } from "@/types";
+import { authLogger } from "@/utils/logger";
 
 /**
  * Página de callback para OAuth (Google, etc.)
@@ -59,7 +60,7 @@ export default function AuthCallbackPage() {
           router.push("/");
         }, 1000);
       } catch (error) {
-        console.error("Error en callback de autenticación:", error);
+        authLogger.error("Error en callback de autenticación", error);
         setStatus("error");
         setErrorMessage(
           error instanceof Error

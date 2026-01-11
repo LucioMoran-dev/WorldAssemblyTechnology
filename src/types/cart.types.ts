@@ -1,35 +1,44 @@
 import type { Product, ProductVariant } from "./product.types";
+import type { User } from "./user.types";
+import type { VariantSnapshot } from "./common.types";
 
 /**
  * Tipos relacionados con el carrito de compras
  */
 
+// Re-export VariantSnapshot para compatibilidad
+export type { VariantSnapshot };
+
+// Cart Item
 export interface CartItem {
   id: string;
   quantity: number;
   priceAtAddition: number;
   subtotal: number;
-  addedAt: Date | string;
   product: Product;
-  variants: ProductVariant[];
-  selectedVariants: Record<string, any>;
+  variants?: ProductVariant[];
+  selectedVariants?: VariantSnapshot[];
 }
 
+// Cart
 export interface Cart {
   id: string;
-  total: number;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  user: User;
   items: CartItem[];
+  selectedAddressId?: string;
   itemCount: number;
+  total: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
+// Cart Summary (para navbar)
 export interface CartSummary {
   itemCount: number;
   total: number;
-  hasItems: boolean;
 }
 
+// DTOs
 export interface AddToCartDto {
   productId: string;
   quantity: number;
@@ -40,6 +49,31 @@ export interface UpdateCartItemDto {
   quantity: number;
 }
 
+export interface SelectAddressDto {
+  addressId: string;
+}
+
+export interface CheckoutDto {
+  shippingAddress?: null;
+  paymentMethod?: string;
+}
+
+// Response types
+export interface SelectedAddressResponse {
+  addressId: string | null;
+  address: {
+    id: string;
+    label: string;
+    street: string;
+    city: string;
+    province: string;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+  } | null;
+}
+
+// Legacy compatibility
 export interface StockValidationIssue {
   itemId: string;
   productId: string;
@@ -52,25 +86,4 @@ export interface StockValidationIssue {
 export interface StockValidationResponse {
   valid: boolean;
   issues: StockValidationIssue[];
-}
-
-export interface SelectAddressDto {
-  addressId: string;
-}
-
-export interface SelectedAddressResponse {
-  selectedAddressId: string | null;
-}
-
-export interface ShippingAddress {
-  street: string;
-  number: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country?: string;
-}
-
-export interface CheckoutDto {
-  shippingAddress: ShippingAddress;
 }

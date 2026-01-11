@@ -1,11 +1,16 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { cartService } from '@/services';
-import { useCart } from './use-cart';
-import { AddToCartDto, UpdateCartItemDto, CheckoutDto } from '@/types';
-import { toast } from 'sonner';
-import { AxiosError } from 'axios';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { toast } from "sonner";
+
+import { cartService } from "@/services";
+import type { AddToCartDto, UpdateCartItemDto, CheckoutDto } from "@/types";
+import { cartLogger } from "@/utils/logger";
+
+// Importa los stores de Zustand
+import { useAuth } from "./use-auth";
+import { useCart } from "./use-cart";
 
 /**
  * Type guard para verificar si un error es de Axios
@@ -20,32 +25,67 @@ function isAxiosError(error: unknown): error is AxiosError {
 
 /**
  * Hook para obtener el carrito completo
+ * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
  */
 export function useCartQuery() {
-  const { setCart, setLoading } = useCart();
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
+  const enabled = !isLoading && isAuthenticated;
+
+  // Debug log
+  if (process.env.NODE_ENV === 'development') {
+    cartLogger.info('useCartQuery hook called', { isLoading, isAuthenticated, enabled });
+  }
 
   return useQuery({
-    queryKey: ['cart'],
+    queryKey: ["cart", isAuthenticated, isLoading],
     queryFn: async () => {
-      setLoading(true);
+      cartLogger.info('useCartQuery: Fetching cart from API');
+      useCart.getState().setLoading(true);
       const cart = await cartService.getCart();
-      setCart(cart);
-      setLoading(false);
+      useCart.getState().setCart(cart);
+      useCart.getState().setLoading(false);
       return cart;
     },
+    enabled, // ✅ Esperar a que termine de inicializar
     staleTime: 30 * 1000, // 30 segundos
+    retry: (failureCount, error: unknown) => {
+      // No reintentar si es 401 (no autenticado)
+      if (isAxiosError(error) && error.response?.status === 401) return false;
+      return failureCount < 2;
+    },
   });
 }
 
 /**
  * Hook para el resumen del carrito (navbar)
+ * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
  */
 export function useCartSummary() {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
+  const enabled = !isLoading && isAuthenticated;
+
+  // Debug log
+  if (process.env.NODE_ENV === 'development') {
+    cartLogger.info('useCartSummary hook called', { isLoading, isAuthenticated, enabled });
+  }
+
   return useQuery({
-    queryKey: ['cart', 'summary'],
-    queryFn: () => cartService.getSummary(),
+    queryKey: ["cart", "summary", isAuthenticated, isLoading],
+    queryFn: () => {
+      cartLogger.info('useCartSummary: Fetching cart summary from API');
+      return cartService.getSummary();
+    },
+    enabled, // ✅ Esperar a que termine de inicializar
     staleTime: 15 * 1000, // 15 segundos
-    refetchInterval: 30 * 1000, // Refetch cada 30 segundos
+    refetchInterval: enabled ? 30 * 1000 : false, // Solo refetch si está habilitado
+    retry: (failureCount, error: unknown) => {
+      if (isAxiosError(error) && error.response?.status === 401) return false;
+      return failureCount < 2;
+    },
   });
 }
 
@@ -54,19 +94,19 @@ export function useCartSummary() {
  */
 export function useAddToCart() {
   const queryClient = useQueryClient();
-  const { setCart } = useCart();
 
   return useMutation({
     mutationFn: (data: AddToCartDto) => cartService.addItem(data),
     onSuccess: (cart) => {
-      setCart(cart);
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success('Producto agregado al carrito');
+      useCart.getState().setCart(cart);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Producto agregado al carrito");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al agregar producto'
-        : 'Error al agregar producto';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al agregar producto"
+        : "Error al agregar producto";
       toast.error(message);
     },
   });
@@ -77,20 +117,25 @@ export function useAddToCart() {
  */
 export function useUpdateCartItem() {
   const queryClient = useQueryClient();
-  const { setCart } = useCart();
 
   return useMutation({
-    mutationFn: ({ itemId, data }: { itemId: string; data: UpdateCartItemDto }) =>
-      cartService.updateItemQuantity(itemId, data),
+    mutationFn: ({
+      itemId,
+      data,
+    }: {
+      itemId: string;
+      data: UpdateCartItemDto;
+    }) => cartService.updateItemQuantity(itemId, data),
     onSuccess: (cart) => {
-      setCart(cart);
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success('Carrito actualizado');
+      useCart.getState().setCart(cart);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Carrito actualizado");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al actualizar carrito'
-        : 'Error al actualizar carrito';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al actualizar carrito"
+        : "Error al actualizar carrito";
       toast.error(message);
     },
   });
@@ -101,19 +146,19 @@ export function useUpdateCartItem() {
  */
 export function useRemoveCartItem() {
   const queryClient = useQueryClient();
-  const { setCart } = useCart();
 
   return useMutation({
     mutationFn: (itemId: string) => cartService.removeItem(itemId),
     onSuccess: (response) => {
-      setCart(response.cart);
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success('Producto eliminado del carrito');
+      useCart.getState().setCart(response.cart);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Producto eliminado del carrito");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al eliminar producto'
-        : 'Error al eliminar producto';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al eliminar producto"
+        : "Error al eliminar producto";
       toast.error(message);
     },
   });
@@ -124,19 +169,19 @@ export function useRemoveCartItem() {
  */
 export function useClearCart() {
   const queryClient = useQueryClient();
-  const { clearCart } = useCart();
 
   return useMutation({
     mutationFn: () => cartService.clearCart(),
     onSuccess: () => {
-      clearCart();
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success('Carrito vaciado');
+      useCart.getState().clearCart();
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Carrito vaciado");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al vaciar carrito'
-        : 'Error al vaciar carrito';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al vaciar carrito"
+        : "Error al vaciar carrito";
       toast.error(message);
     },
   });
@@ -156,20 +201,20 @@ export function useValidateStock() {
  */
 export function useCheckout() {
   const queryClient = useQueryClient();
-  const { clearCart } = useCart();
 
   return useMutation({
     mutationFn: (data: CheckoutDto) => cartService.checkout(data),
     onSuccess: () => {
-      clearCart();
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success('Orden creada exitosamente');
+      useCart.getState().clearCart();
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      toast.success("Orden creada exitosamente");
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? error.response?.data?.message || 'Error al crear orden'
-        : 'Error al crear orden';
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al crear orden"
+        : "Error al crear orden";
       toast.error(message);
     },
   });

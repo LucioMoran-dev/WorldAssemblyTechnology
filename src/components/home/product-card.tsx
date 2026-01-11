@@ -9,29 +9,19 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAddToCart } from "@/hooks";
-
-interface ProductCardProps {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviews: number;
-  image?: string;
-  images?: string[];
-  badge?: string;
-  inStock?: boolean;
-}
+import type { ProductCardProps } from "@/types";
+import { productLogger } from "@/utils/logger";
 
 export function ProductCard({
   id,
   name,
-  price,
+  basePrice,
   originalPrice,
   rating,
   reviews,
   image,
   images,
+  imgUrls,
   badge,
   inStock = true,
 }: ProductCardProps) {
@@ -39,21 +29,34 @@ export function ProductCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const addToCart = useAddToCart();
 
-  const imageArray = images || [image, image, image];
+  const imageArray =
+    imgUrls || images || (image ? [image] : ["/placeholder.svg"]);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Evita que el Link se active
+    e.stopPropagation(); // Evita que el evento suba al contenedor
 
     if (!inStock) {
       toast.error("Producto fuera de stock");
       return;
     }
+    productLogger.debug("Agregando producto al carrito", { id });
 
-    addToCart.mutate({
-      productId: id,
-      quantity: 1,
-    });
+    addToCart.mutate(
+      {
+        productId: id, // Asegúrate de que este 'id' sea el string de Mongo/Postgres
+        quantity: 1,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Producto añadido al carrito");
+        },
+        onError: (error) => {
+          toast.error("Error al añadir al carrito");
+          productLogger.error("Error al añadir producto al carrito", error);
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -191,12 +194,11 @@ export function ProductCard({
               ${originalPrice.toFixed(2)}
             </span>
           )}
-          <span className="text-lg font-bold text-gray-900">
-            ${price.toFixed(2)}
-          </span>
+          <span className="text-lg font-bold text-gray-900">${basePrice}</span>
         </div>
 
-        <div className="relative h-0">
+        <div className="mt-auto pt-4">
+          {" "}
           <Button
             className={`w-full bg-blue-600 text-white transition-all duration-300 hover:bg-blue-700 ${
               isHovered

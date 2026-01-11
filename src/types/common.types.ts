@@ -5,15 +5,13 @@
 export interface PaginatedResponse<T> {
   items: T[];
   total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
+  pages: number;
 }
 
 export interface ApiError {
   statusCode: number;
+  timestamp?: string;
+  path?: string;
   message: string | string[];
   error: string;
 }
@@ -32,4 +30,19 @@ export interface PaginationParams {
   limit?: number;
 }
 
-export type Role = 'SUPER_ADMIN' | 'ADMIN' | 'CLIENT' | 'CLEANER' | 'KEY_KEEPER';
+// Roles según el backend
+export enum UserRole {
+  CLIENT = 'CLIENT',
+  ADMIN = 'ADMIN',
+  SUPER_ADMIN = 'SUPER_ADMIN'
+}
+
+export type Role = UserRole;
+
+// Variant Snapshot (compartido entre cart y order)
+export interface VariantSnapshot {
+  id: string;
+  type: string;
+  name: string;
+  priceModifier: number;
+}

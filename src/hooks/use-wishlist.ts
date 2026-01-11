@@ -1,42 +1,79 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { wishlistService } from "@/services";
 import type { AddToWishlistDto } from "@/types";
 
+import { useAuth } from "./use-auth";
+
+/**
+ * Type guard para verificar si un error es de Axios
+ */
+function isAxiosError(error: unknown): error is AxiosError {
+  return (error as AxiosError).isAxiosError !== undefined;
+}
+
 /**
  * Hook para obtener la wishlist completa
+ * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
  */
 export function useWishlist() {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
   return useQuery({
-    queryKey: ["wishlist"],
+    queryKey: ["wishlist", isAuthenticated, isLoading],
     queryFn: wishlistService.getMyWishlist,
+    enabled: !isLoading && isAuthenticated, // ✅ Esperar a que termine de inicializar
     staleTime: 1000 * 60 * 5, // 5 minutos
+    retry: (failureCount, error: unknown) => {
+      // No reintentar si es 401 (no autenticado)
+      if (isAxiosError(error) && error.response?.status === 401) return false;
+      return failureCount < 2;
+    },
   });
 }
 
 /**
  * Hook para obtener el resumen de wishlist (para navbar)
+ * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
  */
 export function useWishlistSummary() {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
   return useQuery({
-    queryKey: ["wishlist-summary"],
+    queryKey: ["wishlist-summary", isAuthenticated, isLoading],
     queryFn: wishlistService.getSummary,
+    enabled: !isLoading && isAuthenticated, // ✅ Esperar a que termine de inicializar
     staleTime: 1000 * 60 * 2, // 2 minutos
-    refetchInterval: 1000 * 60 * 2, // Re-fetch cada 2 minutos
+    refetchInterval: !isLoading && isAuthenticated ? 1000 * 60 * 2 : false, // Solo refetch si está autenticado
+    retry: (failureCount, error: unknown) => {
+      if (isAxiosError(error) && error.response?.status === 401) return false;
+      return failureCount < 2;
+    },
   });
 }
 
 /**
  * Hook para verificar si un producto está en wishlist
+ * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
  */
 export function useCheckWishlist(productId: string) {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
   return useQuery({
-    queryKey: ["wishlist-check", productId],
+    queryKey: ["wishlist-check", productId, isAuthenticated, isLoading],
     queryFn: () => wishlistService.checkProduct(productId),
-    enabled: !!productId,
+    enabled: !isLoading && !!productId && isAuthenticated, // ✅ Esperar a que termine de inicializar
+    retry: (failureCount, error: unknown) => {
+      if (isAxiosError(error) && error.response?.status === 401) return false;
+      return failureCount < 2;
+    },
   });
 }
 
@@ -54,9 +91,11 @@ export function useAddToWishlist() {
       queryClient.invalidateQueries({ queryKey: ["wishlist-summary"] });
       toast.success("Producto agregado a favoritos");
     },
-    onError: (error: any) => {
-      const message =
-        error?.response?.data?.message || "Error al agregar a favoritos";
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al agregar a favoritos"
+        : "Error al agregar a favoritos";
       toast.error(message);
     },
   });
@@ -76,9 +115,11 @@ export function useRemoveFromWishlist() {
       queryClient.invalidateQueries({ queryKey: ["wishlist-summary"] });
       toast.success("Producto eliminado de favoritos");
     },
-    onError: (error: any) => {
-      const message =
-        error?.response?.data?.message || "Error al eliminar de favoritos";
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al eliminar de favoritos"
+        : "Error al eliminar de favoritos";
       toast.error(message);
     },
   });
@@ -98,9 +139,11 @@ export function useClearWishlist() {
       queryClient.invalidateQueries({ queryKey: ["wishlist-summary"] });
       toast.success("Lista de favoritos vaciada");
     },
-    onError: (error: any) => {
-      const message =
-        error?.response?.data?.message || "Error al vaciar favoritos";
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al vaciar favoritos"
+        : "Error al vaciar favoritos";
       toast.error(message);
     },
   });

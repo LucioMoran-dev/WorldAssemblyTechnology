@@ -2,6 +2,7 @@
 
 import { useProducts } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
+
 import { CategoryCard } from "../category-card";
 import { ProductSectionWithTabs } from "../product-section-with-tabs";
 

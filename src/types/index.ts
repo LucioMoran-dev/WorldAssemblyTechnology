@@ -41,12 +41,13 @@ export * from "./wishlist.types";
 export interface IProductCardProps {
   id: string;
   name: string;
-  price: number;
+  basePrice: number;
   originalPrice?: number;
   rating: number;
   reviews: number;
   image?: string;
   images?: string[];
+  ImgUrls?: string[];
   badge?: string;
   inStock?: boolean;
 }
@@ -143,12 +144,4 @@ export interface IPaymentMethods {
   last4: string;
   expiry: string;
   isDefault: boolean;
-}
-
-export interface IWishlistItems {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  image?: string;
 }
