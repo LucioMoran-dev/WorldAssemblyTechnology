@@ -7,7 +7,10 @@ import { useState, use } from "react";
 
 import { ProductCard } from "@/components/home/product-card";
 import { Button } from "@/components/ui/button";
+import { useCategories, useAllProducts } from "@/hooks";
+import { mapProductToCardProps } from "@/lib/mappers";
 import { features } from "@/seeds";
+import type { Review } from "@/types";
 
 const categoryConfig: Record<string, { title: string; breadcrumb: string }> = {
   laptops: { title: "Laptops", breadcrumb: "Laptops" },
@@ -40,46 +43,65 @@ const categoryConfig: Record<string, { title: string; breadcrumb: string }> = {
   monitors: { title: "Monitores Gaming", breadcrumb: "Monitores Gaming" },
 };
 
-const mockProducts = Array.from({ length: 20 }, (_, i) => ({
-  id: `${i + 1}`,
-  sku: `14U-${i + 1}GR564`,
-  name: `MSI MEG Trident X 10SD-1012AU Intel i7-10700K, 2070 SUPER, 32GB RAM, 1TB SSD, Windows 10 Home, Gaming Keyboard and Mouse 3 Years Warranty`,
-  price: 4349.0,
-  originalPrice: i % 3 === 0 ? 4999.0 : undefined,
-  rating: 4 + (i % 2),
-  reviews: Math.floor(Math.random() * 10) + 1,
-  image:
-    i % 5 === 0
-      ? "/gaming-laptop-with-rgb-keyboard.jpg"
-      : i % 5 === 1
-        ? "/msi-desktop-front.jpg"
-        : i % 5 === 2
-          ? "/msi-laptop.jpg"
-          : i % 5 === 3
-            ? "/msi-gaming-pc.jpg"
-            : "/msi-monitor.jpg",
-  inStock: i % 5 !== 0,
-  specs: {
-    cpu: "N/A",
-    featured: "N/A",
-    ports: "N/A",
-  },
-}));
-
 interface PageProps {
   params: Promise<{ category: string }>;
 }
 
+// Helper function to calculate average rating
+const getAverageRating = (reviews?: Review[]): number => {
+  if (!reviews?.length) return 0;
+  const sum = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
+  return Math.round(sum / reviews.length);
+};
+
 export default function CatalogPage({ params }: PageProps) {
   const { category } = use(params);
+
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState("position");
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(31);
+
+  // ✅ Usa el filtro avanzado con el nombre de la categoría
+  const {
+    data: categoryData,
+    isLoading,
+    isError,
+  } = useCategories({
+    category,
+    page,
+    limit: perPage,
+  });
+
+  // ✅ Hook para cargar todos los productos como fallback
+  const { data: allProductsData, isLoading: allProductsLoading } =
+    useAllProducts();
+
+  // ✅ Extrae la primera categoría (debería ser solo una por el filtro)
+  const categoryInfo = categoryData?.items?.[0];
+
+  // ✅ Detecta si estamos usando fallback (todos los productos)
+  const isUsingFallback = isError && allProductsData?.items;
+
+  // Si no encuentra la categoría, usa todos los productos
+  const allProducts = categoryInfo?.products ?? allProductsData?.items ?? [];
+
+  // Paginación mockeada para fallback
+  const startIndex = (page - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const products = isUsingFallback
+    ? allProducts.slice(startIndex, endIndex)
+    : allProducts;
+
+  // Total de páginas mockeado
+  const totalPages = isUsingFallback
+    ? Math.ceil(allProducts.length / perPage)
+    : (categoryData?.pages ?? 1);
+
   const config = categoryConfig[category] || {
     title: "Productos",
     breadcrumb: "Productos",
   };
-
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState("position");
-  const [perPage, setPerPage] = useState(31);
 
   // Filters state
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -113,14 +135,44 @@ export default function CatalogPage({ params }: PageProps) {
     setSelectedColors([]);
   };
 
+  // ✅ Manejo de estados de carga
+  if (isLoading || (isError && allProductsLoading)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <p className="mt-4 text-gray-600">Cargando productos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError && !allProductsData?.items?.length) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-xl text-red-600">
+            Categoría &quot;{category}&quot; no encontrada
+          </p>
+          <Link
+            href="/"
+            className="mt-4 inline-block text-blue-600 hover:underline"
+          >
+            Volver al inicio
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Banner */}
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4">
-          <div className="relative h-24 w-full overflow-hidden rounded-lg">
+          <div className="relative h-50 w-full overflow-hidden rounded-lg">
             <Image
-              src="/asus-tuf-gaming-banner-with-yellow-and-black-gamin.jpg"
+              src="/adobeStock_769630229.jpeg"
               alt="ASUS TUF Gaming Banner"
               fill
               className="object-cover"
@@ -384,7 +436,11 @@ export default function CatalogPage({ params }: PageProps) {
 
               {/* Apply Filters Button */}
               <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">
-                Aplicar Filtros (2)
+                Aplicar Filtros (
+                {selectedCategories.length +
+                  priceRange.length +
+                  selectedColors.length}
+                )
               </Button>
 
               {/* Compare Products & Wishlist */}
@@ -422,7 +478,7 @@ export default function CatalogPage({ params }: PageProps) {
             {/* Title and Back Button */}
             <div className="mb-4 flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-900">
-                {config.title} ({mockProducts.length})
+                {config.title} ({products.length} productos)
               </h1>
               <Link
                 href="/"
@@ -438,7 +494,9 @@ export default function CatalogPage({ params }: PageProps) {
               selectedColors.length > 0) && (
               <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-gray-200 pb-4">
                 <span className="text-sm text-gray-600">
-                  Artículos 1-20 de 20
+                  Mostrando {(page - 1) * perPage + 1}-
+                  {Math.min(page * perPage, products.length)} de{" "}
+                  {products.length}
                 </span>
                 {selectedCategories.map((cat) => (
                   <span
@@ -497,7 +555,10 @@ export default function CatalogPage({ params }: PageProps) {
                   <span className="text-sm text-gray-600">Mostrar:</span>
                   <select
                     value={perPage}
-                    onChange={(e) => setPerPage(Number(e.target.value))}
+                    onChange={(e) => {
+                      setPerPage(Number(e.target.value));
+                      setPage(1); // Reset a página 1 al cambiar items por página
+                    }}
                     className="rounded border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                   >
                     <option value={31}>31 por página</option>
@@ -538,25 +599,28 @@ export default function CatalogPage({ params }: PageProps) {
             {/* Products Grid/List */}
             {viewMode === "grid" ? (
               <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {mockProducts.slice(0, perPage).map((product) => (
-                  <ProductCard key={product.id} {...product} />
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    {...mapProductToCardProps(product)}
+                  />
                 ))}
               </div>
             ) : (
               <div className="mb-8 space-y-4">
-                {mockProducts.slice(0, perPage).map((product) => (
+                {products.map((product) => (
                   <div
                     key={product.id}
                     className="flex gap-4 rounded-lg border border-gray-200 bg-white p-4"
                   >
                     <div className="relative h-32 w-32 flex-shrink-0">
                       <Image
-                        src={product.image || "/placeholder.svg"}
+                        src={product.imgUrls?.[0] || "/placeholder.svg"}
                         alt={product.name}
                         fill
                         className="rounded object-cover"
                       />
-                      {product.inStock && (
+                      {product.isActive && (
                         <div className="absolute top-2 right-2 rounded bg-green-500 px-2 py-1 text-xs text-white">
                           En stock
                         </div>
@@ -564,9 +628,6 @@ export default function CatalogPage({ params }: PageProps) {
                     </div>
 
                     <div className="flex-1">
-                      <p className="mb-1 text-xs text-gray-500">
-                        {product.sku}
-                      </p>
                       <h3 className="mb-2 line-clamp-2 text-sm font-medium text-gray-900">
                         {product.name}
                       </h3>
@@ -576,7 +637,11 @@ export default function CatalogPage({ params }: PageProps) {
                           {[...Array(5)].map((_, i) => (
                             <svg
                               key={i}
-                              className={`h-4 w-4 ${i < product.rating ? "fill-current text-yellow-400" : "text-gray-300"}`}
+                              className={`h-4 w-4 ${
+                                i < getAverageRating(product.reviews)
+                                  ? "fill-current text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
                               viewBox="0 0 20 20"
                             >
                               <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
@@ -584,40 +649,23 @@ export default function CatalogPage({ params }: PageProps) {
                           ))}
                         </div>
                         <span className="text-xs text-gray-500">
-                          Reseñas ({product.reviews})
+                          Reseñas ({product.reviews?.length || 0})
                         </span>
                       </div>
 
                       <div className="mb-3 grid grid-cols-3 gap-4 text-xs">
                         <div>
-                          <span className="text-gray-500">CPU:</span>
-                          <span className="ml-1 text-gray-900">
-                            {product.specs.cpu}
-                          </span>
-                        </div>
-                        <div>
                           <span className="text-gray-500">Destacado:</span>
                           <span className="ml-1 text-gray-900">
-                            {product.specs.featured}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Puertos I/O:</span>
-                          <span className="ml-1 text-gray-900">
-                            {product.specs.ports}
+                            {product.featured ? "Sí" : "No"}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div>
-                          {product.originalPrice && (
-                            <span className="mr-2 text-sm text-gray-400 line-through">
-                              ${product.originalPrice.toFixed(2)}
-                            </span>
-                          )}
                           <span className="text-lg font-bold text-gray-900">
-                            ${product.price.toFixed(2)}
+                            ${product.basePrice.toFixed(2)}
                           </span>
                         </div>
 
@@ -673,42 +721,52 @@ export default function CatalogPage({ params }: PageProps) {
               <Button
                 variant="outline"
                 size="sm"
-                disabled
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
                 className="h-8 w-8 rounded-full bg-transparent p-0"
               >
                 ←
               </Button>
-              <Button
-                variant="default"
-                size="sm"
-                className="h-8 w-8 rounded-full bg-gray-900 p-0"
-              >
-                1
-              </Button>
+              {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                const pageNumber = i + 1;
+                return (
+                  <Button
+                    key={pageNumber}
+                    variant={page === pageNumber ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setPage(pageNumber)}
+                    className={`h-8 w-8 rounded-full p-0 ${
+                      page === pageNumber ? "bg-gray-900" : "bg-transparent"
+                    }`}
+                  >
+                    {pageNumber}
+                  </Button>
+                );
+              })}
+              {totalPages > 5 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 rounded-full bg-transparent p-0"
+                  >
+                    ...
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(totalPages)}
+                    className="h-8 w-8 rounded-full bg-transparent p-0"
+                  >
+                    {totalPages}
+                  </Button>
+                </>
+              )}
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 w-8 rounded-full bg-transparent p-0"
-              >
-                2
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 rounded-full bg-transparent p-0"
-              >
-                ...
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 rounded-full bg-transparent p-0"
-              >
-                35
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 className="h-8 w-8 rounded-full bg-transparent p-0"
               >
                 →

@@ -1,12 +1,26 @@
+"use client";
+
 import { Edit, MapPin, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { addresses } from "@/seeds";
+import { useMyAddresses } from "@/hooks";
 
 function DataAddresses() {
+  const { data: addresses, isLoading } = useMyAddresses();
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="h-48 animate-pulse rounded-lg bg-gray-200" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <>
-      {addresses.length > 0 ? (
+      {addresses && addresses.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2">
           {addresses.map((address) => (
             <div
@@ -23,17 +37,13 @@ function DataAddresses() {
                 <MapPin className="mt-1 h-5 w-5 text-gray-400" />
                 <div>
                   <h3 className="mb-1 font-semibold text-gray-900">
-                    {address.type}
+                    {address.label}
                   </h3>
-                  <p className="text-sm text-gray-700">{address.name}</p>
                   <p className="text-sm text-gray-600">{address.street}</p>
                   <p className="text-sm text-gray-600">
-                    {address.city}, {address.state} {address.zip}
+                    {address.city}, {address.province} {address.postalCode}
                   </p>
                   <p className="text-sm text-gray-600">{address.country}</p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Tel: {address.phone}
-                  </p>
                 </div>
               </div>
 

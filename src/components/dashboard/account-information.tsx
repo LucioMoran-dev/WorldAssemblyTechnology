@@ -1,6 +1,12 @@
+"use client";
+
 import Link from "next/link";
 
+import { useAuth } from "@/hooks";
+
 function AccountInformation() {
+  const { user } = useAuth();
+
   return (
     <>
       <section>
@@ -14,8 +20,8 @@ function AccountInformation() {
             <h3 className="mb-4 font-semibold text-gray-900">
               Información de Contacto
             </h3>
-            <p className="mb-1 text-gray-700">Alex Driver</p>
-            <p className="mb-4 text-gray-600">ExampleAddress@gmail.com</p>
+            <p className="mb-1 text-gray-700">{user?.name || "Usuario"}</p>
+            <p className="mb-4 text-gray-600">{user?.email || "correo@ejemplo.com"}</p>
             <div className="flex gap-4 text-sm">
               <Link
                 href="/dashboard/account-info"

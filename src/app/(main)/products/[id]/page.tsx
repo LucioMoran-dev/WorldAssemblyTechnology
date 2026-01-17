@@ -16,59 +16,42 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { ProductCard } from "@/components/home/product-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { relatedProducts } from "@/seeds";
-
-// Mock product data - in a real app, this would come from an API
-const getProductData = (id: string) => ({
-  id,
-  name: "EX DISPLAY : MSI Pro 16 Flex-036AU 15.6 MULTITOUCH All-In-On...",
-  price: 499.0,
-  originalPrice: 599.0,
-  rating: 4.5,
-  reviews: 42,
-  inStock: true,
-  stockCount: 15,
-  sku: "MSI-PRO16-036AU",
-  brand: "MSI",
-  badge: "INTEL i5",
-  images: [
-    "/msi-desktop-front.jpg",
-    "/msi-desktop-side.jpg",
-    "/msi-desktop-back.jpg",
-    "/msi-desktop-detail.jpg",
-  ],
-  description:
-    "El MSI Pro 16 Flex es una potente estación de trabajo todo en uno diseñada para profesionales y entusiastas. Con su pantalla táctil de 15.6 pulgadas y procesador Intel Core i5, ofrece un rendimiento excepcional para multitarea, diseño gráfico y productividad general.",
-  features: [
-    "Procesador Intel Core i5 de 11ª generación",
-    "16GB RAM DDR4",
-    "512GB SSD NVMe",
-    "Pantalla táctil Full HD de 15.6 pulgadas",
-    "Gráficos Intel Iris Xe integrados",
-    "Windows 11 Pro",
-  ],
-  specifications: {
-    Procesador: "Intel Core i5-1135G7",
-    Memoria: "16GB DDR4 3200MHz",
-    Almacenamiento: "512GB NVMe SSD",
-    Pantalla: '15.6" Full HD (1920x1080) Táctil',
-    Gráficos: "Intel Iris Xe Graphics",
-    "Sistema Operativo": "Windows 11 Pro",
-    Conectividad: "WiFi 6, Bluetooth 5.1",
-    Puertos: "4x USB 3.2, 2x USB-C, HDMI, Audio Jack",
-    Dimensiones: "380 x 260 x 45 mm",
-    Peso: "4.2 kg",
-  },
-});
+import {
+  useProduct,
+  useProducts,
+  useAddToCart,
+  useProductReviews,
+} from "@/hooks";
+import { mapProductToCardProps, mapProductToDetailView } from "@/lib/mappers";
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const product = getProductData(params.id as string);
+  const productId = params.id as string;
+
+  // Cargar producto desde API
+  const { data: productData, isLoading: isLoadingProduct } =
+    useProduct(productId);
+
+  // Cargar reviews del producto
+  const { data: reviewsData } = useProductReviews(productId);
+
+  // Cargar productos relacionados (limitados a 4)
+  const { data: relatedProductsData } = useProducts({ limit: 4 });
+
+  // Hook para agregar al carrito
+  const addToCart = useAddToCart();
+
+  // Mapear producto de API a formato del componente
+  const product = productData
+    ? mapProductToDetailView(productData, reviewsData || [])
+    : null;
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
@@ -77,8 +60,68 @@ export default function ProductDetailPage() {
   };
 
   const increaseQuantity = () => {
-    if (quantity < product.stockCount) setQuantity(quantity + 1);
+    const stockCount = product?.stockCount || 0;
+    if (quantity < stockCount) setQuantity(quantity + 1);
   };
+
+  const handleAddToCart = () => {
+    if (!productData) {
+      toast.error("Producto no disponible");
+      return;
+    }
+
+    addToCart.mutate(
+      { productId: productData.id, quantity },
+      {
+        onSuccess: () => {
+          toast.success(
+            `${quantity} ${quantity === 1 ? "producto agregado" : "productos agregados"} al carrito`
+          );
+        },
+      }
+    );
+  };
+
+  // Loading state
+  if (isLoadingProduct) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <main className="container mx-auto px-4 py-8">
+          <div className="animate-pulse space-y-8">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+              <div className="h-96 rounded-lg bg-gray-200" />
+              <div className="space-y-4">
+                <div className="h-8 w-3/4 rounded bg-gray-200" />
+                <div className="h-24 w-full rounded bg-gray-200" />
+                <div className="h-12 w-1/2 rounded bg-gray-200" />
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Producto no encontrado
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <main className="container mx-auto px-4 py-8">
+          <div className="rounded-lg bg-white p-8 text-center">
+            <h1 className="mb-4 text-2xl font-bold text-gray-900">
+              Producto no encontrado
+            </h1>
+            <p className="mb-6 text-gray-600">
+              El producto que buscas no existe o ha sido eliminado.
+            </p>
+            <Link href="/products">
+              <Button>Volver a productos</Button>
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -235,9 +278,13 @@ export default function ProductDetailPage() {
               </div>
 
               <div className="flex gap-3">
-                <Button className="h-12 flex-1 bg-blue-600 text-base text-white hover:bg-blue-700">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={addToCart.isPending || !productData}
+                  className="h-12 flex-1 bg-blue-600 text-base text-white hover:bg-blue-700"
+                >
                   <ShoppingCart className="mr-2 h-5 w-5" />
-                  Agregar al Carrito
+                  {addToCart.isPending ? "Agregando..." : "Agregar al Carrito"}
                 </Button>
                 <Button
                   variant="outline"
@@ -415,8 +462,12 @@ export default function ProductDetailPage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {relatedProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
+            {relatedProductsData?.items.map((relatedProduct) => (
+              <ProductCard
+                basePrice={0}
+                key={relatedProduct.id}
+                {...mapProductToCardProps(relatedProduct)}
+              />
             ))}
           </div>
         </div>

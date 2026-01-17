@@ -1,34 +1,77 @@
 "use client";
 
-import { useCart } from "@/hooks/use-cart";
-import { cartItems } from "@/seeds";
+import { useState } from "react";
+
+import { useCartQuery, useRemoveCartItem, useUpdateCartItem } from "@/hooks";
 
 import CartHeader from "./cart-header";
 import CartItemsList from "./cart-items-list";
 import { SummarySidebar } from "./summary-sidebar";
 
 function CartUser() {
-  const {
-    quantities,
-    updateQuantity,
-    shippingExpanded,
-    discountExpanded,
-    selectedCountry,
-    shippingMethod,
-    setShippingExpanded,
-    setDiscountExpanded,
-    setSelectedCountry,
-    setShippingMethod,
-  } = useCart();
+  const { data: cart, isLoading } = useCartQuery();
+  const updateItemMutation = useUpdateCartItem();
+  const removeItemMutation = useRemoveCartItem();
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * (quantities[item.id] || 1),
-    0
-  );
+  const [shippingExpanded, setShippingExpanded] = useState(false);
+  const [discountExpanded, setDiscountExpanded] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("Australia");
+  const [shippingMethod, setShippingMethod] = useState("standard");
+
+  // 1. Mapeo exacto basado en tu método mapCartToResponse de NestJS
+  const items =
+    cart?.items.map((item) => ({
+      id: item.id,
+      name: item.product.name,
+      price: item.priceAtAddition, // Tomado de ICartItemResponseDTO
+      image: item.product.imgUrls?.[0] || "",
+      quantity: item.quantity,
+      subtotal: item.subtotal,
+    })) || [];
+
+  // 2. Cálculos financieros
+  // Nota: cart.total ya viene calculado desde NestJS (recalculateCartTotal)
+  const subtotal = cart?.total || 0;
   const shipping = shippingMethod === "standard" ? 21.0 : 0.0;
-  const tax = 1.91;
-  const gst = 1.91;
+  const tax = subtotal * 0.05;
+  const gst = subtotal * 0.05;
   const total = subtotal + shipping + tax + gst;
+
+  // 3. Objeto de cantidades para CartItemsListProps
+  const quantities = items.reduce(
+    (acc, item) => {
+      acc[item.id] = item.quantity;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
+  const handleUpdateQuantity = (itemId: string, delta: number) => {
+    const item = items.find((i) => i.id === itemId);
+    if (!item) return;
+
+    const newQuantity = item.quantity + delta;
+
+    // Si la cantidad llega a 0, podrías optar por eliminarlo o dejar que el backend lo maneje
+    // Según tu UpdateCartItemDTO, 0 es permitido para eliminar.
+    updateItemMutation.mutate({
+      itemId,
+      data: { quantity: Math.max(0, newQuantity) },
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-gray-50">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 w-1/3 rounded bg-gray-200" />
+            <div className="h-64 rounded bg-gray-200" />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
@@ -37,9 +80,11 @@ function CartUser() {
 
         <div className="grid gap-8 lg:grid-cols-3">
           <CartItemsList
-            items={cartItems}
+            items={items}
             quantities={quantities}
-            onUpdateQuantity={updateQuantity}
+            onUpdateQuantity={handleUpdateQuantity}
+            // Asegúrate de que CartItemsListProps incluya onRemoveItem
+            // o pásalo si CartItemsList lo soporta
           />
 
           <SummarySidebar

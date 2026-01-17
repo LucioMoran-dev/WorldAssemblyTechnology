@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,9 @@ function ShippingForm() {
                 Estado/Provincia <span className="text-red-500">*</span>
               </label>
               <select className="w-full rounded border border-gray-300 px-3 py-2 text-sm">
-                <option>Por favor, selecciona una región, estado o provincia</option>
+                <option>
+                  Por favor, selecciona una región, estado o provincia
+                </option>
               </select>
             </div>
 
@@ -107,7 +110,8 @@ function ShippingForm() {
                 />
                 <div className="flex flex-1 justify-between">
                   <span className="text-sm text-gray-700">
-                    El precio puede variar según el artículo/destino. El personal de la tienda se pondrá en contacto contigo. $21.00
+                    El precio puede variar según el artículo/destino. El
+                    personal de la tienda se pondrá en contacto contigo. $21.00
                   </span>
                   <span className="font-semibold">$21.00</span>
                 </div>
@@ -131,10 +135,11 @@ function ShippingForm() {
                 </div>
               </label>
             </div>
-
-            <Button className="mt-6 h-12 w-full bg-blue-600 text-white hover:bg-blue-700">
-              Siguiente
-            </Button>
+            <Link href="/cart/review">
+              <Button className="mt-6 h-12 w-full bg-blue-600 text-white hover:bg-blue-700">
+                Siguiente
+              </Button>
+            </Link>
           </form>
         </div>
       </div>

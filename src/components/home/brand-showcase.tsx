@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { brands } from "@/seeds";
 
@@ -12,13 +13,15 @@ export function BrandShowcase() {
               key={brand.name}
               className="flex items-center justify-center opacity-60 grayscale transition-all hover:opacity-100 hover:grayscale-0"
             >
-              <Image
-                src={brand.logo || "/placeholder.svg"}
-                alt={brand.name}
-                width={120}
-                height={60}
-                className="object-contain"
-              />
+              <Link href={`/products/catalog-brand/${brand.name}`}>
+                <Image
+                  src={brand.logo || "/placeholder.svg"}
+                  alt={brand.name}
+                  width={120}
+                  height={60}
+                  className="object-contain"
+                />
+              </Link>
             </div>
           ))}
         </div>

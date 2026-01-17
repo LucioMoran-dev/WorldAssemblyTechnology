@@ -1,66 +1,60 @@
+/**
+ * Exportación centralizada de todos los types
+ */
+
+// ===== TYPES DEL BACKEND =====
+
+// Common types
+export * from "./common.types";
+
+// User & Auth types
+export * from "./user.types";
+
+// Product types
+export * from "./product.types";
+
+// Cart types
+export * from "./cart.types";
+
+// Order types
+export * from "./order.types";
+
+// Review types
+export * from "./review.types";
+
+// File types
+export * from "./file.types";
+
+// Health types
+export * from "./health.types";
+
+// Health types
+export * from "./wishlist.types";
+
+// ===== TYPES DE COMPONENTES UI (Props) =====
+// Solo interfaces que NO están en el backend
+
+/**
+ * Props para ProductCard
+ * Usa mapProductToCardProps() para convertir Product del backend
+ */
 export interface IProductCardProps {
   id: string;
   name: string;
-  price: number;
+  basePrice: number;
   originalPrice?: number;
   rating: number;
   reviews: number;
   image?: string;
   images?: string[];
+  ImgUrls?: string[];
   badge?: string;
   inStock?: boolean;
 }
 
-export interface IDownloads {
-  id: string;
-  name: string;
-  orderId: string;
-  date: string;
-  downloadLink: string;
-}
-
-export interface IPaymentMethods {
-  id: string;
-  type: string;
-  last4: string;
-  expiry: string;
-  isDefault: boolean;
-}
-
-export interface IReviews {
-  id: string;
-  productName: string;
-  rating: number;
-  date: string;
-  comment: string;
-}
-
-export interface IWishlistItems {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  image?: string;
-}
-
-export interface IUserBodyDto {
-  name: string;
-  email: string;
-  birthdate: Date;
-  phone: string;
-  address: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
-}
-
-export interface ICartItems {
-  id: string;
-  name: string;
-  price: number;
-  image?: string;
-}
-
+/**
+ * Props para componentes de Cart UI
+ */
 export interface SummarySidebarProps {
   subtotal: number;
   shipping: number;
@@ -80,13 +74,23 @@ export interface SummarySidebarProps {
 }
 
 export interface CartItemProps {
-  item: ICartItems;
+  item: {
+    id: string;
+    name: string;
+    price: number;
+    image?: string;
+  };
   quantity: number;
   onUpdateQuantity: (id: string, delta: number) => void;
 }
 
 export interface CartItemsListProps {
-  items: ICartItems[];
+  items: Array<{
+    id: string;
+    name: string;
+    price: number;
+    image?: string;
+  }>;
   quantities: { [key: string]: number };
   onUpdateQuantity: (id: string, delta: number) => void;
 }
@@ -121,4 +125,23 @@ export interface QuantityControllerProps {
   onIncrement: () => void;
   onDecrement: () => void;
   onChange: (quantity: number) => void;
+}
+
+/**
+ * Props para otros componentes UI
+ */
+export interface IDownloads {
+  id: string;
+  name: string;
+  orderId: string;
+  date: string;
+  downloadLink: string;
+}
+
+export interface IPaymentMethods {
+  id: string;
+  type: string;
+  last4: string;
+  expiry: string;
+  isDefault: boolean;
 }

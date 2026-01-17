@@ -1,24 +1,29 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 import AccountCostumer from "@/components/auth/signup/account-costumer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authService } from "@/services";
 
 const registerSchema = z
   .object({
     name: z
       .string()
-      .min(2, "El nombre completo debe tener al menos 2 caracteres"),
+      .min(3, "El nombre completo debe tener al menos 3 caracteres"),
     email: z.string().email("Por favor ingresa una dirección de email válida"),
     phone: z
       .string()
       .min(10, "Por favor ingresa un número de teléfono válido")
-      .regex(/^\d+$/, "El teléfono solo debe contener números"),
+      .regex(/^\+?\d+$/, "El teléfono solo debe contener números"),
     birthdate: z.string().min(1, "La fecha de nacimiento es requerida"),
     address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
     username: z
@@ -26,10 +31,14 @@ const registerSchema = z
       .min(3, "El nombre de usuario debe tener al menos 3 caracteres"),
     password: z
       .string()
-      .min(6, "La contraseña debe tener al menos 6 caracteres"),
+      .min(8, "La contraseña debe tener al menos 8 caracteres")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        "La contraseña debe contener mayúsculas, minúsculas, números y caracteres especiales"
+      ),
     confirmPassword: z
       .string()
-      .min(6, "La confirmación de contraseña debe tener al menos 6 caracteres"),
+      .min(8, "La confirmación de contraseña debe tener al menos 8 caracteres"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
@@ -39,6 +48,9 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 function FormSignup() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -47,14 +59,36 @@ function FormSignup() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: RegisterFormData) => {
-    const dataToSend = {
-      ...data,
-      phone: Number(data.phone),
-    };
+  const onSubmit = async (data: RegisterFormData) => {
+    setIsLoading(true);
 
-    console.info("[v0] Register data:", dataToSend);
-    // Aquí harías el fetch/axios al backend
+    try {
+      await authService.signup({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+        birthDate: data.birthdate,
+        username: data.username,
+        phone: data.phone,
+        addresses: data.address,
+      });
+
+      toast.success("¡Cuenta creada exitosamente! Por favor inicia sesión.");
+      router.push("/auth/signin");
+    } catch (error: unknown) {
+      const message =
+        error instanceof AxiosError && error.response?.data?.message
+          ? error.response.data.message
+          : "Error al crear la cuenta";
+      toast.error(Array.isArray(message) ? message.join(", ") : message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    authService.initiateGoogleLogin();
   };
 
   return (
@@ -249,6 +283,42 @@ function FormSignup() {
                   className="mt-6 w-full bg-blue-600 hover:bg-blue-700"
                 >
                   Crear Cuenta
+                </Button>
+
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="text-muted-foreground bg-white px-2">
+                      O continuar con
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                >
+                  <svg
+                    className="mr-2 h-4 w-4"
+                    aria-hidden="true"
+                    focusable="false"
+                    data-prefix="fab"
+                    data-icon="google"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 488 512"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                    />
+                  </svg>
+                  Google
                 </Button>
               </form>
             </div>
