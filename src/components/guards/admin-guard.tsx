@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 import { useAuth } from "@/hooks";
 import { UserRole } from "@/types";
-import { Loader2 } from "lucide-react";
 
 /**
  * Guard para proteger rutas de administrador
@@ -23,7 +24,11 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
       }
 
       // Si no tiene rol de admin, redirigir al home
-      if (user && user.role !== UserRole.ADMIN && user.role !== UserRole.SUPER_ADMIN) {
+      if (
+        user &&
+        user.role !== UserRole.ADMIN &&
+        user.role !== UserRole.SUPER_ADMIN
+      ) {
         router.push("/");
         return;
       }
@@ -43,7 +48,11 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   }
 
   // Si no está autenticado o no es admin, no mostrar nada (se está redirigiendo)
-  if (!isAuthenticated || !user || (user.role !== UserRole.ADMIN && user.role !== UserRole.SUPER_ADMIN)) {
+  if (
+    !isAuthenticated ||
+    !user ||
+    (user.role !== UserRole.ADMIN && user.role !== UserRole.SUPER_ADMIN)
+  ) {
     return null;
   }
 

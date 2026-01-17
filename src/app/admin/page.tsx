@@ -3,7 +3,48 @@
 import { ShoppingCart, Package, Users, DollarSign, TrendingUp, AlertCircle } from "lucide-react"
 import Link from "next/link"
 
+import { useAllOrders, useOrderStats } from "@/hooks"
+import { OrderStatus } from "@/types"
+
+// Helper para formatear fecha
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+// Helper para traducir estado
+const translateStatus = (status: OrderStatus): string => {
+  const translations = {
+    [OrderStatus.PENDING]: "Pendiente",
+    [OrderStatus.PAID]: "Pagada",
+    [OrderStatus.PROCESSING]: "En Proceso",
+    [OrderStatus.SHIPPED]: "Enviada",
+    [OrderStatus.DELIVERED]: "Completada",
+    [OrderStatus.CANCELLED]: "Cancelada",
+  };
+  return translations[status] || status;
+};
+
+// Helper para obtener el color del estado
+const getStatusColor = (status: OrderStatus): string => {
+  const colors = {
+    [OrderStatus.PENDING]: "bg-yellow-100 text-yellow-700",
+    [OrderStatus.PAID]: "bg-blue-100 text-blue-700",
+    [OrderStatus.PROCESSING]: "bg-purple-100 text-purple-700",
+    [OrderStatus.SHIPPED]: "bg-indigo-100 text-indigo-700",
+    [OrderStatus.DELIVERED]: "bg-green-100 text-green-700",
+    [OrderStatus.CANCELLED]: "bg-red-100 text-red-700",
+  };
+  return colors[status] || "bg-gray-100 text-gray-700";
+};
+
 export default function AdminDashboardPage() {
+  const { data: stats, isLoading: statsLoading } = useOrderStats();
+  const { data: ordersData, isLoading: ordersLoading } = useAllOrders({ limit: 5 });
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -18,11 +59,19 @@ export default function AdminDashboardPage() {
             <h3 className="text-sm font-medium text-gray-600">Ventas Totales</h3>
             <DollarSign className="h-5 w-5 text-green-600" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">$52,340</p>
-          <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-            <TrendingUp className="h-4 w-4" />
-            +12.5% este mes
-          </p>
+          {statsLoading ? (
+            <div className="h-10 animate-pulse rounded bg-gray-200"></div>
+          ) : (
+            <>
+              <p className="text-3xl font-bold text-gray-900">
+                ${stats?.revenue.total.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+              </p>
+              <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                <TrendingUp className="h-4 w-4" />
+                ${stats?.revenue.monthly.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'} este mes
+              </p>
+            </>
+          )}
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -30,29 +79,46 @@ export default function AdminDashboardPage() {
             <h3 className="text-sm font-medium text-gray-600">Órdenes</h3>
             <ShoppingCart className="h-5 w-5 text-blue-600" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">142</p>
-          <p className="text-sm text-blue-600 mt-2">28 pendientes</p>
+          {statsLoading ? (
+            <div className="h-10 animate-pulse rounded bg-gray-200"></div>
+          ) : (
+            <>
+              <p className="text-3xl font-bold text-gray-900">{stats?.totalOrders || 0}</p>
+              <p className="text-sm text-blue-600 mt-2">{stats?.ordersByStatus.pending || 0} pendientes</p>
+            </>
+          )}
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-600">Productos</h3>
+            <h3 className="text-sm font-medium text-gray-600">Tasa de Completación</h3>
             <Package className="h-5 w-5 text-purple-600" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">856</p>
-          <p className="text-sm text-orange-600 mt-2 flex items-center gap-1">
-            <AlertCircle className="h-4 w-4" />
-            12 sin stock
-          </p>
+          {statsLoading ? (
+            <div className="h-10 animate-pulse rounded bg-gray-200"></div>
+          ) : (
+            <>
+              <p className="text-3xl font-bold text-gray-900">{stats?.completionRate || '0%'}</p>
+              <p className="text-sm text-gray-600 mt-2">
+                {stats?.ordersByStatus.delivered || 0} entregadas
+              </p>
+            </>
+          )}
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-600">Usuarios</h3>
+            <h3 className="text-sm font-medium text-gray-600">Tasa de Cancelación</h3>
             <Users className="h-5 w-5 text-indigo-600" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">1,234</p>
-          <p className="text-sm text-green-600 mt-2">+24 esta semana</p>
+          {statsLoading ? (
+            <div className="h-10 animate-pulse rounded bg-gray-200"></div>
+          ) : (
+            <>
+              <p className="text-3xl font-bold text-gray-900">{stats?.cancellationRate || '0%'}</p>
+              <p className="text-sm text-red-600 mt-2">{stats?.ordersByStatus.cancelled || 0} canceladas</p>
+            </>
+          )}
         </div>
       </div>
 
@@ -77,84 +143,39 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {[
-                { id: "#12345", customer: "Juan Pérez", date: "15/12/2025", total: "$1,299.00", status: "Completada" },
-                { id: "#12346", customer: "María García", date: "15/12/2025", total: "$899.00", status: "Pendiente" },
-                {
-                  id: "#12347",
-                  customer: "Carlos López",
-                  date: "14/12/2025",
-                  total: "$1,499.00",
-                  status: "En Proceso",
-                },
-                { id: "#12348", customer: "Ana Martínez", date: "14/12/2025", total: "$699.00", status: "Completada" },
-                {
-                  id: "#12349",
-                  customer: "Luis Rodríguez",
-                  date: "13/12/2025",
-                  total: "$2,199.00",
-                  status: "Pendiente",
-                },
-              ].map((order) => (
-                <tr key={order.id} className="border-b border-gray-100">
-                  <td className="py-4 text-sm text-blue-600 font-medium">{order.id}</td>
-                  <td className="py-4 text-sm text-gray-900">{order.customer}</td>
-                  <td className="py-4 text-sm text-gray-600">{order.date}</td>
-                  <td className="py-4 text-sm text-gray-900 font-medium">{order.total}</td>
-                  <td className="py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        order.status === "Completada"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "Pendiente"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-blue-100 text-blue-700"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
+              {ordersLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <tr key={i} className="border-b border-gray-100">
+                    <td colSpan={5} className="py-4">
+                      <div className="h-10 animate-pulse rounded bg-gray-200"></div>
+                    </td>
+                  </tr>
+                ))
+              ) : ordersData && ordersData.items.length > 0 ? (
+                ordersData.items.map((order) => (
+                  <tr key={order.id} className="border-b border-gray-100">
+                    <td className="py-4 text-sm text-blue-600 font-medium">#{order.orderNumber}</td>
+                    <td className="py-4 text-sm text-gray-900">{order.user.name}</td>
+                    <td className="py-4 text-sm text-gray-600">{formatDate(order.createdAt)}</td>
+                    <td className="py-4 text-sm text-gray-900 font-medium">
+                      ${order.orderDetail.total.toFixed(2)}
+                    </td>
+                    <td className="py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                        {translateStatus(order.status)}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-gray-600">
+                    No hay órdenes recientes
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-        </div>
-      </section>
-
-      {/* Productos con Bajo Stock */}
-      <section className="bg-white border border-gray-200 rounded-lg p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Productos con Bajo Stock</h2>
-          <Link href="/admin/products" className="text-sm text-blue-600 hover:underline">
-            Ver Inventario
-          </Link>
-        </div>
-
-        <div className="space-y-4">
-          {[
-            { name: "MSI MEG Trident X", sku: "SKU-001", stock: 3, category: "Desktop PCs" },
-            { name: "ASUS ROG Strix Monitor", sku: "SKU-045", stock: 5, category: "Monitores" },
-            { name: "Logitech Gaming Mouse", sku: "SKU-123", stock: 8, category: "Accesorios" },
-            { name: "Corsair RGB Keyboard", sku: "SKU-234", stock: 4, category: "Accesorios" },
-          ].map((product) => (
-            <div
-              key={product.sku}
-              className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-            >
-              <div>
-                <p className="font-medium text-gray-900">{product.name}</p>
-                <p className="text-sm text-gray-600">
-                  {product.sku} • {product.category}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-medium text-orange-600">{product.stock} unidades</p>
-                <Link href="/admin/products" className="text-xs text-blue-600 hover:underline">
-                  Reabastecer
-                </Link>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 

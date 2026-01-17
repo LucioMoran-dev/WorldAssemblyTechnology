@@ -265,3 +265,18 @@
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -8px oklch(0 0 0 / 0.15);
 }
+
+/* Swiper: permite overflow vertical pero no horizontal */
+.swiper {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+.swiper-wrapper {
+  overflow: visible !important;
+}
+
+.swiper-slide {
+  overflow: visible !important;
+}
+

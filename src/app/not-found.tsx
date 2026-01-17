@@ -73,7 +73,7 @@ export default function NotFound() {
             Volver al inicio
           </Button>
         </Link>
-        <Link href="/laptops">
+        <Link href="/products/catalog/products">
           <Button
             variant="outline"
             className="flex items-center gap-2 border-blue-600 text-blue-600 hover:bg-blue-50"

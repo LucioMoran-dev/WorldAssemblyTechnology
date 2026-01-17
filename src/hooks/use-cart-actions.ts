@@ -39,7 +39,7 @@ export function useCartQuery() {
   }
 
   return useQuery({
-    queryKey: ["cart", isAuthenticated, isLoading],
+    queryKey: ["cart"],
     queryFn: async () => {
       cartLogger.info('useCartQuery: Fetching cart from API');
       useCart.getState().setLoading(true);
@@ -74,7 +74,7 @@ export function useCartSummary() {
   }
 
   return useQuery({
-    queryKey: ["cart", "summary", isAuthenticated, isLoading],
+    queryKey: ["cart", "summary"],
     queryFn: () => {
       cartLogger.info('useCartSummary: Fetching cart summary from API');
       return cartService.getSummary();
@@ -97,9 +97,14 @@ export function useAddToCart() {
 
   return useMutation({
     mutationFn: (data: AddToCartDto) => cartService.addItem(data),
-    onSuccess: (cart) => {
+    onSuccess: async (cart) => {
+      // Normalizar el cart para asegurar que tenga itemCount
+      if (cart && typeof cart.itemCount !== 'number') {
+        cart.itemCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      }
+
       useCart.getState().setCart(cart);
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      await queryClient.refetchQueries({ queryKey: ["cart"] });
       toast.success("Producto agregado al carrito");
     },
     onError: (error: unknown) => {
@@ -126,9 +131,14 @@ export function useUpdateCartItem() {
       itemId: string;
       data: UpdateCartItemDto;
     }) => cartService.updateItemQuantity(itemId, data),
-    onSuccess: (cart) => {
+    onSuccess: async (cart) => {
+      // Normalizar el cart para asegurar que tenga itemCount
+      if (cart && typeof cart.itemCount !== 'number') {
+        cart.itemCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      }
+
       useCart.getState().setCart(cart);
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      await queryClient.refetchQueries({ queryKey: ["cart"] });
       toast.success("Carrito actualizado");
     },
     onError: (error: unknown) => {
@@ -149,9 +159,19 @@ export function useRemoveCartItem() {
 
   return useMutation({
     mutationFn: (itemId: string) => cartService.removeItem(itemId),
-    onSuccess: (response) => {
-      useCart.getState().setCart(response.cart);
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    onSuccess: async (response) => {
+      // Normalizar el cart para asegurar que tenga itemCount
+      const cart = response.cart;
+      if (cart && typeof cart.itemCount !== 'number') {
+        cart.itemCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      }
+
+      // Actualizar Zustand store
+      useCart.getState().setCart(cart);
+
+      // Forzar refetch inmediato de las queries del carrito
+      await queryClient.refetchQueries({ queryKey: ["cart"] });
+
       toast.success("Producto eliminado del carrito");
     },
     onError: (error: unknown) => {
@@ -172,9 +192,9 @@ export function useClearCart() {
 
   return useMutation({
     mutationFn: () => cartService.clearCart(),
-    onSuccess: () => {
+    onSuccess: async () => {
       useCart.getState().clearCart();
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      await queryClient.refetchQueries({ queryKey: ["cart"] });
       toast.success("Carrito vaciado");
     },
     onError: (error: unknown) => {

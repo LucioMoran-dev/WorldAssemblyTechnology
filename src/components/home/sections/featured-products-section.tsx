@@ -54,7 +54,7 @@ export function FeaturedProductsSection() {
             </h2>
           </div>
           <div className="relative">
-            <div className="flex gap-4 overflow-hidden py-8">
+            <div className="flex gap-4 py-8">
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
@@ -73,7 +73,7 @@ export function FeaturedProductsSection() {
   }
 
   return (
-    <section className="border-b border-gray-200 bg-white py-12">
+    <section className="border-b border-gray-200 bg-white py-12" style={{ overflowX: "clip", overflowY: "visible" }}>
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">
@@ -89,7 +89,7 @@ export function FeaturedProductsSection() {
           </Link>
         </div>
 
-        <div className="relative">
+        <div className="relative pb-6 pt-4">
           {/* Botón de scroll izquierdo */}
           {canScrollLeft && (
             <button
@@ -105,7 +105,7 @@ export function FeaturedProductsSection() {
           <div
             ref={scrollContainerRef}
             onScroll={checkScroll}
-            className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth py-8"
+            className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",

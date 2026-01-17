@@ -78,13 +78,13 @@ function OrderMap() {
                 <div>
                   <p className="text-sm text-gray-600">Total</p>
                   <p className="font-semibold text-gray-900">
-                    ${order.total.toFixed(2)}
+                    ${order.orderDetail.total.toFixed(2)}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Artículos</p>
                   <p className="font-semibold text-gray-900">
-                    {order.itemCount} productos
+                    {order.orderDetail.items.length} productos
                   </p>
                 </div>
                 <div>

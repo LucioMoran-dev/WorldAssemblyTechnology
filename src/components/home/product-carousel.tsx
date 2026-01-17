@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import type { Swiper as SwiperType } from "swiper";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
-
-import { ProductCard } from "./product-card";
 
 import type { ProductCardProps } from "@/types";
+
+import { ProductCard } from "./product-card";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -18,10 +18,7 @@ interface ProductCarouselProps {
   sectionId: string;
 }
 
-export function ProductCarousel({
-  products,
-  sectionId,
-}: ProductCarouselProps) {
+export function ProductCarousel({ products }: ProductCarouselProps) {
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -75,7 +72,7 @@ export function ProductCarousel({
             spaceBetween: 24,
           },
         }}
-        className="!pb-16 !pt-4"
+        className="!px-4 !pt-4 !pb-6"
       >
         {products.map((product) => (
           <SwiperSlide key={product.id}>
@@ -87,7 +84,7 @@ export function ProductCarousel({
       <button
         onClick={handlePrev}
         disabled={isBeginning}
-        className={`absolute left-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-gray-800 group-hover:opacity-100 lg:-left-6 lg:opacity-0`}
+        className={`absolute top-1/2 left-0 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-gray-800 lg:-left-6 lg:opacity-0`}
         aria-label="Anterior"
       >
         <ChevronLeft className="h-6 w-6" />
@@ -96,7 +93,7 @@ export function ProductCarousel({
       <button
         onClick={handleNext}
         disabled={isEnd}
-        className={`absolute right-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-gray-800 group-hover:opacity-100 lg:-right-6 lg:opacity-0`}
+        className={`absolute top-1/2 right-0 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-gray-800 lg:-right-6 lg:opacity-0`}
         aria-label="Siguiente"
       >
         <ChevronRight className="h-6 w-6" />

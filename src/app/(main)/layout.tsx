@@ -19,15 +19,18 @@ export default function MainLayout({
   const routeNames: Record<string, string> = {
     "/products": "Productos",
     "/products/catalog": "Catálogo",
+    "/products/catalog-brand": "Catálogo por Marca",
     "/about": "Sobre Nosotros",
     "/contact": "Contacto",
     "/cart": "Carrito de Compras",
     "/cart/checkout": "Proceso de Pago",
+    "/cart/review": "Revisión del Pedido y pago",
     "/help": "Ayuda",
     "/privacy-term": "Política de Privacidad, Términos y Condiciones",
     "/auth": "Autenticación",
     "/auth/signin": "Iniciar Sesión",
     "/auth/signup": "Registrarse",
+    "/repairs": "Reparaciones",
   };
 
   // Función para generar breadcrumbs

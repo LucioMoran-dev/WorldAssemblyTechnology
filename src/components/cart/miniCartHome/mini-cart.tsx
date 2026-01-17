@@ -122,7 +122,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
 
           {/* Action Button */}
           <div className="space-y-2">
-            <Link href="/checkout" onClick={onClose}>
+            <Link href="/cart/checkout" onClick={onClose}>
               <Button
                 disabled={items.length === 0}
                 className="h-10 w-full bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700"

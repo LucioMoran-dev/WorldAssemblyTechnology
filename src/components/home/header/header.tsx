@@ -12,6 +12,7 @@ import { useAuth, useCartSummary, useWishlistSummary } from "@/hooks";
 import { authService } from "@/services";
 
 import { MiniCart } from "../../cart/miniCartHome/mini-cart";
+import { MiniWishlist } from "../../wishlist/miniWishlist/mini-wishlist";
 
 const Header = memo(function Header() {
   const router = useRouter();
@@ -23,6 +24,7 @@ const Header = memo(function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
+  const [isMiniWishlistOpen, setIsMiniWishlistOpen] = useState(false);
 
   const handleLogout = () => {
     authService.logout();
@@ -44,6 +46,11 @@ const Header = memo(function Header() {
     []
   );
   const closeMiniCart = useCallback(() => setIsMiniCartOpen(false), []);
+  const toggleMiniWishlist = useCallback(
+    () => setIsMiniWishlistOpen((prev) => !prev),
+    []
+  );
+  const closeMiniWishlist = useCallback(() => setIsMiniWishlistOpen(false), []);
 
   return (
     <>
@@ -106,7 +113,7 @@ const Header = memo(function Header() {
                 Más
               </Link>
               <Link
-                href="/products/catalog/repairs"
+                href="/repairs"
                 className="text-sm font-medium whitespace-nowrap text-gray-700 transition-colors hover:text-blue-600"
               >
                 Reparaciones
@@ -138,20 +145,19 @@ const Header = memo(function Header() {
 
               {/* Wishlist */}
               {isAuthenticated ? (
-                <Link href="/dashboard/wishlist">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative h-9 w-9 hover:bg-gray-100"
-                  >
-                    <Heart className="h-5 w-5" />
-                    {wishlistSummary && wishlistSummary.itemCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
-                        {wishlistSummary.itemCount}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-9 w-9 hover:bg-gray-100"
+                  onClick={toggleMiniWishlist}
+                >
+                  <Heart className="h-5 w-5" />
+                  {wishlistSummary && wishlistSummary.itemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
+                      {wishlistSummary.itemCount}
+                    </span>
+                  )}
+                </Button>
               ) : null}
 
               {/* Cart */}
@@ -323,6 +329,7 @@ const Header = memo(function Header() {
         )}
       </header>
       <MiniCart isOpen={isMiniCartOpen} onClose={closeMiniCart} />
+      <MiniWishlist isOpen={isMiniWishlistOpen} onClose={closeMiniWishlist} />
     </>
   );
 });

@@ -1,10 +1,55 @@
 "use client";
 
 import { Search, Eye, Download } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
+
+import { useAllOrders } from "@/hooks";
+import { OrderStatus } from "@/types";
+
+// Helper para obtener el color del estado
+const getStatusColor = (status: OrderStatus) => {
+  const colors = {
+    [OrderStatus.PENDING]: "bg-yellow-100 text-yellow-700",
+    [OrderStatus.PAID]: "bg-blue-100 text-blue-700",
+    [OrderStatus.PROCESSING]: "bg-purple-100 text-purple-700",
+    [OrderStatus.SHIPPED]: "bg-indigo-100 text-indigo-700",
+    [OrderStatus.DELIVERED]: "bg-green-100 text-green-700",
+    [OrderStatus.CANCELLED]: "bg-red-100 text-red-700",
+  };
+  return colors[status] || "bg-gray-100 text-gray-700";
+};
+
+// Helper para formatear fecha
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+// Helper para traducir estado
+const translateStatus = (status: OrderStatus): string => {
+  const translations = {
+    [OrderStatus.PENDING]: "Pendiente",
+    [OrderStatus.PAID]: "Pagada",
+    [OrderStatus.PROCESSING]: "En Proceso",
+    [OrderStatus.SHIPPED]: "Enviada",
+    [OrderStatus.DELIVERED]: "Completada",
+    [OrderStatus.CANCELLED]: "Cancelada",
+  };
+  return translations[status] || status;
+};
 
 export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "">("");
+
+  const { data: ordersData, isLoading } = useAllOrders({
+    status: statusFilter || undefined,
+  });
 
   return (
     <div className="space-y-6">
@@ -29,12 +74,18 @@ export default function AdminOrdersPage() {
               className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
-          <select className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "")}
+            className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
             <option value="">Todos los Estados</option>
-            <option value="pending">Pendiente</option>
-            <option value="processing">En Proceso</option>
-            <option value="completed">Completada</option>
-            <option value="cancelled">Cancelada</option>
+            <option value={OrderStatus.PENDING}>Pendiente</option>
+            <option value={OrderStatus.PAID}>Pagada</option>
+            <option value={OrderStatus.PROCESSING}>En Proceso</option>
+            <option value={OrderStatus.SHIPPED}>Enviada</option>
+            <option value={OrderStatus.DELIVERED}>Completada</option>
+            <option value={OrderStatus.CANCELLED}>Cancelada</option>
           </select>
         </div>
       </div>
@@ -69,87 +120,65 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {[
-                {
-                  id: "#12345",
-                  customer: "Juan Pérez",
-                  email: "juan@example.com",
-                  date: "15/12/2025",
-                  total: "$1,299.00",
-                  status: "Completada",
-                },
-                {
-                  id: "#12346",
-                  customer: "María García",
-                  email: "maria@example.com",
-                  date: "15/12/2025",
-                  total: "$899.00",
-                  status: "Pendiente",
-                },
-                {
-                  id: "#12347",
-                  customer: "Carlos López",
-                  email: "carlos@example.com",
-                  date: "14/12/2025",
-                  total: "$1,499.00",
-                  status: "En Proceso",
-                },
-                {
-                  id: "#12348",
-                  customer: "Ana Martínez",
-                  email: "ana@example.com",
-                  date: "14/12/2025",
-                  total: "$699.00",
-                  status: "Completada",
-                },
-                {
-                  id: "#12349",
-                  customer: "Luis Rodríguez",
-                  email: "luis@example.com",
-                  date: "13/12/2025",
-                  total: "$2,199.00",
-                  status: "Pendiente",
-                },
-              ].map((order) => (
-                <tr
-                  key={order.id}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
-                  <td className="px-6 py-4 text-sm font-medium text-blue-600">
-                    {order.id}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {order.customer}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {order.email}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {order.date}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {order.total}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${
-                        order.status === "Completada"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "Pendiente"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-blue-100 text-blue-700"
-                      }`}
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <tr key={i} className="border-b border-gray-100">
+                    <td colSpan={7} className="px-6 py-4">
+                      <div className="h-12 animate-pulse rounded bg-gray-200"></div>
+                    </td>
+                  </tr>
+                ))
+              ) : ordersData && ordersData.items.length > 0 ? (
+                ordersData.items
+                  .filter((order) =>
+                    searchTerm
+                      ? order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
+                      : true
+                  )
+                  .map((order) => (
+                    <tr
+                      key={order.id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
                     >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <button className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50">
-                      <Eye className="h-4 w-4" />
-                    </button>
+                      <td className="px-6 py-4 text-sm font-medium text-blue-600">
+                        #{order.orderNumber}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {order.user.name}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {order.user.email}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {formatDate(order.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        ${order.orderDetail.total.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(order.status)}`}>
+                          {translateStatus(order.status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Link
+                          href={`/dashboard/orders/${order.id}`}
+                          className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50 inline-block"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-600">
+                    No se encontraron órdenes
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

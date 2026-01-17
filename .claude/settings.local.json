@@ -17,7 +17,8 @@
       "Bash(timeout 10 tail:*)",
       "Bash(exit:*)",
       "Bash(taskkill:*)",
-      "Bash(if exist .env type .env)"
+      "Bash(if exist .env type .env)",
+      "Bash(npm ls:*)"
     ],
     "deny": [],
     "ask": []

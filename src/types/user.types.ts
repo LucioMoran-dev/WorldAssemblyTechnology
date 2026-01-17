@@ -24,6 +24,7 @@ export interface User {
   email: string;
   name: string;
   username?: string;
+  birthDate: Date;
   phone?: string;
   role: UserRole;
   isActive: boolean;
@@ -45,8 +46,8 @@ export interface JWTPayload {
 
 // Auth Response
 export interface AuthResponse {
-  accessToken: string;  // ✅ El backend devuelve 'accessToken', no 'token'
-  expiresIn?: number;   // Segundos de expiración (opcional)
+  accessToken: string; // ✅ El backend devuelve 'accessToken', no 'token'
+  expiresIn?: number; // Segundos de expiración (opcional)
   user: User;
 }
 
@@ -68,9 +69,13 @@ export interface LoginDto {
 }
 
 export interface UpdateUserDto {
-  name?: string;
-  phone?: string;
-  username?: string;
+  id: string;
+  name: string;
+  email: string;
+  birthDate: Date;
+  phone: string;
+  addresses: UserAddress | string;
+  username: string;
 }
 
 export interface UpdatePasswordDto {

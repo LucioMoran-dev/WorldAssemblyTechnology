@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
@@ -33,13 +35,21 @@ export function NewProductsSection() {
   );
 
   return (
-    <section className="border-b border-gray-200 bg-white py-12">
+    <section
+      className="border-b border-gray-200 bg-white py-12 pt-24"
+      style={{ overflowX: "clip", overflowY: "visible" }}
+    >
       <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">Nuevos Productos</h2>
-          <Button variant="link" className="text-blue-600 hover:text-blue-700">
-            Ver Todos los Nuevos Productos →
-          </Button>
+          <Link href="/products/catalog/products">
+            <Button
+              variant="link"
+              className="text-blue-600 hover:text-blue-700"
+            >
+              Ver Todos los Nuevos Productos →
+            </Button>
+          </Link>
         </div>
 
         <ProductCarousel products={mappedProducts} sectionId="new-products" />

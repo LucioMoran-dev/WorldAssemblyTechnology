@@ -72,17 +72,18 @@ export const testimonials = [
 
 // Tabs para secciones de productos
 export const laptopTabs = [
-  "MSI GS Series",
-  "MSI GT Series",
-  "MSI GL Series",
-  "MSI GE Series",
+  "Laptops",
+  "Laptops Gaming",
+  "Ultrabooks",
+  "MSI Series GS,GT,GL,GE",
+  "MacBooks",
 ];
 
 export const desktopTabs = [
-  "MSI Infinite Series",
-  "MSI Trident",
-  "MSI GL Series",
-  "MSI Nightblade",
+  "Desktops",
+  "Gaming Desktops",
+  "All-in-One PCs",
+  "MSI Series",
 ];
 
 // Estadísticas de clientes

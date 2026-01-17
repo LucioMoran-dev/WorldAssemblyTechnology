@@ -3,11 +3,11 @@
 import { ChevronDown, Grid3x3, List, X, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, use } from "react";
+import { use, useState } from "react";
 
 import { ProductCard } from "@/components/home/product-card";
 import { Button } from "@/components/ui/button";
-import { useCategories, useAllProducts } from "@/hooks";
+import { useAllProducts, useProductsByBrand } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
 import { features } from "@/seeds";
 import type { Review } from "@/types";
@@ -44,7 +44,7 @@ const categoryConfig: Record<string, { title: string; breadcrumb: string }> = {
 };
 
 interface PageProps {
-  params: Promise<{ category: string }>;
+  params: Promise<{ brand: string }>;
 }
 
 // Helper function to calculate average rating
@@ -55,7 +55,7 @@ const getAverageRating = (reviews?: Review[]): number => {
 };
 
 export default function CatalogPage({ params }: PageProps) {
-  const { category } = use(params);
+  const { brand } = use(params);
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("position");
@@ -63,42 +63,26 @@ export default function CatalogPage({ params }: PageProps) {
   const [perPage, setPerPage] = useState(31);
 
   // ✅ Usa el filtro avanzado con el nombre de la categoría
-  const {
-    data: categoryData,
-    isLoading,
-    isError,
-  } = useCategories({
-    category,
-    page,
-    limit: perPage,
-  });
 
-  // ✅ Hook para cargar todos los productos como fallback
+  const { data: brandData, isLoading, isError } = useProductsByBrand(brand);
+
   const { data: allProductsData, isLoading: allProductsLoading } =
     useAllProducts();
 
-  // ✅ Extrae la primera categoría (debería ser solo una por el filtro)
-  const categoryInfo = categoryData?.items?.[0];
+  const isUsingFallback = isError && allProductsData?.items?.length;
 
-  // ✅ Detecta si estamos usando fallback (todos los productos)
-  const isUsingFallback = isError && allProductsData?.items;
+  const allProducts = brandData ?? allProductsData?.items ?? [];
 
-  // Si no encuentra la categoría, usa todos los productos
-  const allProducts = categoryInfo?.products ?? allProductsData?.items ?? [];
-
-  // Paginación mockeada para fallback
   const startIndex = (page - 1) * perPage;
   const endIndex = startIndex + perPage;
+
   const products = isUsingFallback
     ? allProducts.slice(startIndex, endIndex)
     : allProducts;
 
-  // Total de páginas mockeado
-  const totalPages = isUsingFallback
-    ? Math.ceil(allProducts.length / perPage)
-    : (categoryData?.pages ?? 1);
+  const totalPages = Math.ceil(allProducts.length / perPage);
 
-  const config = categoryConfig[category] || {
+  const config = categoryConfig[brand] || {
     title: "Productos",
     breadcrumb: "Productos",
   };
@@ -139,10 +123,7 @@ export default function CatalogPage({ params }: PageProps) {
   if (isLoading || (isError && allProductsLoading)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="mt-4 text-gray-600">Cargando productos...</p>
-        </div>
+        <p>Cargando productos…</p>
       </div>
     );
   }
@@ -150,17 +131,7 @@ export default function CatalogPage({ params }: PageProps) {
   if (isError && !allProductsData?.items?.length) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <p className="text-xl text-red-600">
-            Categoría &quot;{category}&quot; no encontrada
-          </p>
-          <Link
-            href="/"
-            className="mt-4 inline-block text-blue-600 hover:underline"
-          >
-            Volver al inicio
-          </Link>
-        </div>
+        <p className="text-red-600">Marca &quot;{brand}&quot; no encontrada</p>
       </div>
     );
   }

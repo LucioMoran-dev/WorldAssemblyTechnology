@@ -8,6 +8,8 @@ import type {
   CreateVariantDto,
   UpdateVariantDto,
   ProductVariant,
+  PriceCalculation,
+  StockInfo,
 } from "@/types";
 
 /**

@@ -3,6 +3,7 @@ import type {
   Category,
   CategoryWithProducts,
   CreateCategoryDto,
+  UpdateCategoryDto,
 } from "@/types";
 import type { IPaginatedResult } from "@/types/paginateResult";
 
@@ -91,6 +92,36 @@ export const categoryService = {
     const response = await apiClient.post<{ message: string }>(
       "/categories/seeder"
     );
+    return response.data;
+  },
+
+  /**
+   * PUT /categories/:id - Actualizar categoría
+   * Requiere: ADMIN | Rate Limit: 60/min
+   *
+   * @param id - UUID de la categoría
+   * @param data - Datos a actualizar
+   *
+   * @example
+   * const category = await categoryService.update("550e8400-e29b-41d4-a716-446655440000", { name: "Laptops Gaming" });
+   */
+  update: async (id: string, data: UpdateCategoryDto): Promise<Category> => {
+    const response = await apiClient.put<Category>(`/categories/${id}`, data);
+    return response.data;
+  },
+
+  /**
+   * DELETE /categories/:id - Eliminar categoría
+   * Requiere: ADMIN | Rate Limit: 60/min
+   *
+   * @param id - UUID de la categoría
+   *
+   * @example
+   * const result = await categoryService.delete("550e8400-e29b-41d4-a716-446655440000");
+   * // { message: "Categoría eliminada correctamente" }
+   */
+  delete: async (id: string): Promise<{ message: string }> => {
+    const response = await apiClient.delete<{ message: string }>(`/categories/${id}`);
     return response.data;
   },
 };

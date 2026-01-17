@@ -12,10 +12,14 @@ export function mapProductToCardProps(product: Product) {
   return {
     id: product.id,
     name: product.name,
+    description: product.description,
+    brand: product.brand,
+    model: product.model,
+    category: product.category?.name,
     basePrice: product.basePrice, // ✅ Propiedad correcta según ProductCardProps
     originalPrice: undefined, // Calcular si hay descuento
-    rating: 0, // TODO: Implementar promedio de reviews
-    reviews: 0, // TODO: Contar reviews
+    rating: product.averageRating || 0,
+    reviews: product.reviewCount || 0,
     image: product.imgUrls[0],
     images: product.imgUrls,
     imgUrls: product.imgUrls, // ✅ Agregado para compatibilidad

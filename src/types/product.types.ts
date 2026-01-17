@@ -163,10 +163,46 @@ export interface CategoryWithProducts extends Category {
 // Legacy compatibility
 export type ProductFilters = ProductsSearchQuery;
 
+// Price Calculation Response (GET /products/:id/price)
+export interface PriceCalculation {
+  productId: string;
+  basePrice: number;
+  variantModifiers: number;
+  subtotal: number;
+  tax: number;
+  total: number;
+  selectedVariants?: {
+    id: string;
+    type: string;
+    name: string;
+    priceModifier: number;
+  }[];
+}
+
+// Stock Information Response (GET /products/:id/stock)
+export interface StockInfo {
+  productId: string;
+  productName: string;
+  baseStock: number;
+  variantStock: number | null;
+  availableStock: number;
+  isAvailable: boolean;
+  selectedVariants?: {
+    id: string;
+    type: string;
+    name: string;
+    stock: number;
+  }[];
+}
+
 // UI Props (for components)
 export interface ProductCardProps {
   id: string;
   name: string;
+  description?: string;
+  brand?: string;
+  model?: string;
+  category?: string;
   basePrice: number;
   originalPrice?: number;
   rating: number;

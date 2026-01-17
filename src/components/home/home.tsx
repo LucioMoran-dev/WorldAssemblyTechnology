@@ -41,10 +41,10 @@ export function Home() {
         {/* MSI Laptops Section with Tabs */}
         <CategoryWithTabsSection
           categoryImage="/msi-dragon-logo-red.jpg"
-          categoryAlt="MSI Laptops"
-          categoryTitle="MSI Laptops"
+          categoryAlt="Laptops"
+          categoryTitle="Laptops"
           tabs={laptopTabs}
-          defaultTab="MSI GS Series"
+          defaultTab="Laptos"
           bgColor="gray"
           limit={10}
         />
@@ -55,14 +55,14 @@ export function Home() {
           categoryAlt="Desktops"
           categoryTitle="Desktops"
           tabs={desktopTabs}
-          defaultTab="MSI Infinite Series"
+          defaultTab="Destoks"
           bgColor="white"
           limit={10}
         />
 
         {/* Gaming Monitors Section */}
         <CategoryProductsSection
-          categoryImage="/msi-logo-white.jpg"
+          categoryImage="/gaming-screen.webp"
           categoryAlt="Gaming Monitors"
           categoryTitle="Gaming Monitors"
           bgColor="gray"
@@ -76,12 +76,14 @@ export function Home() {
         <CustomerStats stats={customerStats} />
 
         {/* Testimonial */}
-        <Testimonial
-          quote={testimonials[0].quote}
-          author={testimonials[0].author}
-          activeSlide={0}
-          totalSlides={testimonials.length}
-        />
+        {testimonials[0] && (
+          <Testimonial
+            quote={testimonials[0].quote}
+            author={testimonials[0].author}
+            activeSlide={0}
+            totalSlides={testimonials.length}
+          />
+        )}
 
         {/* Features Grid */}
         <FeaturesGrid features={features} />
