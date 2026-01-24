@@ -1,10 +1,10 @@
 import { apiClient } from "@/lib/api";
 import type {
-  Wishlist,
-  WishlistSummary,
-  AddToWishlistDto,
-  CheckWishlistResponse,
-  WishlistItem,
+  IWishlist,
+  IWishlistSummary,
+  IAddToWishlistDto,
+  ICheckWishlistResponse,
+  IWishlistItem,
 } from "@/types";
 
 /**
@@ -16,8 +16,8 @@ export const wishlistService = {
    * GET /wishlist/my-wishlist - Obtener mi wishlist completa
    * Requiere: CLIENT | Rate Limit: 60/min
    */
-  getMyWishlist: async (): Promise<Wishlist> => {
-    const response = await apiClient.get<Wishlist>("/wishlist/my-wishlist");
+  getMyWishlist: async (): Promise<IWishlist> => {
+    const response = await apiClient.get<IWishlist>("/wishlist/my-wishlist");
     return response.data;
   },
 
@@ -25,8 +25,8 @@ export const wishlistService = {
    * GET /wishlist/summary - Resumen rápido de wishlist
    * Requiere: CLIENT | Rate Limit: 60/min
    */
-  getSummary: async (): Promise<WishlistSummary> => {
-    const response = await apiClient.get<WishlistSummary>("/wishlist/summary");
+  getSummary: async (): Promise<IWishlistSummary> => {
+    const response = await apiClient.get<IWishlistSummary>("/wishlist/summary");
     return response.data;
   },
 
@@ -34,8 +34,8 @@ export const wishlistService = {
    * POST /wishlist/add - Agregar producto a wishlist
    * Requiere: CLIENT | Rate Limit: 60/min
    */
-  addItem: async (data: AddToWishlistDto): Promise<WishlistItem> => {
-    const response = await apiClient.post<WishlistItem>("/wishlist/add", data);
+  addItem: async (data: IAddToWishlistDto): Promise<IWishlistItem> => {
+    const response = await apiClient.post<IWishlistItem>("/wishlist/add", data);
     return response.data;
   },
 
@@ -59,8 +59,8 @@ export const wishlistService = {
    * GET /wishlist/check/:productId - Verificar si producto está en wishlist
    * Requiere: CLIENT | Rate Limit: 60/min
    */
-  checkProduct: async (productId: string): Promise<CheckWishlistResponse> => {
-    const response = await apiClient.get<CheckWishlistResponse>(
+  checkProduct: async (productId: string): Promise<ICheckWishlistResponse> => {
+    const response = await apiClient.get<ICheckWishlistResponse>(
       `/wishlist/check/${productId}`
     );
     return response.data;

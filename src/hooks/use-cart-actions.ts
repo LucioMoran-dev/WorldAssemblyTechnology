@@ -5,7 +5,7 @@ import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { cartService } from "@/services";
-import type { AddToCartDto, UpdateCartItemDto, CheckoutDto } from "@/types";
+import type { IAddToCartDto, IUpdateCartItemDto, ICheckoutDto } from "@/types";
 import { cartLogger } from "@/utils/logger";
 
 // Importa los stores de Zustand
@@ -34,14 +34,18 @@ export function useCartQuery() {
   const enabled = !isLoading && isAuthenticated;
 
   // Debug log
-  if (process.env.NODE_ENV === 'development') {
-    cartLogger.info('useCartQuery hook called', { isLoading, isAuthenticated, enabled });
+  if (process.env.NODE_ENV === "development") {
+    cartLogger.info("useCartQuery hook called", {
+      isLoading,
+      isAuthenticated,
+      enabled,
+    });
   }
 
   return useQuery({
     queryKey: ["cart"],
     queryFn: async () => {
-      cartLogger.info('useCartQuery: Fetching cart from API');
+      cartLogger.info("useCartQuery: Fetching cart from API");
       useCart.getState().setLoading(true);
       const cart = await cartService.getCart();
       useCart.getState().setCart(cart);
@@ -69,14 +73,18 @@ export function useCartSummary() {
   const enabled = !isLoading && isAuthenticated;
 
   // Debug log
-  if (process.env.NODE_ENV === 'development') {
-    cartLogger.info('useCartSummary hook called', { isLoading, isAuthenticated, enabled });
+  if (process.env.NODE_ENV === "development") {
+    cartLogger.info("useCartSummary hook called", {
+      isLoading,
+      isAuthenticated,
+      enabled,
+    });
   }
 
   return useQuery({
     queryKey: ["cart", "summary"],
     queryFn: () => {
-      cartLogger.info('useCartSummary: Fetching cart summary from API');
+      cartLogger.info("useCartSummary: Fetching cart summary from API");
       return cartService.getSummary();
     },
     enabled, // ✅ Esperar a que termine de inicializar
@@ -96,22 +104,34 @@ export function useAddToCart() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: AddToCartDto) => cartService.addItem(data),
+    mutationFn: (data: IAddToCartDto) => cartService.addItem(data),
     onSuccess: async (cart) => {
-      // Normalizar el cart para asegurar que tenga itemCount
-      if (cart && typeof cart.itemCount !== 'number') {
-        cart.itemCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
-      }
+      // Crear copia normalizada para no mutar el objeto original
+      const normalizedCart = {
+        ...cart,
+        itemCount:
+          typeof cart.itemCount === "number"
+            ? cart.itemCount
+            : cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
+      };
 
-      useCart.getState().setCart(cart);
+      useCart.getState().setCart(normalizedCart);
       await queryClient.refetchQueries({ queryKey: ["cart"] });
       toast.success("Producto agregado al carrito");
     },
     onError: (error: unknown) => {
+      // Obtener estado actual de autenticación (no usar closure stale)
+      const isAuthenticated = useAuth.getState().isAuthenticated;
+
+      const defaultMessage = isAuthenticated
+        ? "Error al agregar producto"
+        : "Tiene que iniciar sesión para agregar productos al carrito";
+
       const message = isAxiosError(error)
         ? (error.response?.data as { message?: string })?.message ||
-          "Error al agregar producto"
-        : "Error al agregar producto";
+          defaultMessage
+        : defaultMessage;
+
       toast.error(message);
     },
   });
@@ -129,12 +149,13 @@ export function useUpdateCartItem() {
       data,
     }: {
       itemId: string;
-      data: UpdateCartItemDto;
+      data: IUpdateCartItemDto;
     }) => cartService.updateItemQuantity(itemId, data),
     onSuccess: async (cart) => {
       // Normalizar el cart para asegurar que tenga itemCount
-      if (cart && typeof cart.itemCount !== 'number') {
-        cart.itemCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      if (cart && typeof cart.itemCount !== "number") {
+        cart.itemCount =
+          cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
       }
 
       useCart.getState().setCart(cart);
@@ -162,8 +183,9 @@ export function useRemoveCartItem() {
     onSuccess: async (response) => {
       // Normalizar el cart para asegurar que tenga itemCount
       const cart = response.cart;
-      if (cart && typeof cart.itemCount !== 'number') {
-        cart.itemCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      if (cart && typeof cart.itemCount !== "number") {
+        cart.itemCount =
+          cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
       }
 
       // Actualizar Zustand store
@@ -223,7 +245,7 @@ export function useCheckout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CheckoutDto) => cartService.checkout(data),
+    mutationFn: (data: ICheckoutDto) => cartService.checkout(data),
     onSuccess: () => {
       useCart.getState().clearCart();
       queryClient.invalidateQueries({ queryKey: ["cart"] });

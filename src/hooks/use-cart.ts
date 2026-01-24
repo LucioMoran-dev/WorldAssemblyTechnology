@@ -2,18 +2,18 @@
 
 import { create } from "zustand";
 
-import type { Cart } from "@/types";
+import type { ICart } from "@/types";
 
 /**
  * Store del carrito de compras con Zustand
  * Maneja el estado del carrito y sus operaciones optimistas
  */
 interface CartStore {
-  cart: Cart | null;
+  cart: ICart | null;
   isLoading: boolean;
 
   // Actions
-  setCart: (cart: Cart) => void;
+  setCart: (cart: ICart) => void;
   clearCart: () => void;
   setLoading: (loading: boolean) => void;
 
@@ -22,7 +22,7 @@ interface CartStore {
   total: number;
 }
 
-export const useCart = create<CartStore>((set, get) => ({
+export const useCart = create<CartStore>((set, _get) => ({
   cart: null,
   isLoading: false,
   itemCount: 0,

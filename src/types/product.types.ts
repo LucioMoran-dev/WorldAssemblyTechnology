@@ -2,7 +2,7 @@
  * Tipos relacionados con productos, variantes y categorías
  */
 
-import type { Review } from "./review.types";
+import type { IReviews } from "./review.types";
 
 // Variant Type Enum
 export enum VariantType {
@@ -15,15 +15,15 @@ export enum VariantType {
 }
 
 // Category
-export interface Category {
+export interface ICategory {
   id: string;
   name: string;
   description?: string;
-  products?: Product[];
+  products?: IProduct[];
 }
 
 // Product Specifications
-export interface ProductSpecifications {
+export interface IProductSpecifications {
   screenSize?: string;
   resolution?: string;
   processor?: string;
@@ -36,7 +36,7 @@ export interface ProductSpecifications {
 }
 
 // Product Variant
-export interface ProductVariant {
+export interface IProductVariant {
   id: string;
   type: string;
   name: string;
@@ -48,7 +48,7 @@ export interface ProductVariant {
 }
 
 // Product File
-export interface ProductFile {
+export interface IProductFile {
   id: string;
   url: string;
   publicId: string;
@@ -57,7 +57,7 @@ export interface ProductFile {
 }
 
 // Product
-export interface Product {
+export interface IProduct {
   id: string;
   name: string;
   description: string;
@@ -66,22 +66,22 @@ export interface Product {
   basePrice: number;
   baseStock: number;
   imgUrls: string[];
-  specifications?: ProductSpecifications;
+  specifications?: IProductSpecifications;
   isActive: boolean;
   hasVariants: boolean;
   featured: boolean;
   createdAt: string;
   updatedAt: string;
-  category: Category;
-  variants?: ProductVariant[];
-  files?: ProductFile[];
-  reviews?: Review[];
+  category: ICategory;
+  variants?: IProductVariant[];
+  files?: IProductFile[];
+  reviews?: IReviews[];
   averageRating?: number;
   reviewCount?: number;
 }
 
 // DTOs
-export interface CreateProductDto {
+export interface ICreateProductDto {
   name: string;
   description: string;
   brand: string;
@@ -91,12 +91,12 @@ export interface CreateProductDto {
   categoryName: string;
   imgUrls?: string[];
   featured?: boolean;
-  specifications?: ProductSpecifications;
+  specifications?: IProductSpecifications;
   hasVariants?: boolean;
-  variants?: CreateVariantDto[];
+  variants?: ICreateVariantDto[];
 }
 
-export interface UpdateProductDto {
+export interface IUpdateProductDto {
   name?: string;
   description?: string;
   brand?: string;
@@ -106,10 +106,10 @@ export interface UpdateProductDto {
   categoryName?: string;
   imgUrls?: string[];
   featured?: boolean;
-  specifications?: ProductSpecifications;
+  specifications?: IProductSpecifications;
 }
 
-export interface CreateVariantDto {
+export interface ICreateVariantDto {
   type: string;
   name: string;
   description?: string;
@@ -119,7 +119,7 @@ export interface CreateVariantDto {
   sortOrder?: number;
 }
 
-export interface UpdateVariantDto {
+export interface IUpdateVariantDto {
   type?: string;
   name?: string;
   description?: string;
@@ -130,7 +130,7 @@ export interface UpdateVariantDto {
 }
 
 // Search & Filters
-export interface ProductsSearchQuery {
+export interface IProductsSearchQuery {
   name?: string;
   price?: number;
   brand?: string;
@@ -139,32 +139,56 @@ export interface ProductsSearchQuery {
   limit?: number;
 }
 
-export interface PaginatedProducts {
-  items: Product[];
+export interface IPaginatedProducts {
+  items: IProduct[];
   total: number;
   pages: number;
 }
 
 // Categories
-export interface CreateCategoryDto {
+export interface ICreateCategoryDto {
   name: string;
   description?: string;
 }
 
-export interface UpdateCategoryDto {
+export interface IUpdateCategoryDto {
   name?: string;
   description?: string;
 }
 
-export interface CategoryWithProducts extends Category {
-  products: Product[];
+export interface ICategoryWithProducts extends ICategory {
+  products: IProduct[];
+}
+
+// Hybrid Search Types (Búsqueda instantánea + IA)
+export interface IAutocompleteResult {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  image: string | null;
+  category: string | null;
+}
+
+// SSE Stream Payload (GET /products/search/hybrid)
+export interface IHybridSearchStreamPayload {
+  source: "local" | "ai";
+  results: IAutocompleteResult[];
+}
+
+// REST Response (GET /products/search)
+export interface IHybridSearchResponse {
+  results: IAutocompleteResult[];
+  aiResults?: IAutocompleteResult[];
+  aiMessage?: string;
+  source: "local" | "hybrid";
 }
 
 // Legacy compatibility
-export type ProductFilters = ProductsSearchQuery;
+export type ProductFilters = IProductsSearchQuery;
 
 // Price Calculation Response (GET /products/:id/price)
-export interface PriceCalculation {
+export interface IPriceCalculation {
   productId: string;
   basePrice: number;
   variantModifiers: number;
@@ -180,7 +204,7 @@ export interface PriceCalculation {
 }
 
 // Stock Information Response (GET /products/:id/stock)
-export interface StockInfo {
+export interface IStockInfo {
   productId: string;
   productName: string;
   baseStock: number;
@@ -196,7 +220,7 @@ export interface StockInfo {
 }
 
 // UI Props (for components)
-export interface ProductCardProps {
+export interface IProductCardProps {
   id: string;
   name: string;
   description?: string;

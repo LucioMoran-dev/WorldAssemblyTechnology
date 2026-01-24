@@ -6,7 +6,7 @@ import type { Swiper as SwiperType } from "swiper";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import type { ProductCardProps } from "@/types";
+import type { IProductCardProps } from "@/types";
 
 import { ProductCard } from "./product-card";
 
@@ -14,7 +14,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 interface ProductCarouselProps {
-  products: ProductCardProps[];
+  products: IProductCardProps[];
   sectionId: string;
 }
 

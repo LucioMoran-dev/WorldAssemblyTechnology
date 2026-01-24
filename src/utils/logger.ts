@@ -11,14 +11,14 @@ export enum LogLevel {
   NONE = 4,
 }
 
-interface LoggerConfig {
+interface ILoggerConfig {
   level: LogLevel;
   enableTimestamp: boolean;
   enableColors: boolean;
 }
 
 class Logger {
-  private config: LoggerConfig;
+  private config: ILoggerConfig;
 
   constructor() {
     this.config = {
@@ -32,7 +32,7 @@ class Logger {
   /**
    * Configurar el logger
    */
-  configure(config: Partial<LoggerConfig>): void {
+  configure(config: Partial<ILoggerConfig>): void {
     this.config = { ...this.config, ...config };
   }
 

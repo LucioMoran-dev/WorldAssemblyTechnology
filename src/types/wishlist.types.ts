@@ -1,39 +1,36 @@
-import type { Product } from "./product.types";
-import type { User } from "./user.types";
+import type { IProduct } from "./product.types";
+import type { IUser } from "./user.types";
 
 /**
  * Tipos relacionados con wishlist
  */
 
 // Wishlist Item
-export interface WishlistItem {
+export interface IWishlistItem {
   id: string;
-  product: Product;
+  product: IProduct;
   addedAt: string;
 }
 
 // Wishlist
-export interface Wishlist {
+export interface IWishlist {
   id: string;
-  user: User;
-  items: WishlistItem[];
+  user: IUser;
+  items: IWishlistItem[];
   createdAt: string;
   updatedAt: string;
 }
 
 // Wishlist Summary (para navbar)
-export interface WishlistSummary {
+export interface IWishlistSummary {
   itemCount: number;
 }
 
 // DTOs
-export interface AddToWishlistDto {
+export interface IAddToWishlistDto {
   productId: string;
 }
 
-// Legacy compatibility
-export interface WishlistProduct extends Product {}
-
-export interface CheckWishlistResponse {
+export interface ICheckWishlistResponse {
   isInWishlist: boolean;
 }

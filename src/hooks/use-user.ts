@@ -6,10 +6,10 @@ import { toast } from "sonner";
 
 import { userService } from "@/services";
 import type {
-  UpdateUserDto,
+  IUpdateUserDto,
   ChangePasswordDto,
-  CreateAddressDto,
-  UpdateAddressDto,
+  ICreateAddressDto,
+  IUpdateAddressDto,
 } from "@/types";
 
 import { useAuth } from "./use-auth";
@@ -51,7 +51,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateUserDto) => userService.updateProfile(data),
+    mutationFn: (data: IUpdateUserDto) => userService.updateProfile(data),
     onSuccess: (user) => {
       updateUser(user);
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -93,7 +93,7 @@ export function useCreateAddress() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateAddressDto) => userService.createAddress(data),
+    mutationFn: (data: ICreateAddressDto) => userService.createAddress(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
       toast.success("Dirección agregada exitosamente");
@@ -120,7 +120,7 @@ export function useUpdateAddress() {
       data,
     }: {
       addressId: string;
-      data: UpdateAddressDto;
+      data: IUpdateAddressDto;
     }) => userService.updateAddress(addressId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });

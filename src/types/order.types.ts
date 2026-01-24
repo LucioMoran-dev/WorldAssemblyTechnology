@@ -1,5 +1,5 @@
-import type { UserAddress } from "./user.types";
-import type { VariantSnapshot } from "./common.types";
+import type { IVariantSnapshot } from "./common.types";
+import type { IUserAddress } from "./user.types";
 
 /**
  * Tipos relacionados con órdenes de compra
@@ -7,16 +7,16 @@ import type { VariantSnapshot } from "./common.types";
 
 // Order Status Enum
 export enum OrderStatus {
-  PENDING = 'pending',
-  PAID = 'paid',
-  PROCESSING = 'processing',
-  SHIPPED = 'shipped',
-  DELIVERED = 'delivered',
-  CANCELLED = 'cancelled'
+  PENDING = "pending",
+  PAID = "paid",
+  PROCESSING = "processing",
+  SHIPPED = "shipped",
+  DELIVERED = "delivered",
+  CANCELLED = "cancelled",
 }
 
 // Product Snapshot (para órdenes)
-export interface ProductSnapshot {
+export interface IProductSnapshot {
   name: string;
   description: string;
   basePrice: number;
@@ -25,7 +25,7 @@ export interface ProductSnapshot {
 }
 
 // Re-export VariantSnapshot para compatibilidad
-export type { VariantSnapshot };
+export type { IVariantSnapshot };
 
 // Order Item
 export interface OrderItem {
@@ -33,8 +33,8 @@ export interface OrderItem {
   quantity: number;
   unitPrice: number;
   subtotal: number;
-  productSnapshot: ProductSnapshot;
-  variantsSnapshot: VariantSnapshot[] | null;
+  productSnapshot: IProductSnapshot;
+  variantsSnapshot: IVariantSnapshot[] | null;
   createdAt: string;
 }
 
@@ -45,14 +45,14 @@ export interface OrderDetail {
   tax: number;
   shipping: number;
   total: number;
-  shippingAddress: UserAddress | null;
+  shippingAddress: IUserAddress | null;
   shippingAddressId?: string;
   paymentMethod?: string;
   items: OrderItem[];
 }
 
 // Order
-export interface Order {
+export interface IOrder {
   id: string;
   orderNumber: string;
   status: OrderStatus;
@@ -67,40 +67,43 @@ export interface Order {
 }
 
 // DTOs
-export interface CreateOrderFromCartDto {
+export interface ICreateOrderFromCartDto {
   shippingAddress?: null;
 }
 
-export interface UpdateOrderStatusDto {
+export interface IUpdateOrderStatusDto {
   status: OrderStatus;
   paymentMethod?: string;
 }
 
-export interface ConfirmPaymentDto {
+export interface IConfirmPaymentDto {
   paymentMethod: string;
   transactionId?: string;
-  paymentDetails?: Record<string, any>;
+  paymentDetails?: Record<
+    string,
+    string[] | number | number[] | boolean | Record<string, unknown>
+  >;
 }
 
 // Query Filters
-export interface OrderFilters {
+export interface IOrderFilters {
   status?: OrderStatus;
   startDate?: string; // YYYY-MM-DD
-  endDate?: string;   // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
   orderNumber?: string;
   userEmail?: string;
   page?: number;
   limit?: number;
 }
 
-export interface PaginatedOrders {
-  items: Order[];
+export interface IPaginatedOrders {
+  items: IOrder[];
   total: number;
   pages: number;
 }
 
 // Order Stats (ADMIN)
-export interface OrderStats {
+export interface IOrderStats {
   totalOrders: number;
   ordersByStatus: {
     pending: number;
@@ -119,5 +122,5 @@ export interface OrderStats {
 }
 
 // Legacy compatibility
-export type OrderListParams = OrderFilters;
+export type OrderListParams = IOrderFilters;
 export type PaymentMethod = string;

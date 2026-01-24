@@ -1,23 +1,24 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { User } from '@/types';
-import { authLogger } from '@/utils/logger';
+import { create } from "zustand";
+
+import type { IUser } from "@/types";
+import { authLogger } from "@/utils/logger";
 
 /**
  * Store de autenticación con Zustand
  * Maneja el estado del usuario autenticado y el token JWT
  */
 interface AuthStore {
-  user: User | null;
+  user: IUser | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 
   // Actions
-  login: (token: string, user: User) => void;
+  login: (token: string, user: IUser) => void;
   logout: () => void;
-  updateUser: (user: User) => void;
+  updateUser: (user: IUser) => void;
   initialize: () => void;
 }
 
@@ -31,8 +32,8 @@ export const useAuth = create<AuthStore>((set) => ({
    * Login: Guarda token y user en localStorage y actualiza el estado
    */
   login: (token, user) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
     set({ token, user, isAuthenticated: true, isLoading: false });
   },
 
@@ -40,8 +41,8 @@ export const useAuth = create<AuthStore>((set) => ({
    * Logout: Limpia localStorage y resetea el estado
    */
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     set({ token: null, user: null, isAuthenticated: false, isLoading: false });
   },
 
@@ -49,7 +50,7 @@ export const useAuth = create<AuthStore>((set) => ({
    * Update User: Actualiza solo los datos del usuario
    */
   updateUser: (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
     set({ user });
   },
 
@@ -58,17 +59,17 @@ export const useAuth = create<AuthStore>((set) => ({
    */
   initialize: () => {
     try {
-      const token = localStorage.getItem('token');
-      const userStr = localStorage.getItem('user');
+      const token = localStorage.getItem("token");
+      const userStr = localStorage.getItem("user");
 
       if (token && userStr) {
-        const user = JSON.parse(userStr) as User;
+        const user = JSON.parse(userStr) as IUser;
         set({ token, user, isAuthenticated: true, isLoading: false });
       } else {
         set({ isLoading: false });
       }
     } catch (error) {
-      authLogger.error('Error initializing auth', error);
+      authLogger.error("Error initializing auth", error);
       set({ isLoading: false });
     }
   },

@@ -37,6 +37,12 @@ export const brands = [
   { name: "HP", logo: "/generic-tech-logo.png" },
   { name: "GIGABYTE", logo: "/gigabyte-logo.jpg" },
   { name: "Intel", logo: "/intel-logo.png" },
+  { name: "Dell", logo: "/pngwing.com.png" },
+  { name: "ASUS", logo: "/pngAsus.com.png" },
+  { name: "AMD", logo: "/pngAmd.com.png" },
+  { name: "Acer", logo: "/pngAcer.com.png" },
+  { name: "Nvidia", logo: "/pngNvidia.com.png" },
+  { name: "Logitech", logo: "/pngLogitech.com.png" },
 ];
 
 // Menu items del dashboard

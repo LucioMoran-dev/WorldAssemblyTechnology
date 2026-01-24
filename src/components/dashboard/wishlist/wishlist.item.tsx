@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useWishlist, useRemoveFromWishlist } from "@/hooks";
-import type { WishlistItem as IWishlistItem } from "@/types";
+import type { IWishlistItem as IWishlistItem } from "@/types";
 
 function WishlistItem() {
   const { data: wishlist, isLoading } = useWishlist();

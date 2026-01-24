@@ -386,14 +386,19 @@ export default function ProductDetailPage() {
 
             <TabsContent value="specifications" className="mt-6">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {Object.entries(product.specifications).map(([key, value]) => (
-                  <div key={key} className="flex border-b border-gray-200 pb-3">
-                    <span className="w-1/2 font-medium text-gray-900">
-                      {key}:
-                    </span>
-                    <span className="w-1/2 text-gray-700">{value}</span>
-                  </div>
-                ))}
+                {Object.entries(product.specifications ?? {}).map(
+                  ([key, value]) => (
+                    <div
+                      key={key}
+                      className="flex border-b border-gray-200 pb-3"
+                    >
+                      <span className="w-1/2 font-medium text-gray-900">
+                        {key}:
+                      </span>
+                      <span className="w-1/2 text-gray-700">{value}</span>
+                    </div>
+                  )
+                )}
               </div>
             </TabsContent>
 
@@ -464,7 +469,6 @@ export default function ProductDetailPage() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {relatedProductsData?.items.map((relatedProduct) => (
               <ProductCard
-                basePrice={0}
                 key={relatedProduct.id}
                 {...mapProductToCardProps(relatedProduct)}
               />

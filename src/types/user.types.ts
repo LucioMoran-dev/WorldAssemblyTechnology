@@ -1,13 +1,13 @@
-import type { Cart } from "./cart.types";
+import type { ICart } from "./cart.types";
 import type { UserRole } from "./common.types";
-import type { Order } from "./order.types";
+import type { IOrder } from "./order.types";
 
 /**
  * Tipos relacionados con usuarios y autenticación
  */
 
 // User Address
-export interface UserAddress {
+export interface IUserAddress {
   id: string;
   label: string;
   street: string;
@@ -19,7 +19,7 @@ export interface UserAddress {
 }
 
 // User
-export interface User {
+export interface IUser {
   id: string;
   email: string;
   name: string;
@@ -30,13 +30,13 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  addresses?: UserAddress[];
-  orders?: Order[];
-  cart?: Cart;
+  addresses?: IUserAddress[];
+  orders?: IOrder[];
+  cart?: ICart;
 }
 
 // JWT Payload
-export interface JWTPayload {
+export interface IJWTPayload {
   sub: string;
   email: string;
   role: UserRole;
@@ -45,14 +45,14 @@ export interface JWTPayload {
 }
 
 // Auth Response
-export interface AuthResponse {
+export interface IAuthResponse {
   accessToken: string; // ✅ El backend devuelve 'accessToken', no 'token'
   expiresIn?: number; // Segundos de expiración (opcional)
-  user: User;
+  user: IUser;
 }
 
 // DTOs
-export interface SignupDto {
+export interface ISignupDto {
   email: string;
   password: string;
   confirmPassword: string;
@@ -63,28 +63,28 @@ export interface SignupDto {
   addresses?: string;
 }
 
-export interface LoginDto {
+export interface ILoginDto {
   email: string;
   password: string;
 }
 
-export interface UpdateUserDto {
+export interface IUpdateUserDto {
   id: string;
   name: string;
   email: string;
   birthDate: Date;
   phone: string;
-  addresses: UserAddress | string;
+  addresses: IUserAddress | string;
   username: string;
 }
 
-export interface UpdatePasswordDto {
+export interface IUpdatePasswordDto {
   currentPassword: string;
   newPassword: string;
   confirmPassword: string;
 }
 
-export interface CreateAddressDto {
+export interface ICreateAddressDto {
   label: string;
   street: string;
   city: string;
@@ -94,7 +94,7 @@ export interface CreateAddressDto {
   isDefault?: boolean;
 }
 
-export interface UpdateAddressDto {
+export interface IUpdateAddressDto {
   label?: string;
   street?: string;
   city?: string;
@@ -104,16 +104,16 @@ export interface UpdateAddressDto {
   isDefault?: boolean;
 }
 
-export interface ChangeRoleDto {
+export interface IChangeRoleDto {
   role: UserRole;
 }
 
-export interface UserListParams {
+export interface IUserListParams {
   page?: number;
   limit?: number;
 }
 
 // Legacy compatibility
-export type SigninDto = LoginDto;
-export type Address = UserAddress;
-export type ChangePasswordDto = UpdatePasswordDto;
+export type SigninDto = ILoginDto;
+export type Address = IUserAddress;
+export type ChangePasswordDto = IUpdatePasswordDto;

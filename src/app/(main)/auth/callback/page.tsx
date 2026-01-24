@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { useAuth } from "@/hooks";
 import { userService } from "@/services";
-import type { User } from "@/types";
+import type { IUser } from "@/types";
 import { authLogger } from "@/utils/logger";
 
 /**
@@ -47,7 +47,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem("accessToken", token);
 
         // Obtener datos completos del usuario desde la API
-        const user: User = await userService.getUserById(userId);
+        const user: IUser = await userService.getUserById(userId);
 
         // Guardar en el store de autenticación
         login(token, user);
@@ -115,7 +115,9 @@ export default function AuthCallbackPage() {
             <h2 className="mb-2 text-xl font-semibold text-gray-900">
               ¡Inicio de sesión exitoso!
             </h2>
-            <p className="text-gray-600">Redirigiendo a la página principal...</p>
+            <p className="text-gray-600">
+              Redirigiendo a la página principal...
+            </p>
           </>
         )}
 

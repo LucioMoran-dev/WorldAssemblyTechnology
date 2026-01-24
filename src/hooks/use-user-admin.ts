@@ -1,16 +1,17 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import { useAuth } from "@/hooks/use-auth";
 import { userService } from "@/services";
-import type { ChangeRoleDto, User, UserListParams } from "@/types";
+import type { IChangeRoleDto, IUser, IUserListParams } from "@/types";
 
 /**
  * Hook para obtener lista de usuarios (ADMIN)
  */
-export function useGetUsers(params?: UserListParams) {
+export function useGetUsers(params?: IUserListParams) {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const isLoading = useAuth((state) => state.isLoading);
 
@@ -34,8 +35,12 @@ export function useDeleteUser() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("Usuario eliminado correctamente");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Error al eliminar usuario");
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al eliminar usuario"
+        : "Error al eliminar usuario";
+      toast.error(message);
     },
   });
 }
@@ -52,8 +57,12 @@ export function useRestoreUser() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("Usuario restaurado correctamente");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Error al restaurar usuario");
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al restaurar usuario"
+        : "Error al restaurar usuario";
+      toast.error(message);
     },
   });
 }
@@ -65,14 +74,18 @@ export function useChangeUserRole() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ChangeRoleDto }) =>
+    mutationFn: ({ id, data }: { id: string; data: IChangeRoleDto }) =>
       userService.changeUserRole(id, data),
-    onSuccess: (user: User) => {
+    onSuccess: (user: IUser) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success(`Rol cambiado a ${user.role} correctamente`);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Error al cambiar rol");
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al cambiar rol"
+        : "Error al cambiar rol";
+      toast.error(message);
     },
   });
 }

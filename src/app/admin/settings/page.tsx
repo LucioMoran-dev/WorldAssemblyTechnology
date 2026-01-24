@@ -2,8 +2,8 @@
 
 import { Save, Database, Shield, Bell } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { AuthDebug } from "@/components/admin/auth-debug";
+import { Button } from "@/components/ui/button";
 import { useSeedCategories, useSeedProducts } from "@/hooks";
 
 // Asegúrate de importar el hook desde donde lo tengas definido (o si está en el mismo archivo)

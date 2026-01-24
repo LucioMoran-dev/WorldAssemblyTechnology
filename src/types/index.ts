@@ -47,9 +47,13 @@ export interface IProductCardProps {
   reviews: number;
   image?: string;
   images?: string[];
-  ImgUrls?: string[];
+  imgUrls?: string[];
   badge?: string;
   inStock?: boolean;
+  description: string;
+  brand: string;
+  model: string;
+  category: string;
 }
 
 /**

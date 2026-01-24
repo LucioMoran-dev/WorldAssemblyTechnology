@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { initializeAppData } from "@/lib/init-data";
 import { logger } from "@/utils/logger";
 

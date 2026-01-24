@@ -1,5 +1,5 @@
 import { apiClient, API_BASE_URL } from "@/lib/api";
-import type { AuthResponse, SignupDto, LoginDto, User } from "@/types";
+import type { IAuthResponse, ISignupDto, ILoginDto, IUser } from "@/types";
 
 /**
  * Servicio de autenticación
@@ -10,8 +10,8 @@ export const authService = {
    * POST /auth/signup - Registro de usuario
    * Público - No requiere autenticación
    */
-  async signup(data: SignupDto): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>("/auth/signup", data);
+  async signup(data: ISignupDto): Promise<IAuthResponse> {
+    const response = await apiClient.post<IAuthResponse>("/auth/signup", data);
     return response.data;
   },
 
@@ -19,8 +19,8 @@ export const authService = {
    * POST /auth/signin/user - Login
    * Público - No requiere autenticación
    */
-  async login(data: LoginDto): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>(
+  async login(data: ILoginDto): Promise<IAuthResponse> {
+    const response = await apiClient.post<IAuthResponse>(
       "/auth/signin/user",
       data
     );
@@ -70,14 +70,14 @@ export const authService = {
   /**
    * Guardar información del usuario en localStorage
    */
-  saveUser(user: User): void {
+  saveUser(user: IUser): void {
     localStorage.setItem("user", JSON.stringify(user));
   },
 
   /**
    * Obtener información del usuario desde localStorage
    */
-  getUser(): User | null {
+  getUser(): IUser | null {
     const userStr = localStorage.getItem("user");
     if (!userStr) return null;
     try {

@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 
 import { useAuth } from "@/hooks";
 import { ReactQueryProvider } from "@/lib/react-query";
+
 import { DataInitProvider } from "./data-init-provider";
 
 /**

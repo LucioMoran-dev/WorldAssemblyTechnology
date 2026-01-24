@@ -1,14 +1,14 @@
 import { apiClient } from "@/lib/api";
 import type {
-  Cart,
-  CartSummary,
-  AddToCartDto,
-  UpdateCartItemDto,
-  StockValidationResponse,
-  SelectAddressDto,
-  SelectedAddressResponse,
-  CheckoutDto,
-  Order,
+  ICart,
+  ICartSummary,
+  IAddToCartDto,
+  IUpdateCartItemDto,
+  IStockValidationResponse,
+  ISelectAddressDto,
+  ISelectedAddressResponse,
+  ICheckoutDto,
+  IOrder,
 } from "@/types";
 
 /**
@@ -20,8 +20,8 @@ export const cartService = {
    * GET /cart/id - Obtener mi carrito completo
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  getCart: async (): Promise<Cart> => {
-    const response = await apiClient.get<Cart>("/cart/id");
+  getCart: async (): Promise<ICart> => {
+    const response = await apiClient.get<ICart>("/cart/id");
     return response.data;
   },
 
@@ -29,8 +29,8 @@ export const cartService = {
    * GET /cart/summary - Resumen rápido del carrito
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  getSummary: async (): Promise<CartSummary> => {
-    const response = await apiClient.get<CartSummary>("/cart/summary");
+  getSummary: async (): Promise<ICartSummary> => {
+    const response = await apiClient.get<ICartSummary>("/cart/summary");
     return response.data;
   },
 
@@ -38,8 +38,8 @@ export const cartService = {
    * POST /cart/add - Agregar producto al carrito
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  addItem: async (data: AddToCartDto): Promise<Cart> => {
-    const response = await apiClient.post<Cart>("/cart/add", data);
+  addItem: async (data: IAddToCartDto): Promise<ICart> => {
+    const response = await apiClient.post<ICart>("/cart/add", data);
     return response.data;
   },
 
@@ -49,9 +49,9 @@ export const cartService = {
    */
   updateItemQuantity: async (
     cartItemId: string,
-    data: UpdateCartItemDto
-  ): Promise<Cart> => {
-    const response = await apiClient.put<Cart>(
+    data: IUpdateCartItemDto
+  ): Promise<ICart> => {
+    const response = await apiClient.put<ICart>(
       `/cart/items/${cartItemId}`,
       data
     );
@@ -64,8 +64,8 @@ export const cartService = {
    */
   removeItem: async (
     cartItemId: string
-  ): Promise<{ message: string; cart: Cart }> => {
-    const response = await apiClient.delete<{ message: string; cart: Cart }>(
+  ): Promise<{ message: string; cart: ICart }> => {
+    const response = await apiClient.delete<{ message: string; cart: ICart }>(
       `/cart/items/${cartItemId}`
     );
     return response.data;
@@ -84,8 +84,8 @@ export const cartService = {
    * POST /cart/validate-stock - Validar stock antes de checkout
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  validateStock: async (): Promise<StockValidationResponse> => {
-    const response = await apiClient.post<StockValidationResponse>(
+  validateStock: async (): Promise<IStockValidationResponse> => {
+    const response = await apiClient.post<IStockValidationResponse>(
       "/cart/validate-stock"
     );
     return response.data;
@@ -96,7 +96,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   selectAddress: async (
-    data: SelectAddressDto
+    data: ISelectAddressDto
   ): Promise<{ message: string }> => {
     const response = await apiClient.post<{ message: string }>(
       "/cart/select-address",
@@ -109,8 +109,8 @@ export const cartService = {
    * GET /cart/selected-address - Obtener dirección seleccionada
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  getSelectedAddress: async (): Promise<SelectedAddressResponse> => {
-    const response = await apiClient.get<SelectedAddressResponse>(
+  getSelectedAddress: async (): Promise<ISelectedAddressResponse> => {
+    const response = await apiClient.get<ISelectedAddressResponse>(
       "/cart/selected-address"
     );
     return response.data;
@@ -120,8 +120,8 @@ export const cartService = {
    * POST /cart/checkout - Crear orden desde el carrito
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  checkout: async (data: CheckoutDto): Promise<Order> => {
-    const response = await apiClient.post<Order>("/cart/checkout", data);
+  checkout: async (data: ICheckoutDto): Promise<IOrder> => {
+    const response = await apiClient.post<IOrder>("/cart/checkout", data);
     return response.data;
   },
 };

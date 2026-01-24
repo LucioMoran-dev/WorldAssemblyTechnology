@@ -15,7 +15,7 @@ import {
   useRemoveFromWishlist,
   useAuth,
 } from "@/hooks";
-import type { ProductCardProps } from "@/types";
+import type { IProductCardProps } from "@/types";
 import { productLogger, wishlistLogger } from "@/utils/logger";
 
 export function ProductCard({
@@ -34,7 +34,7 @@ export function ProductCard({
   imgUrls,
   badge,
   inStock = true,
-}: ProductCardProps) {
+}: IProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const addToCart = useAddToCart();

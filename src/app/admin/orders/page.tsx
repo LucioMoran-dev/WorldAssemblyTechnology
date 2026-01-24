@@ -76,7 +76,9 @@ export default function AdminOrdersPage() {
           </div>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "")}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as OrderStatus | "")
+            }
             className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Todos los Estados</option>
@@ -124,17 +126,23 @@ export default function AdminOrdersPage() {
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="border-b border-gray-100">
                     <td colSpan={7} className="px-6 py-4">
-                      <div className="h-12 animate-pulse rounded bg-gray-200"></div>
+                      <div className="h-12 animate-pulse rounded bg-gray-200" />
                     </td>
                   </tr>
                 ))
-              ) : ordersData && ordersData.items.length > 0 ? (
-                ordersData.items
+              ) : ordersData && ordersData.length > 0 ? (
+                ordersData
                   .filter((order) =>
                     searchTerm
-                      ? order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
+                      ? order.orderNumber
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        order.user.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        order.user.email
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
                       : true
                   )
                   .map((order) => (
@@ -158,14 +166,16 @@ export default function AdminOrdersPage() {
                         ${order.orderDetail.total.toFixed(2)}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(order.status)}`}>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(order.status)}`}
+                        >
                           {translateStatus(order.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <Link
                           href={`/dashboard/orders/${order.id}`}
-                          className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50 inline-block"
+                          className="inline-block rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
                         >
                           <Eye className="h-4 w-4" />
                         </Link>
@@ -174,7 +184,10 @@ export default function AdminOrdersPage() {
                   ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-600">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-12 text-center text-gray-600"
+                  >
                     No se encontraron órdenes
                   </td>
                 </tr>

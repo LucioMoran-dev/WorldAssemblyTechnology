@@ -18,7 +18,7 @@ function MyReviews() {
               <div className="mb-4 flex items-start justify-between">
                 <div>
                   <h3 className="mb-1 font-bold text-gray-900">
-                    {review.productName}
+                    {review.product?.name}
                   </h3>
                   <div className="mb-2 flex items-center gap-2">
                     <div className="flex">
@@ -29,7 +29,9 @@ function MyReviews() {
                         />
                       ))}
                     </div>
-                    <span className="text-sm text-gray-600">{review.date}</span>
+                    <span className="text-sm text-gray-600">
+                      {review.createdAt}
+                    </span>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -45,7 +47,7 @@ function MyReviews() {
                   </Button>
                 </div>
               </div>
-              <p className="text-gray-700">{review.comment}</p>
+              <p className="text-gray-700">{review.message}</p>
             </div>
           ))}
         </div>

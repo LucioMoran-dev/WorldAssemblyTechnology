@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -97,7 +98,7 @@ export default function AdminProductsPage() {
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="border-b border-gray-100">
                     <td colSpan={7} className="px-6 py-4">
-                      <div className="h-12 animate-pulse rounded bg-gray-200"></div>
+                      <div className="h-12 animate-pulse rounded bg-gray-200" />
                     </td>
                   </tr>
                 ))
@@ -105,7 +106,9 @@ export default function AdminProductsPage() {
                 productsData.items
                   .filter((product) =>
                     categoryFilter
-                      ? product.category.name.toLowerCase().includes(categoryFilter.toLowerCase())
+                      ? product.category?.name
+                          ?.toLowerCase()
+                          .includes(categoryFilter.toLowerCase())
                       : true
                   )
                   .map((product) => (
@@ -115,12 +118,14 @@ export default function AdminProductsPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-200 overflow-hidden">
-                            {product.imgUrls && product.imgUrls.length > 0 ? (
-                              <img
+                          <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg bg-gray-200">
+                            {product.imgUrls?.[0] ? (
+                              <Image
                                 src={product.imgUrls[0]}
                                 alt={product.name}
-                                className="h-full w-full object-cover"
+                                fill
+                                sizes="48px"
+                                className="object-cover"
                               />
                             ) : (
                               <span className="text-xs text-gray-500">IMG</span>
@@ -140,7 +145,7 @@ export default function AdminProductsPage() {
                         {product.brand}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {product.category.name}
+                        {product.category?.name || "Sin categoría"}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">
                         ${product.basePrice.toFixed(2)}
@@ -175,7 +180,9 @@ export default function AdminProductsPage() {
                             <Edit className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(product.id, product.name)}
+                            onClick={() =>
+                              handleDelete(product.id, product.name)
+                            }
                             disabled={deleteProduct.isPending}
                             className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
                           >
@@ -187,7 +194,10 @@ export default function AdminProductsPage() {
                   ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-600">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-12 text-center text-gray-600"
+                  >
                     No se encontraron productos
                   </td>
                 </tr>
@@ -199,7 +209,8 @@ export default function AdminProductsPage() {
         {/* Paginación */}
         <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
           <p className="text-sm text-gray-600">
-            Mostrando {productsData?.items.length || 0} de {productsData?.total || 0} productos
+            Mostrando {productsData?.items.length || 0} de{" "}
+            {productsData?.total || 0} productos
           </p>
           <div className="flex gap-2">
             <Button
@@ -214,7 +225,9 @@ export default function AdminProductsPage() {
               variant="outline"
               size="sm"
               onClick={() => setPage((p) => p + 1)}
-              disabled={!productsData || page >= productsData.pages || isLoading}
+              disabled={
+                !productsData || page >= productsData.pages || isLoading
+              }
             >
               Siguiente
             </Button>

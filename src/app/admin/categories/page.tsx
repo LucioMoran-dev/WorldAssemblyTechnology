@@ -4,14 +4,26 @@ import { Plus, Search, Edit, Trash2, FolderTree } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from "@/hooks";
-import type { CreateCategoryDto, UpdateCategoryDto } from "@/types";
+import {
+  useCategories,
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
+} from "@/hooks";
+import type { ICreateCategoryDto, IUpdateCategoryDto } from "@/types";
 
 export default function AdminCategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<{ id: string; name: string; description?: string } | null>(null);
-  const [formData, setFormData] = useState<CreateCategoryDto>({ name: "", description: "" });
+  const [editingCategory, setEditingCategory] = useState<{
+    id: string;
+    name: string;
+    description?: string;
+  } | null>(null);
+  const [formData, setFormData] = useState<ICreateCategoryDto>({
+    name: "",
+    description: "",
+  });
 
   const { data: categoriesData, isLoading } = useCategories();
   const createCategory = useCreateCategory();
@@ -33,7 +45,7 @@ export default function AdminCategoriesPage() {
 
     await updateCategory.mutateAsync({
       id: editingCategory.id,
-      data: formData as UpdateCategoryDto,
+      data: formData as IUpdateCategoryDto,
     });
     setFormData({ name: "", description: "" });
     setEditingCategory(null);
@@ -46,7 +58,9 @@ export default function AdminCategoriesPage() {
   };
 
   const filteredCategories = categoriesData?.items.filter((cat) =>
-    searchTerm ? cat.name.toLowerCase().includes(searchTerm.toLowerCase()) : true
+    searchTerm
+      ? cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+      : true
   );
 
   return (
@@ -85,7 +99,10 @@ export default function AdminCategoriesPage() {
       {isLoading ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-48 animate-pulse rounded-lg bg-gray-200"></div>
+            <div
+              key={i}
+              className="h-48 animate-pulse rounded-lg bg-gray-200"
+            />
           ))}
         </div>
       ) : filteredCategories && filteredCategories.length > 0 ? (
@@ -103,7 +120,10 @@ export default function AdminCategoriesPage() {
                   <button
                     onClick={() => {
                       setEditingCategory(category);
-                      setFormData({ name: category.name, description: category.description });
+                      setFormData({
+                        name: category.name,
+                        description: category.description,
+                      });
                     }}
                     className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
                   >
@@ -121,7 +141,9 @@ export default function AdminCategoriesPage() {
               <h3 className="mb-2 text-lg font-bold text-gray-900">
                 {category.name}
               </h3>
-              <p className="mb-4 text-sm text-gray-600">{category.description || "Sin descripción"}</p>
+              <p className="mb-4 text-sm text-gray-600">
+                {category.description || "Sin descripción"}
+              </p>
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-sm text-gray-600">
                   <span className="font-semibold text-gray-900">
@@ -162,7 +184,10 @@ export default function AdminCategoriesPage() {
             <h2 className="mb-6 text-2xl font-bold text-gray-900">
               {editingCategory ? "Editar Categoría" : "Crear Nueva Categoría"}
             </h2>
-            <form onSubmit={editingCategory ? handleUpdate : handleCreate} className="space-y-4">
+            <form
+              onSubmit={editingCategory ? handleUpdate : handleCreate}
+              className="space-y-4"
+            >
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
                   Nombre *
@@ -170,7 +195,9 @@ export default function AdminCategoriesPage() {
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="Ej: Laptops"
                   required
@@ -183,7 +210,9 @@ export default function AdminCategoriesPage() {
                 <textarea
                   rows={3}
                   value={formData.description || ""}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="Descripción de la categoría..."
                 />
@@ -204,7 +233,9 @@ export default function AdminCategoriesPage() {
                 <Button
                   type="submit"
                   className="flex-1"
-                  disabled={createCategory.isPending || updateCategory.isPending}
+                  disabled={
+                    createCategory.isPending || updateCategory.isPending
+                  }
                 >
                   {editingCategory ? "Actualizar" : "Crear"} Categoría
                 </Button>

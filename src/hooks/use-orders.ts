@@ -7,8 +7,8 @@ import { toast } from "sonner";
 import { orderService } from "@/services";
 import type {
   OrderListParams,
-  UpdateOrderStatusDto,
-  ConfirmPaymentDto,
+  IUpdateOrderStatusDto,
+  IConfirmPaymentDto,
 } from "@/types";
 
 /**
@@ -73,7 +73,7 @@ export function useUpdateOrderStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateOrderStatusDto }) =>
+    mutationFn: ({ id, data }: { id: string; data: IUpdateOrderStatusDto }) =>
       orderService.updateStatus(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -82,7 +82,8 @@ export function useUpdateOrderStatus() {
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message || "Error al actualizar orden"
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al actualizar orden"
         : "Error al actualizar orden";
       toast.error(message);
     },
@@ -96,7 +97,7 @@ export function useConfirmPayment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ConfirmPaymentDto }) =>
+    mutationFn: ({ id, data }: { id: string; data: IConfirmPaymentDto }) =>
       orderService.confirmPayment(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -105,7 +106,8 @@ export function useConfirmPayment() {
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message || "Error al confirmar pago"
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al confirmar pago"
         : "Error al confirmar pago";
       toast.error(message);
     },
@@ -127,7 +129,8 @@ export function useCancelOrder() {
     },
     onError: (error: unknown) => {
       const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message || "Error al cancelar orden"
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al cancelar orden"
         : "Error al cancelar orden";
       toast.error(message);
     },

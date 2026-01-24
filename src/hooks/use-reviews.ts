@@ -4,8 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
-import { reviewService } from "@/services";
-import type { CreateReviewDto } from "@/types";
+import { reviewService, type ReviewsQueryParams } from "@/services";
+import type { ICreateReviewDto } from "@/types";
 
 /**
  * Type guard para verificar si un error es de Axios
@@ -30,11 +30,25 @@ export function useReview(id: string) {
 }
 
 /**
- * Hook para obtener reviews de un producto
+ * Hook para obtener reviews públicas de un producto
+ * Solo devuelve reviews visibles (isVisible: true)
+ */
+export function useProductReviewsPublic(productId: string) {
+  return useQuery({
+    queryKey: ["reviews", "product", productId, "public"],
+    queryFn: () => reviewService.getByProductPublic(productId),
+    enabled: !!productId,
+    staleTime: 2 * 60 * 1000, // 2 minutos
+  });
+}
+
+/**
+ * Hook para obtener todas las reviews de un producto (Admin)
+ * Incluye reviews visibles y ocultas con isVisible
  */
 export function useProductReviews(productId: string) {
   return useQuery({
-    queryKey: ["reviews", "product", productId],
+    queryKey: ["reviews", "product", productId, "admin"],
     queryFn: () => reviewService.getByProduct(productId),
     enabled: !!productId,
     staleTime: 2 * 60 * 1000, // 2 minutos
@@ -42,13 +56,25 @@ export function useProductReviews(productId: string) {
 }
 
 /**
- * Hook para todas las reviews (Admin)
+ * Hook para todas las reviews paginadas (Admin)
+ * Devuelve { items: ReviewAdmin[], total: number, pages: number }
  */
-export function useAllReviews() {
+export function useAllReviews(params?: ReviewsQueryParams) {
   return useQuery({
-    queryKey: ["reviews"],
-    queryFn: () => reviewService.getAll(),
+    queryKey: ["reviews", "admin", params],
+    queryFn: () => reviewService.getAll(params),
     staleTime: 1 * 60 * 1000, // 1 minuto
+  });
+}
+
+/**
+ * Hook para verificar si el usuario puede dejar review
+ */
+export function useCanReview(productId: string) {
+  return useQuery({
+    queryKey: ["reviews", "can-review", productId],
+    queryFn: () => reviewService.canReview(productId),
+    enabled: !!productId,
   });
 }
 
@@ -59,11 +85,14 @@ export function useCreateReview() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateReviewDto) => reviewService.create(data),
+    mutationFn: (data: ICreateReviewDto) => reviewService.create(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
       queryClient.invalidateQueries({
         queryKey: ["reviews", "product", variables.productId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", "can-review", variables.productId],
       });
       toast.success("Review creada exitosamente");
     },
@@ -72,6 +101,29 @@ export function useCreateReview() {
         ? (error.response?.data as { message?: string })?.message ||
           "Error al crear review"
         : "Error al crear review";
+      toast.error(message);
+    },
+  });
+}
+
+/**
+ * Mutation para toggle visibilidad de review (Admin)
+ */
+export function useToggleReviewVisibility() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => reviewService.toggleVisibility(id),
+    onSuccess: (updatedReview) => {
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      const status = updatedReview.isVisible ? "visible" : "oculta";
+      toast.success(`Review marcada como ${status}`);
+    },
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as { message?: string })?.message ||
+          "Error al cambiar visibilidad"
+        : "Error al cambiar visibilidad";
       toast.error(message);
     },
   });

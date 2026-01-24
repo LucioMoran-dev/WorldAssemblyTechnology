@@ -1,6 +1,6 @@
 import type React from "react";
 
-import { DashboardBreadcrumb } from "@/components/dashboard/breadcrumb";
+import { Breadcrumb } from "@/components/breadcrumbs/breadcrumb";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import Footer from "@/components/home/footer/footer";
 import Header from "@/components/home/header/header";
@@ -14,7 +14,7 @@ export default function DashboardLayout({
     <div className="flex min-h-screen flex-col">
       <Header />
 
-      <DashboardBreadcrumb />
+      <Breadcrumb area="dashboard" />
 
       {/* Main Content */}
       <main className="flex-1 bg-white">

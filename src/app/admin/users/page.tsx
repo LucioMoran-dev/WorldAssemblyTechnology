@@ -4,13 +4,18 @@ import { Search, UserPlus, Edit, Trash2, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useGetUsers, useDeleteUser, useRestoreUser, useChangeUserRole } from "@/hooks";
+import {
+  useGetUsers,
+  useDeleteUser,
+  useRestoreUser,
+  useChangeUserRole,
+} from "@/hooks";
 import { UserRole } from "@/types";
 
 // Helper para traducir roles
 const translateRole = (role: UserRole): string => {
   const translations = {
-    [UserRole.CUSTOMER]: "Cliente",
+    [UserRole.CLIENT]: "Cliente",
     [UserRole.ADMIN]: "Administrador",
     [UserRole.SUPER_ADMIN]: "Super Admin",
   };
@@ -49,7 +54,11 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleChangeRole = async (id: string, currentRole: UserRole, name: string) => {
+  const handleChangeRole = async (
+    id: string,
+    currentRole: UserRole,
+    name: string
+  ) => {
     const newRole = prompt(
       `Cambiar rol de ${name}\nRol actual: ${translateRole(currentRole)}\n\nEscribe el nuevo rol:\n- customer (Cliente)\n- admin (Administrador)\n- super_admin (Super Admin)`,
       currentRole
@@ -105,7 +114,7 @@ export default function AdminUsersPage() {
             className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Todos los Roles</option>
-            <option value={UserRole.CUSTOMER}>Cliente</option>
+            <option value={UserRole.CLIENT}>Cliente</option>
             <option value={UserRole.ADMIN}>Administrador</option>
             <option value={UserRole.SUPER_ADMIN}>Super Admin</option>
           </select>
@@ -143,7 +152,7 @@ export default function AdminUsersPage() {
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="border-b border-gray-100">
                     <td colSpan={6} className="px-6 py-4">
-                      <div className="h-12 animate-pulse rounded bg-gray-200"></div>
+                      <div className="h-12 animate-pulse rounded bg-gray-200" />
                     </td>
                   </tr>
                 ))
@@ -196,7 +205,9 @@ export default function AdminUsersPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => handleChangeRole(user.id, user.role, user.name)}
+                          onClick={() =>
+                            handleChangeRole(user.id, user.role, user.name)
+                          }
                           disabled={changeRole.isPending}
                           className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50"
                           title="Cambiar rol"
@@ -228,7 +239,10 @@ export default function AdminUsersPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-600">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-gray-600"
+                  >
                     No se encontraron usuarios
                   </td>
                 </tr>
@@ -240,7 +254,8 @@ export default function AdminUsersPage() {
         {/* Paginación */}
         <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
           <p className="text-sm text-gray-600">
-            Mostrando {filteredUsers?.length || 0} de {usersData?.total || 0} usuarios
+            Mostrando {filteredUsers?.length || 0} de {usersData?.total || 0}{" "}
+            usuarios
           </p>
           <div className="flex gap-2">
             <Button

@@ -1,11 +1,11 @@
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
-import type { ApiError } from "@/types";
+import type { IApiError } from "@/types";
 
 export function handleApiError(error: unknown): string {
   if (error instanceof AxiosError) {
-    const apiError = error.response?.data as ApiError | undefined;
+    const apiError = error.response?.data as IApiError | undefined;
 
     if (apiError?.message) {
       const message = Array.isArray(apiError.message)
@@ -63,7 +63,7 @@ export function handleApiError(error: unknown): string {
 
 export function getErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
-    const apiError = error.response?.data as ApiError | undefined;
+    const apiError = error.response?.data as IApiError | undefined;
 
     if (apiError?.message) {
       return Array.isArray(apiError.message)

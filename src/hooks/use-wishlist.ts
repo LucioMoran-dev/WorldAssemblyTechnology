@@ -5,7 +5,7 @@ import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { wishlistService } from "@/services";
-import type { AddToWishlistDto } from "@/types";
+import type { IAddToWishlistDto } from "@/types";
 
 import { useAuth } from "./use-auth";
 
@@ -84,7 +84,7 @@ export function useAddToWishlist() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: AddToWishlistDto) => wishlistService.addItem(data),
+    mutationFn: (data: IAddToWishlistDto) => wishlistService.addItem(data),
     onSuccess: () => {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
