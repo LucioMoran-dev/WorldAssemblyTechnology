@@ -69,7 +69,7 @@ export default function ProductDetailPage() {
     const reviews = Array.isArray(reviewsData) ? reviewsData : [];
     for (const review of reviews) {
       const r = review.rating;
-      if (r >= 1 && r <= 5) dist[r]++;
+      if (r >= 1 && r <= 5) dist[r] = (dist[r] ?? 0) + 1;
     }
     return dist;
   }, [reviewsData]);
@@ -148,7 +148,7 @@ export default function ProductDetailPage() {
     createReview.mutate(
       {
         productId,
-        rating: ratingMap[reviewRating],
+        rating: ratingMap[reviewRating]!,
         message: reviewMessage,
       },
       {
@@ -515,7 +515,7 @@ export default function ProductDetailPage() {
                             style={{
                               width:
                                 totalReviews > 0
-                                  ? `${(reviewDistribution[stars] / totalReviews) * 100}%`
+                                  ? `${((reviewDistribution[stars] ?? 0) / totalReviews) * 100}%`
                                   : "0%",
                             }}
                           />
