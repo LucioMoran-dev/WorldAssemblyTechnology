@@ -1,16 +1,11 @@
 "use client";
 
-import { Save, Database, Shield, Bell } from "lucide-react";
+import { Database, Shield, Bell } from "lucide-react";
 
-import { AuthDebug } from "@/components/admin/auth-debug";
 import { Button } from "@/components/ui/button";
 import { useSeedCategories, useSeedProducts } from "@/hooks";
 
-// Asegúrate de importar el hook desde donde lo tengas definido (o si está en el mismo archivo)
-// import { useSeedCategories } from "@/hooks/useCategories";
-
 export default function AdminSettingsPage() {
-  // 1. Instanciamos el hook para obtener la función mutate y el estado de carga
   const { mutate: seedCategories, isPending: isSeedingCategory } =
     useSeedCategories();
   const { mutate: seedProducts, isPending: isSeedingProducts } =
@@ -22,14 +17,7 @@ export default function AdminSettingsPage() {
         <h1 className="text-3xl font-bold text-gray-900">
           Configuración del Sistema
         </h1>
-        <Button className="flex items-center gap-2">
-          <Save className="h-4 w-4" />
-          Guardar Cambios
-        </Button>
       </div>
-
-      {/* DEBUG: Quitar esto después de resolver el problema */}
-      <AuthDebug />
 
       {/* Seeders - Solo SUPER_ADMIN */}
       <section className="rounded-lg border border-gray-200 bg-white p-6">
@@ -74,9 +62,8 @@ export default function AdminSettingsPage() {
         </div>
       </section>
 
-      {/* Configuración General */}
-      <section className="rounded-lg border border-gray-200 bg-white p-6">
-        {/* ... Resto del código de configuración general ... */}
+      {/* Configuración General - Solo lectura (sin endpoint backend) */}
+      <section className="rounded-lg border border-gray-200 bg-white p-6 opacity-60">
         <div className="mb-6 flex items-center gap-3">
           <div className="rounded-lg bg-blue-50 p-2">
             <Shield className="h-6 w-6 text-blue-600" />
@@ -86,7 +73,7 @@ export default function AdminSettingsPage() {
               Configuración General
             </h2>
             <p className="text-sm text-gray-600">
-              Ajustes generales del sistema
+              Próximamente — Ajustes generales del sistema
             </p>
           </div>
         </div>
@@ -99,7 +86,8 @@ export default function AdminSettingsPage() {
             <input
               type="text"
               defaultValue="TechStore Pro"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              disabled
+              className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-gray-500"
             />
           </div>
           <div>
@@ -109,15 +97,15 @@ export default function AdminSettingsPage() {
             <input
               type="email"
               defaultValue="shop@email.com"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              disabled
+              className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-gray-500"
             />
           </div>
         </div>
       </section>
 
-      {/* Notificaciones */}
-      <section className="rounded-lg border border-gray-200 bg-white p-6">
-        {/* ... Resto del código de notificaciones ... */}
+      {/* Notificaciones - Solo lectura (sin endpoint backend) */}
+      <section className="rounded-lg border border-gray-200 bg-white p-6 opacity-60">
         <div className="mb-6 flex items-center gap-3">
           <div className="rounded-lg bg-green-50 p-2">
             <Bell className="h-6 w-6 text-green-600" />
@@ -125,7 +113,7 @@ export default function AdminSettingsPage() {
           <div>
             <h2 className="text-xl font-bold text-gray-900">Notificaciones</h2>
             <p className="text-sm text-gray-600">
-              Configurar alertas del sistema
+              Próximamente — Configurar alertas del sistema
             </p>
           </div>
         </div>
@@ -135,9 +123,10 @@ export default function AdminSettingsPage() {
             <input
               type="checkbox"
               defaultChecked
+              disabled
               className="h-4 w-4 rounded text-blue-600"
             />
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-gray-500">
               Notificar nuevas órdenes
             </span>
           </label>
@@ -145,15 +134,20 @@ export default function AdminSettingsPage() {
             <input
               type="checkbox"
               defaultChecked
+              disabled
               className="h-4 w-4 rounded text-blue-600"
             />
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-gray-500">
               Notificar productos con bajo stock
             </span>
           </label>
           <label className="flex items-center gap-3">
-            <input type="checkbox" className="h-4 w-4 rounded text-blue-600" />
-            <span className="text-sm text-gray-700">
+            <input
+              type="checkbox"
+              disabled
+              className="h-4 w-4 rounded text-blue-600"
+            />
+            <span className="text-sm text-gray-500">
               Notificar nuevas reseñas
             </span>
           </label>

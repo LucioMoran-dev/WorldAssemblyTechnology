@@ -132,7 +132,7 @@ export interface IUpdateVariantDto {
 // Search & Filters
 export interface IProductsSearchQuery {
   name?: string;
-  price?: number;
+  basePrice?: number;
   brand?: string;
   featured?: boolean;
   page?: number;
@@ -165,7 +165,7 @@ export interface IAutocompleteResult {
   id: string;
   name: string;
   brand: string;
-  price: number;
+  basePrice: number;
   image: string | null;
   category: string | null;
 }
@@ -174,6 +174,7 @@ export interface IAutocompleteResult {
 export interface IHybridSearchStreamPayload {
   source: "local" | "ai";
   results: IAutocompleteResult[];
+  message?: string;
 }
 
 // REST Response (GET /products/search)

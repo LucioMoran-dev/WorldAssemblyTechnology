@@ -25,7 +25,7 @@ function NewCostumer() {
         </li>
       </ul>
 
-      <Link href="/auth/singup">
+      <Link href="/auth/signup">
         <Button className="w-full bg-blue-600 px-8 hover:bg-blue-700 sm:w-auto">
           Crear Una Cuenta
         </Button>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,12 +28,12 @@ function CartSummaryExpanded({
           onClick={onCollapseShipping}
           className="flex w-full items-center justify-between text-left font-medium"
         >
-          <span>Estimar Envío e Impuestos</span>
+          <span>Estimar EnvÃ­o e Impuestos</span>
           <span className="text-xl font-light">-</span>
         </button>
         <div className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium">País</label>
+            <label className="mb-1 block text-sm font-medium">PaÃ­s</label>
             <select
               value={selectedCountry}
               onChange={(e) => onCountryChange(e.target.value)}
@@ -52,12 +52,12 @@ function CartSummaryExpanded({
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">
-              Código Postal
+              CÃ³digo Postal
             </label>
             <Input type="text" className="w-full" />
           </div>
           <div className="space-y-3">
-            <p className="text-sm font-medium">Tarifa Estándar</p>
+            <p className="text-sm font-medium">Tarifa EstÃ¡ndar</p>
             <label className="flex items-start gap-2 text-sm">
               <input
                 type="radio"
@@ -68,7 +68,7 @@ function CartSummaryExpanded({
                 className="mt-0.5 text-blue-600"
               />
               <span className="text-xs text-gray-600">
-                El precio puede variar según el artículo/destino. El personal de la tienda se pondrá en contacto contigo. $21.00
+                El precio puede variar segÃºn el artÃ­culo/destino. El personal de la tienda se pondrÃ¡ en contacto contigo. $21.00
               </span>
             </label>
             <p className="mt-3 text-sm font-medium">Recoger en tienda</p>
@@ -95,15 +95,15 @@ function CartSummaryExpanded({
           onClick={onToggleDiscount}
           className="flex w-full items-center justify-between text-left font-medium"
         >
-          <span>Aplicar Código de Descuento</span>
+          <span>Aplicar CÃ³digo de Descuento</span>
           <span className="text-xl font-light">-</span>
         </button>
         {discountExpanded && (
           <div className="mt-4 space-y-3">
-            <p className="text-sm text-gray-600">Ingresa tu código de descuento</p>
+            <p className="text-sm text-gray-600">Ingresa tu cÃ³digo de descuento</p>
             <Input
               type="text"
-              placeholder="Ingresa tu Código de Descuento"
+              placeholder="Ingresa tu CÃ³digo de Descuento"
               className="w-full"
             />
             <Button
@@ -123,12 +123,12 @@ function CartSummaryExpanded({
           <span className="font-semibold">${subtotal.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="font-medium">Envío</span>
+          <span className="font-medium">EnvÃ­o</span>
           <span className="font-semibold">${shipping.toFixed(2)}</span>
         </div>
         <p className="text-xs text-gray-500">
-          (Tarifa Estándar - El precio puede variar según el artículo/destino.
-          El personal de la tienda se pondrá en contacto contigo.)
+          (Tarifa EstÃ¡ndar - El precio puede variar segÃºn el artÃ­culo/destino.
+          El personal de la tienda se pondrÃ¡ en contacto contigo.)
         </p>
         <div className="flex justify-between text-sm">
           <span className="font-medium">Impuesto</span>
@@ -146,7 +146,7 @@ function CartSummaryExpanded({
 
       {/* Checkout Buttons */}
       <div className="space-y-3">
-        <Link href="/checkout">
+        <Link href="/cart/checkout">
           <Button className="h-12 w-full bg-blue-600 text-white hover:bg-blue-700">
             Proceder al Pago
           </Button>
@@ -158,7 +158,7 @@ function CartSummaryExpanded({
           variant="outline"
           className="h-12 w-full border-gray-300 bg-transparent"
         >
-          Pagar con Múltiples Direcciones
+          Pagar con MÃºltiples Direcciones
         </Button>
       </div>
 
@@ -168,9 +168,9 @@ function CartSummaryExpanded({
           <div className="flex h-4 w-8 items-center justify-center rounded bg-gradient-to-r from-purple-400 to-blue-400 text-[10px] font-bold text-white">
             zip
           </div>
-          <span>cómpralo ahora, hasta 6 meses sin intereses</span>
+          <span>cÃ³mpralo ahora, hasta 6 meses sin intereses</span>
           <Link href="#" className="text-blue-600 underline">
-            más información
+            mÃ¡s informaciÃ³n
           </Link>
         </div>
       </div>
@@ -179,3 +179,4 @@ function CartSummaryExpanded({
 }
 
 export default CartSummaryExpanded;
+

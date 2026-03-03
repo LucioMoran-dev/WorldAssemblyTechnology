@@ -23,7 +23,7 @@ export function CategorySidebar() {
     );
   }
 
-  if (!categories || categories.length === 0) {
+  if (!categories || categories.items.length === 0) {
     return null;
   }
 
@@ -33,14 +33,14 @@ export function CategorySidebar() {
         <h2 className="text-lg font-bold">Categorías</h2>
       </div>
       <nav className="divide-border divide-y">
-        {categories.map((category) => (
+        {categories.items.map((category) => (
           <Link
             key={category.id}
-            href={`/products/catalog/${category.categoryName.toLowerCase().replace(/\s+/g, "-")}`}
+            href={`/products/catalog/${category.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, "-")}`}
             className="hover:bg-surface group flex items-center justify-between px-4 py-3 transition-colors"
           >
             <span className="text-foreground group-hover:text-primary text-sm font-medium">
-              {category.categoryName}
+              {category.name}
             </span>
             <ChevronRight className="text-muted-foreground group-hover:text-primary h-4 w-4" />
           </Link>

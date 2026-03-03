@@ -25,7 +25,7 @@ function AccountCostumer() {
         </li>
       </ul>
 
-      <Link href="/auth/singin">
+      <Link href="/auth/signin">
         <Button
           variant="outline"
           className="w-full border-blue-600 bg-transparent text-blue-600 hover:bg-blue-50"

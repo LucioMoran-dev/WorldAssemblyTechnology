@@ -127,7 +127,7 @@ export const userService = {
    * Requiere: Autenticación
    */
   createAddress: async (data: ICreateAddressDto): Promise<Address> => {
-    const response = await apiClient.post<Address>("/users/addresses", data);
+    const response = await apiClient.post<Address>("/users/addresses/add", data);
     return response.data;
   },
 
@@ -164,6 +164,33 @@ export const userService = {
   setDefaultAddress: async (addressId: string): Promise<Address> => {
     const response = await apiClient.patch<Address>(
       `/users/addresses/${addressId}/set-default`
+    );
+    return response.data;
+  },
+
+  /**
+   * POST /users/forgot-password - Solicitar recuperación de contraseña
+   * Público - Siempre responde mensaje genérico
+   */
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>(
+      "/users/forgot-password",
+      { email }
+    );
+    return response.data;
+  },
+
+  /**
+   * POST /users/reset-password - Restablecer contraseña con token
+   * Público
+   */
+  resetPassword: async (
+    token: string,
+    newPassword: string
+  ): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>(
+      "/users/reset-password",
+      { token, newPassword }
     );
     return response.data;
   },

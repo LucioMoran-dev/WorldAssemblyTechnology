@@ -1,149 +1,270 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MapPin, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth, useMyAddresses } from "@/hooks";
+import { cartService } from "@/services";
+import type { ICheckoutAddressDto } from "@/types";
+
+const CHECKOUT_SHIPPING_STORAGE_KEY = "checkout_shipping_address";
+
+const addressSchema = z.object({
+  label: z.string().min(2, "Etiqueta requerida"),
+  street: z.string().min(5, "Direccion requerida"),
+  city: z.string().min(2, "Ciudad requerida"),
+  province: z.string().min(2, "Provincia requerida"),
+  postalCode: z.string().min(3, "Codigo postal requerido"),
+  country: z.string().min(2, "Pais requerido"),
+});
+
+type AddressFormValues = z.infer<typeof addressSchema>;
 
 function ShippingForm() {
-  const [shippingMethod, setShippingMethod] = useState("standard");
+  const router = useRouter();
+  const authUser = useAuth((state) => state.user);
+  const { data: addresses = [], isLoading } = useMyAddresses();
+
+  const hasSavedAddresses = addresses.length > 0;
+  const [mode, setMode] = useState<"existing" | "new" | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const defaultAddressId = useMemo(() => {
+    const preferred = addresses.find((address) => address.isDefault);
+    return preferred?.id ?? addresses[0]?.id ?? "";
+  }, [addresses]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (hasSavedAddresses) {
+      setMode((current) => (current === "new" ? current : "existing"));
+      setSelectedAddressId((current) => current || defaultAddressId);
+    } else {
+      setMode("new");
+      setSelectedAddressId("");
+    }
+  }, [isLoading, hasSavedAddresses, defaultAddressId]);
+
+  const {
+    register,
+    trigger,
+    getValues,
+    formState: { errors },
+  } = useForm<AddressFormValues>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: {
+      label: "Casa",
+      street: "",
+      city: "",
+      province: "",
+      postalCode: "",
+      country: "Argentina",
+    },
+  });
+
+  const saveShippingAddressAndContinue = (address: ICheckoutAddressDto) => {
+    sessionStorage.setItem(CHECKOUT_SHIPPING_STORAGE_KEY, JSON.stringify(address));
+    router.push("/cart/review-payment");
+  };
+
+  const handleContinue = async () => {
+    setIsSubmitting(true);
+
+    try {
+      if (mode === "existing") {
+        if (!selectedAddressId) {
+          toast.error("Selecciona una direccion para continuar");
+          return;
+        }
+
+        const selectedAddress = addresses.find(
+          (address) => address.id === selectedAddressId
+        );
+
+        if (!selectedAddress) {
+          toast.error("La direccion seleccionada no es valida");
+          return;
+        }
+
+        await cartService.selectAddress({ addressId: selectedAddressId });
+
+        saveShippingAddressAndContinue({
+          label: selectedAddress.label,
+          street: selectedAddress.street,
+          city: selectedAddress.city,
+          province: selectedAddress.province,
+          postalCode: selectedAddress.postalCode,
+          country: selectedAddress.country,
+          isDefault: selectedAddress.isDefault,
+        });
+
+        return;
+      }
+
+      const isValid = await trigger();
+      if (!isValid) {
+        return;
+      }
+
+      const values = getValues();
+      saveShippingAddressAndContinue(values);
+    } catch (error) {
+      toast.error("No se pudo guardar la direccion de envio");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <>
-      <div className="lg:col-span-2">
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h2 className="mb-6 text-xl font-bold">Dirección de Envío</h2>
+    <div className="lg:col-span-2">
+      <div className="rounded-lg bg-white p-6 shadow-sm">
+        <h2 className="mb-2 text-xl font-bold text-gray-900">Direccion de envio</h2>
+        {authUser?.email && (
+          <p className="mb-6 text-sm text-gray-600">Sesion: {authUser.email}</p>
+        )}
 
-          <form className="space-y-4">
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Correo Electrónico <span className="text-red-500">*</span>
-              </label>
-              <Input type="email" className="w-full" />
-              <p className="mt-1 text-xs text-gray-500">
-                Puedes crear una cuenta después de realizar el pago.
-              </p>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Nombre <span className="text-red-500">*</span>
-              </label>
-              <Input type="text" className="w-full" />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Apellido <span className="text-red-500">*</span>
-              </label>
-              <Input type="text" className="w-full" />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">Empresa</label>
-              <Input type="text" className="w-full" />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Dirección <span className="text-red-500">*</span>
-              </label>
-              <Input type="text" className="mb-2 w-full" />
-              <Input type="text" className="w-full" />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Ciudad <span className="text-red-500">*</span>
-              </label>
-              <Input type="text" className="w-full" />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Estado/Provincia <span className="text-red-500">*</span>
-              </label>
-              <select className="w-full rounded border border-gray-300 px-3 py-2 text-sm">
-                <option>
-                  Por favor, selecciona una región, estado o provincia
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Código Postal <span className="text-red-500">*</span>
-              </label>
-              <Input type="text" className="w-full" />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                País <span className="text-red-500">*</span>
-              </label>
-              <select className="w-full rounded border border-gray-300 px-3 py-2 text-sm">
-                <option>Estados Unidos</option>
-                <option>Australia</option>
-                <option>Reino Unido</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Número de Teléfono <span className="text-red-500">*</span>
-              </label>
-              <Input type="tel" className="w-full" />
-            </div>
-
-            {/* Shipping Methods */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="mb-4 font-semibold">Tarifa Estándar</h3>
-              <label className="mb-4 flex items-start gap-3">
-                <input
-                  type="radio"
-                  name="shipping"
-                  value="standard"
-                  checked={shippingMethod === "standard"}
-                  onChange={(e) => setShippingMethod(e.target.value)}
-                  className="mt-1 text-blue-600"
-                />
-                <div className="flex flex-1 justify-between">
-                  <span className="text-sm text-gray-700">
-                    El precio puede variar según el artículo/destino. El
-                    personal de la tienda se pondrá en contacto contigo. $21.00
-                  </span>
-                  <span className="font-semibold">$21.00</span>
+        {isLoading || mode === null ? (
+          <div className="space-y-3">
+            <div className="h-16 animate-pulse rounded-lg bg-gray-100" />
+            <div className="h-16 animate-pulse rounded-lg bg-gray-100" />
+            <div className="h-16 animate-pulse rounded-lg bg-gray-100" />
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {hasSavedAddresses && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant={mode === "existing" ? "default" : "outline"}
+                    onClick={() => setMode("existing")}
+                  >
+                    Usar direccion guardada
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={mode === "new" ? "default" : "outline"}
+                    onClick={() => setMode("new")}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Usar direccion nueva
+                  </Button>
                 </div>
-              </label>
 
-              <h3 className="mb-4 font-semibold">Recoger en tienda</h3>
-              <label className="flex items-start gap-3">
-                <input
-                  type="radio"
-                  name="shipping"
-                  value="pickup"
-                  checked={shippingMethod === "pickup"}
-                  onChange={(e) => setShippingMethod(e.target.value)}
-                  className="mt-1 text-blue-600"
-                />
-                <div className="flex flex-1 justify-between">
-                  <span className="text-sm text-gray-700">
-                    Calle 1234, Ciudad, 1234
-                  </span>
-                  <span className="font-semibold">$0.00</span>
+                {mode === "existing" && (
+                  <div className="space-y-3">
+                    {addresses.map((address) => (
+                      <label
+                        key={address.id}
+                        className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-4"
+                      >
+                        <input
+                          type="radio"
+                          name="saved-address"
+                          value={address.id}
+                          checked={selectedAddressId === address.id}
+                          onChange={(event) => setSelectedAddressId(event.target.value)}
+                          className="mt-1"
+                        />
+                        <MapPin className="mt-0.5 h-4 w-4 text-gray-500" />
+                        <div className="text-sm">
+                          <p className="font-semibold text-gray-900">
+                            {address.label}
+                            {address.isDefault ? " (Predeterminada)" : ""}
+                          </p>
+                          <p className="text-gray-700">{address.street}</p>
+                          <p className="text-gray-700">
+                            {address.city}, {address.province} {address.postalCode}
+                          </p>
+                          <p className="text-gray-700">{address.country}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {mode === "new" && (
+              <div className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label htmlFor="label">Etiqueta</Label>
+                    <Input id="label" placeholder="Casa" {...register("label")} />
+                    {errors.label && (
+                      <p className="mt-1 text-xs text-red-600">{errors.label.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="country">Pais</Label>
+                    <Input id="country" placeholder="Argentina" {...register("country")} />
+                    {errors.country && (
+                      <p className="mt-1 text-xs text-red-600">{errors.country.message}</p>
+                    )}
+                  </div>
                 </div>
-              </label>
-            </div>
-            <Link href="/cart/review">
-              <Button className="mt-6 h-12 w-full bg-blue-600 text-white hover:bg-blue-700">
-                Siguiente
-              </Button>
-            </Link>
-          </form>
-        </div>
+
+                <div>
+                  <Label htmlFor="street">Direccion</Label>
+                  <Input id="street" placeholder="Calle 123" {...register("street")} />
+                  {errors.street && (
+                    <p className="mt-1 text-xs text-red-600">{errors.street.message}</p>
+                  )}
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div>
+                    <Label htmlFor="city">Ciudad</Label>
+                    <Input id="city" placeholder="Buenos Aires" {...register("city")} />
+                    {errors.city && (
+                      <p className="mt-1 text-xs text-red-600">{errors.city.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="province">Provincia</Label>
+                    <Input id="province" placeholder="CABA" {...register("province")} />
+                    {errors.province && (
+                      <p className="mt-1 text-xs text-red-600">{errors.province.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="postalCode">Codigo postal</Label>
+                    <Input
+                      id="postalCode"
+                      placeholder="1001"
+                      {...register("postalCode")}
+                    />
+                    {errors.postalCode && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.postalCode.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <Button
+              type="button"
+              className="h-12 w-full bg-blue-600 text-white hover:bg-blue-700"
+              onClick={handleContinue}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Guardando..." : "Continuar a revision y pago"}
+            </Button>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 

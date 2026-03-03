@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { useCartQuery, useRemoveCartItem, useUpdateCartItem } from "@/hooks";
+import { useCartQuery, useUpdateCartItem } from "@/hooks";
 
 import CartHeader from "./cart-header";
 import CartItemsList from "./cart-items-list";
@@ -11,7 +11,6 @@ import { SummarySidebar } from "./summary-sidebar";
 function CartUser() {
   const { data: cart, isLoading } = useCartQuery();
   const updateItemMutation = useUpdateCartItem();
-  const removeItemMutation = useRemoveCartItem();
 
   const [shippingExpanded, setShippingExpanded] = useState(false);
   const [discountExpanded, setDiscountExpanded] = useState(false);

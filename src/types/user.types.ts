@@ -1,3 +1,5 @@
+import z from "zod";
+
 import type { ICart } from "./cart.types";
 import type { UserRole } from "./common.types";
 import type { IOrder } from "./order.types";
@@ -117,3 +119,10 @@ export interface IUserListParams {
 export type SigninDto = ILoginDto;
 export type Address = IUserAddress;
 export type ChangePasswordDto = IUpdatePasswordDto;
+
+// auth types
+export const schemaForgot = z.object({
+  email: z.string().email("Ingresa un email valido"),
+});
+
+export type FormValues = z.infer<typeof schemaForgot>;

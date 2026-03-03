@@ -96,6 +96,18 @@ export function useProduct(id: string) {
 }
 
 /**
+ * Hook para productos relacionados
+ */
+export function useRelatedProducts(id: string, limit = 6) {
+  return useQuery({
+    queryKey: ["products", id, "related", limit],
+    queryFn: () => productService.getRelated(id, limit),
+    enabled: !!id,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+/**
  * Hook para calcular precio con variantes
  */
 export function useProductPrice(productId: string, variantIds?: string[]) {

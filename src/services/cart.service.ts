@@ -2,6 +2,7 @@ import { apiClient } from "@/lib/api";
 import type {
   ICart,
   ICartSummary,
+  ICartDiscountPreview,
   IAddToCartDto,
   IUpdateCartItemDto,
   IStockValidationResponse,
@@ -21,7 +22,7 @@ export const cartService = {
    * Requiere: Autenticación | Rate Limit: 60/min
    */
   getCart: async (): Promise<ICart> => {
-    const response = await apiClient.get<ICart>("/cart/id");
+    const response = await apiClient.get<ICart>("/cart/my-cart");
     return response.data;
   },
 
@@ -122,6 +123,20 @@ export const cartService = {
    */
   checkout: async (data: ICheckoutDto): Promise<IOrder> => {
     const response = await apiClient.post<IOrder>("/cart/checkout", data);
+    return response.data;
+  },
+
+  /**
+   * POST /cart/preview-discounts - Vista previa de descuentos
+   * Requiere: Autenticación
+   */
+  previewDiscounts: async (
+    promoCode?: string
+  ): Promise<ICartDiscountPreview> => {
+    const response = await apiClient.post<ICartDiscountPreview>(
+      "/cart/preview-discounts",
+      { promoCode }
+    );
     return response.data;
   },
 };

@@ -5,11 +5,7 @@ import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { orderService } from "@/services";
-import type {
-  OrderListParams,
-  IUpdateOrderStatusDto,
-  IConfirmPaymentDto,
-} from "@/types";
+import type { OrderListParams, IUpdateOrderStatusDto } from "@/types";
 
 /**
  * Type guard para verificar si un error es de Axios
@@ -91,38 +87,19 @@ export function useUpdateOrderStatus() {
 }
 
 /**
- * Mutation para confirmar pago
- */
-export function useConfirmPayment() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: IConfirmPaymentDto }) =>
-      orderService.confirmPayment(id, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      queryClient.invalidateQueries({ queryKey: ["orders", variables.id] });
-      toast.success("Pago confirmado exitosamente");
-    },
-    onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al confirmar pago"
-        : "Error al confirmar pago";
-      toast.error(message);
-    },
-  });
-}
-
-/**
- * Mutation para cancelar orden (Super Admin)
+ * Mutation para cancelar orden (CLIENT+ — solo pending o paid)
  */
 export function useCancelOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ orderId, userId }: { orderId: string; userId: string }) =>
-      orderService.cancelOrder(orderId, userId),
+    mutationFn: ({
+      orderId,
+      reason,
+    }: {
+      orderId: string;
+      reason?: string;
+    }) => orderService.cancelOrder(orderId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast.success("Orden cancelada exitosamente");

@@ -1,19 +1,28 @@
 "use client";
 
+import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks";
-import { userService } from "@/services";
+import { authService, userService } from "@/services";
 import type { IUser } from "@/types";
-import { authLogger } from "@/utils/logger";
 
 /**
- * Página de callback para OAuth (Google, etc.)
- * Maneja la redirección después del login social
- * Espera recibir: ?token=xxx&userId=xxx
+ * Respuesta extendida de exchange-code.
+ * La doc dice { userId, success }, pero el backend puede devolver
+ * accessToken y/o user en el body tambien.
  */
+interface ExchangeCodeResponse {
+  userId: string;
+  success: boolean;
+  accessToken?: string;
+  user?: IUser;
+}
+
 export default function AuthCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,56 +35,84 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Extraer parámetros de la URL
-        const token =
-          searchParams.get("token") || searchParams.get("accessToken");
-        const userId = searchParams.get("userId") || searchParams.get("id");
+        const code = searchParams.get("code");
 
-        if (!token) {
+        if (!code) {
           throw new Error(
-            "Token de autenticación no encontrado en la URL de redirección"
+            "No se encontró el código de autenticación en la URL"
           );
         }
 
-        if (!userId) {
+        // Paso 1: Intercambiar código OAuth por sesión
+        const exchangeResult =
+          (await authService.exchangeCode(code)) as ExchangeCodeResponse;
+
+        if (!exchangeResult.success || !exchangeResult.userId) {
+          throw new Error("No se pudo completar el intercambio OAuth");
+        }
+
+        // Paso 2: Si el backend devolvió accessToken en el body, guardarlo
+        // Esto permite que las siguientes llamadas usen Bearer token
+        if (exchangeResult.accessToken) {
+          authService.saveToken(exchangeResult.accessToken);
+        }
+
+        // Paso 3: Obtener datos del usuario
+        let user: IUser | null = null;
+
+        // Si el exchange devolvió datos del usuario, usarlos directo
+        if (exchangeResult.user && exchangeResult.user.id) {
+          user = exchangeResult.user;
+        }
+
+        // Si no, intentar obtener el perfil del usuario vía API
+        if (!user) {
+          try {
+            user = await userService.getUserById(exchangeResult.userId);
+          } catch {
+            // getUserById falló — probablemente 401 porque el backend
+            // solo lee Bearer token del header, no la cookie HttpOnly
+            // que setea exchange-code. Es una limitación conocida del backend.
+          }
+        }
+
+        if (!user) {
+          // Autenticación exitosa pero no podemos obtener el perfil.
+          // Esto pasa cuando el AuthGuard del backend no lee cookies.
           throw new Error(
-            "ID de usuario no encontrado en la URL de redirección"
+            "La autenticación con Google fue exitosa pero no se pudo obtener tu perfil. " +
+              "Por favor iniciá sesión con email y contraseña."
           );
         }
 
-        // Guardar token temporalmente para que el interceptor lo use
-        localStorage.setItem("accessToken", token);
-
-        // Obtener datos completos del usuario desde la API
-        const user: IUser = await userService.getUserById(userId);
-
-        // Guardar en el store de autenticación
+        // Paso 4: Guardar sesión en el store
+        const token = exchangeResult.accessToken || null;
         login(token, user);
 
         setStatus("success");
-        toast.success(`¡Bienvenido, ${user.name}!`);
+        toast.success(`Bienvenido ${user.name}`);
 
-        // Redirigir al home después de 1 segundo
+        const redirectAfterLogin =
+          sessionStorage.getItem("redirectAfterLogin");
+        if (redirectAfterLogin) {
+          sessionStorage.removeItem("redirectAfterLogin");
+        }
+
         setTimeout(() => {
-          router.push("/");
-        }, 1000);
+          router.push(redirectAfterLogin || "/");
+        }, 800);
       } catch (error) {
-        authLogger.error("Error en callback de autenticación", error);
+        console.error("Error en callback OAuth:", error);
         setStatus("error");
         setErrorMessage(
           error instanceof Error
             ? error.message
-            : "Error al procesar la autenticación"
+            : "Error al completar el inicio de sesión"
         );
-        toast.error("Error al completar el inicio de sesión");
 
-        // Limpiar token del localStorage si falló
+        localStorage.removeItem("token");
         localStorage.removeItem("accessToken");
-
-        // Redirigir al login después de 3 segundos
-        setTimeout(() => {
-          router.push("/auth/singin");
-        }, 3000);
+        localStorage.removeItem("user");
       }
     };
 
@@ -87,64 +124,39 @@ export default function AuthCallbackPage() {
       <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
         {status === "loading" && (
           <>
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+            <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-blue-600" />
             <h2 className="mb-2 text-xl font-semibold text-gray-900">
               Completando inicio de sesión...
             </h2>
-            <p className="text-gray-600">Por favor espera un momento</p>
+            <p className="text-gray-600">Espera un momento</p>
           </>
         )}
 
         {status === "success" && (
           <>
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <svg
-                className="h-6 w-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
+            <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-600" />
             <h2 className="mb-2 text-xl font-semibold text-gray-900">
-              ¡Inicio de sesión exitoso!
+              Inicio de sesión exitoso
             </h2>
-            <p className="text-gray-600">
-              Redirigiendo a la página principal...
-            </p>
+            <p className="text-gray-600">Redirigiendo...</p>
           </>
         )}
 
         {status === "error" && (
           <>
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-              <svg
-                className="h-6 w-6 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </div>
+            <XCircle className="mx-auto mb-4 h-12 w-12 text-red-600" />
             <h2 className="mb-2 text-xl font-semibold text-gray-900">
-              Error al iniciar sesión
+              Error de autenticación
             </h2>
-            <p className="mb-4 text-gray-600">{errorMessage}</p>
-            <p className="text-sm text-gray-500">
-              Redirigiendo a la página de inicio de sesión...
-            </p>
+            <p className="mb-6 text-sm text-gray-600">{errorMessage}</p>
+            <div className="flex justify-center gap-3">
+              <Button asChild variant="outline" className="bg-transparent">
+                <Link href="/auth/signin">Iniciar sesión</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/">Ir al inicio</Link>
+              </Button>
+            </div>
           </>
         )}
       </div>

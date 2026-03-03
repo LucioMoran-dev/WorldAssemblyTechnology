@@ -3,6 +3,8 @@
  * Solo para elementos de interfaz como features, brands, testimonios, etc.
  */
 
+import { Cpu, HardDrive, Laptop, Monitor, Package } from "lucide-react";
+
 // Features del footer
 export const features = [
   {
@@ -98,4 +100,14 @@ export const customerStats = [
   { value: "10,000+", label: "Productos Vendidos" },
   { value: "99%", label: "Tasa de Satisfacción" },
   { value: "24/7", label: "Soporte Técnico" },
+];
+
+// iconos y valores para el formulario de reparación
+export const deviceTypes = [
+  { icon: Laptop, name: "Laptop", value: "laptop" },
+  { icon: Monitor, name: "Desktop PC", value: "desktop" },
+  { icon: Monitor, name: "Monitor", value: "monitor" },
+  { icon: HardDrive, name: "Disco Duro", value: "hard-drive" },
+  { icon: Cpu, name: "Componente", value: "component" },
+  { icon: Package, name: "Otro", value: "other" },
 ];

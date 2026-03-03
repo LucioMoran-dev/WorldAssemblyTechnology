@@ -36,6 +36,7 @@ export interface ICart {
 export interface ICartSummary {
   itemCount: number;
   total: number;
+  hasItems?: boolean;
 }
 
 // DTOs
@@ -53,24 +54,48 @@ export interface ISelectAddressDto {
   addressId: string;
 }
 
+export interface ICheckoutAddressDto {
+  label: string;
+  street: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  country?: string;
+  isDefault?: boolean;
+}
+
 export interface ICheckoutDto {
-  shippingAddress?: null;
-  paymentMethod?: string;
+  shippingAddress: ICheckoutAddressDto;
+  promoCode?: string;
+}
+
+export interface ICartDiscountPreviewItem {
+  itemId: string;
+  productName: string;
+  originalUnitPrice: number;
+  finalUnitPrice: number;
+  discountAmount: number;
+  discountSource?: string;
+  discountCode?: string;
+  quantity: number;
+  subtotal: number;
+}
+
+export interface ICartDiscountPreview {
+  subtotalOriginal: number;
+  subtotalWithDiscount: number;
+  totalDiscount: number;
+  tax: number;
+  shipping: number;
+  total: number;
+  promoValid: boolean;
+  promoErrors: string[];
+  items: ICartDiscountPreviewItem[];
 }
 
 // Response types
 export interface ISelectedAddressResponse {
-  addressId: string | null;
-  address: {
-    id: string;
-    label: string;
-    street: string;
-    city: string;
-    province: string;
-    postalCode: string;
-    country: string;
-    isDefault: boolean;
-  } | null;
+  selectedAddressId: string | null;
 }
 
 // Legacy compatibility

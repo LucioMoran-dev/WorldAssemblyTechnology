@@ -47,6 +47,7 @@ const Header = memo(function Header() {
     setQuery: setSearchQuery,
     localResults,
     aiResults,
+    aiMessage,
     isLoadingLocal,
     isLoadingAi,
     error: searchError,
@@ -83,16 +84,16 @@ const Header = memo(function Header() {
     e.preventDefault();
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (basePrice: number) => {
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
       currency: "ARS",
       maximumFractionDigits: 0,
-    }).format(price);
+    }).format(basePrice);
   };
 
   const handleLogout = () => {
-    authService.logout();
+    void authService.logout();
     logout();
     router.push("/");
   };
@@ -183,13 +184,15 @@ const Header = memo(function Header() {
               >
                 Reparaciones
               </Link>
-              <Button
-                variant="default"
-                size="sm"
-                className="bg-gradient-to-r from-blue-600 to-blue-700 px-3 text-sm whitespace-nowrap text-white shadow-md transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-lg xl:px-5"
-              >
-                🔥 Ofertas
-              </Button>
+              <Link href="/products/catalog/products">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 px-3 text-sm whitespace-nowrap text-white shadow-md transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-lg xl:px-5"
+                >
+                  Ofertas
+                </Button>
+              </Link>
             </nav>
 
             {/* Right Actions */}
@@ -276,7 +279,7 @@ const Header = memo(function Header() {
                         ) : null}
 
                         <Link
-                          href="/wishlist"
+                          href="/dashboard/wishlist"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => setIsAccountMenuOpen(false)}
                         >
@@ -295,16 +298,15 @@ const Header = memo(function Header() {
                       </>
                     ) : (
                       <>
-                        {/* Usuario no autenticado */}
                         <Link
-                          href="/auth/singin"
+                          href="/auth/signin"
                           className="block px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100"
                           onClick={() => setIsAccountMenuOpen(false)}
                         >
                           Iniciar Sesión
                         </Link>
                         <Link
-                          href="/auth/singup"
+                          href="/auth/signup"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => setIsAccountMenuOpen(false)}
                         >
@@ -348,36 +350,27 @@ const Header = memo(function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Buscar productos con IA..."
-                    className="h-12 border-gray-300 pr-12 pl-10 focus:border-purple-500 focus:ring-purple-200"
+                    className="h-12 border-gray-300 pr-4 pl-10 focus:border-purple-500 focus:ring-purple-200"
                     autoFocus
                   />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={clearSearch}
-                      className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  )}
                 </div>
               </form>
 
               {/* Indicadores de estado */}
-              <div className="mt-2 flex items-center gap-4 min-h-[24px]">
+              <div className="mt-2 flex min-h-[24px] items-center gap-4">
                 {isLoadingLocal && (
                   <p className="text-sm text-gray-500">Buscando...</p>
                 )}
 
                 {isLoadingAi && !isLoadingLocal && (
-                  <p className="text-sm text-purple-600 flex items-center gap-2">
+                  <p className="flex items-center gap-2 text-sm text-purple-600">
                     <Sparkles className="h-4 w-4" />
                     Procesando con IA...
                   </p>
                 )}
 
                 {aiResults.length > 0 && !isLoadingAi && (
-                  <p className="text-sm text-purple-600 flex items-center gap-2">
+                  <p className="flex items-center gap-2 text-sm text-purple-600">
                     <Sparkles className="h-4 w-4" />
                     Resultados con IA disponibles
                   </p>
@@ -389,121 +382,138 @@ const Header = memo(function Header() {
               </div>
 
               {/* Dropdown de resultados - Contenedor con scroll */}
-              {showResults && (localResults.length > 0 || aiResults.length > 0) && (
-                <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[70vh] overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-2xl">
-                  {/* Resultados locales */}
-                  {localResults.length > 0 && (
-                    <>
-                      {/* Header con contador */}
-                      <div className="sticky top-0 z-10 border-b border-gray-100 bg-gray-50 px-4 py-2">
-                        <p className="text-xs text-gray-500">
-                          {localResults.length} resultado
-                          {localResults.length !== 1 ? "s" : ""} encontrado
-                          {localResults.length !== 1 ? "s" : ""}
-                          {isLoadingAi && (
-                            <span className="ml-2 text-purple-600">
-                              <Sparkles className="h-3 w-3 inline mr-1" />
-                              Buscando con IA...
-                            </span>
-                          )}
-                        </p>
-                      </div>
+              {showResults &&
+                (localResults.length > 0 || aiResults.length > 0) && (
+                  <div className="absolute top-full right-0 left-0 z-50 mt-2 max-h-[50vh] overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-2xl">
+                    {/* Resultados locales */}
+                    {localResults.length > 0 && (
+                      <>
+                        {/* Header con contador */}
+                        <div className="sticky top-0 z-10 border-b border-gray-100 bg-gray-50 px-4 py-2">
+                          <p className="text-xs text-gray-500">
+                            {localResults.length} resultado
+                            {localResults.length !== 1 ? "s" : ""} encontrado
+                            {localResults.length !== 1 ? "s" : ""}
+                            {isLoadingAi && (
+                              <span className="ml-2 text-purple-600">
+                                <Sparkles className="mr-1 inline h-3 w-3" />
+                                Buscando con IA...
+                              </span>
+                            )}
+                          </p>
+                        </div>
 
-                      {/* Lista de productos locales */}
-                      <ul className="divide-y divide-gray-100">
-                        {localResults.map((product) => (
-                          <li key={product.id}>
-                            <button
-                              onClick={() => handleProductClick(product.id)}
-                              className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-gray-50"
-                            >
-                              {/* Imagen */}
-                              <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                                {product.image ? (
-                                  <Image
-                                    src={product.image}
-                                    alt={product.name}
-                                    fill
-                                    className="object-cover"
-                                    sizes="48px"
-                                  />
-                                ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-gray-300 text-xs">
-                                    Sin img
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Info */}
-                              <div className="min-w-0 flex-1">
-                                <p className="font-medium text-gray-900 truncate">
-                                  {product.name}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  {product.brand} {product.category && `• ${product.category}`}
-                                </p>
-                              </div>
-
-                              {/* Precio */}
-                              <div className="flex-shrink-0 text-right">
-                                <p className="font-semibold text-gray-900">
-                                  {formatPrice(product.price)}
-                                </p>
-                              </div>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-
-                  {/* Resultados de IA (dentro del mismo contenedor con scroll) */}
-                  {aiResults.length > 0 && !isLoadingAi && (
-                    <div className="border-t border-purple-200 bg-purple-50/50 p-4">
-                      <h3 className="text-sm font-medium text-purple-600 mb-3 flex items-center gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        Recomendaciones de IA ({aiResults.length})
-                      </h3>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {aiResults.map((product) => (
-                          <button
-                            key={`ai-${product.id}`}
-                            onClick={() => handleProductClick(product.id)}
-                            className="flex items-center gap-3 p-3 bg-white border border-purple-100 rounded-lg hover:bg-purple-100 transition-colors text-left"
-                          >
-                            <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative">
-                              {product.image ? (
-                                <Image
-                                  src={product.image}
-                                  alt={product.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="48px"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
-                                  Sin img
+                        {/* Lista de productos locales */}
+                        <ul className="divide-y divide-gray-100">
+                          {localResults.map((product) => (
+                            <li key={product.id}>
+                              <button
+                                onClick={() => handleProductClick(product.id)}
+                                className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-gray-50"
+                              >
+                                {/* Imagen */}
+                                <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                                  {product.image ? (
+                                    <Image
+                                      src={product.image}
+                                      alt={product.name}
+                                      fill
+                                      className="object-cover"
+                                      sizes="40px"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-xs text-gray-300">
+                                      Sin img
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
 
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-gray-900 truncate text-sm">
-                                {product.name}
-                              </p>
-                              <p className="text-xs text-gray-600">{product.brand}</p>
-                              <p className="font-semibold text-purple-700 text-sm">
-                                {formatPrice(product.price)}
-                              </p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                                {/* Info */}
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-medium text-gray-900">
+                                    {product.name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {product.brand}{" "}
+                                    {product.category &&
+                                      `• ${product.category}`}
+                                  </p>
+                                </div>
+
+                                {/* Precio */}
+                                <div className="flex-shrink-0 text-right">
+                                  <p className="text-sm font-semibold text-gray-900">
+                                    {formatPrice(product.basePrice)}
+                                  </p>
+                                </div>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+
+                    {/* Resultados de IA (lista vertical compacta) */}
+                    {aiResults.length > 0 && !isLoadingAi && (
+                      <>
+                        <div className="sticky top-0 z-10 border-t border-purple-200 bg-purple-50 px-4 py-2">
+                          <p className="flex items-center gap-2 text-xs text-purple-600">
+                            <Sparkles className="h-3 w-3" />
+                            {aiResults.length} recomendación
+                            {aiResults.length !== 1 ? "es" : ""} de IA
+                          </p>
+                          {aiMessage && (
+                            <p className="mt-1 text-xs text-purple-700 italic">
+                              {aiMessage}
+                            </p>
+                          )}
+                        </div>
+
+                        <ul className="divide-y divide-purple-100 bg-purple-50/30">
+                          {aiResults.map((product) => (
+                            <li key={`ai-${product.id}`}>
+                              <button
+                                onClick={() => handleProductClick(product.id)}
+                                className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-purple-100"
+                              >
+                                <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                                  {product.image ? (
+                                    <Image
+                                      src={product.image}
+                                      alt={product.name}
+                                      fill
+                                      className="object-cover"
+                                      sizes="40px"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-xs text-gray-300">
+                                      Sin img
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-medium text-gray-900">
+                                    {product.name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {product.brand}
+                                  </p>
+                                </div>
+
+                                <div className="flex-shrink-0 text-right">
+                                  <p className="text-sm font-semibold text-purple-700">
+                                    {formatPrice(product.basePrice)}
+                                  </p>
+                                </div>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </div>
+                )}
 
               {/* Sin resultados */}
               {showResults &&
@@ -512,13 +522,13 @@ const Header = memo(function Header() {
                 localResults.length === 0 &&
                 aiResults.length === 0 &&
                 !searchError && (
-                  <div className="absolute left-0 right-0 top-full z-50 mt-2 rounded-xl border border-gray-200 bg-white p-6 text-center shadow-xl">
+                  <div className="absolute top-full right-0 left-0 z-50 mt-2 rounded-xl border border-gray-200 bg-white p-6 text-center shadow-xl">
                     <Search className="mx-auto mb-3 h-10 w-10 text-gray-300" />
                     <p className="font-medium text-gray-900">
                       No se encontraron productos para &quot;{searchQuery}&quot;
                     </p>
                     {isLoadingAi && (
-                      <p className="text-sm text-purple-600 mt-2 flex items-center justify-center gap-2">
+                      <p className="mt-2 flex items-center justify-center gap-2 text-sm text-purple-600">
                         <Loader2 className="h-4 w-4 animate-spin" />
                         Buscando con IA...
                       </p>
@@ -570,7 +580,7 @@ const Header = memo(function Header() {
                 Todos los demás productos
               </Link>
               <Link
-                href="/products/catalog/repairs"
+                href="/repairs"
                 className="py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
               >
                 Reparaciones

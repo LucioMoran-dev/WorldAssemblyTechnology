@@ -3,7 +3,6 @@
 import {
   ShoppingCart,
   Heart,
-  BarChart3,
   Truck,
   Shield,
   RefreshCw,
@@ -11,11 +10,12 @@ import {
   ChevronRight,
   Minus,
   Plus,
+  User,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ProductCard } from "@/components/home/product-card";
@@ -24,36 +24,61 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useProduct,
-  useProducts,
+  useRelatedProducts,
   useAddToCart,
-  useProductReviews,
+  useProductReviewsPublic,
+  useCheckWishlist,
+  useToggleWishlist,
+  useCreateReview,
+  useCanReview,
+  useAuth,
 } from "@/hooks";
 import { mapProductToCardProps, mapProductToDetailView } from "@/lib/mappers";
+import { Rating } from "@/types";
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const productId = params.id as string;
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
 
-  // Cargar producto desde API
   const { data: productData, isLoading: isLoadingProduct } =
     useProduct(productId);
-
-  // Cargar reviews del producto
-  const { data: reviewsData } = useProductReviews(productId);
-
-  // Cargar productos relacionados (limitados a 4)
-  const { data: relatedProductsData } = useProducts({ limit: 4 });
-
-  // Hook para agregar al carrito
+  const { data: reviewsData } = useProductReviewsPublic(productId);
+  const { data: relatedProductsData } = useRelatedProducts(productId, 4);
+  const { data: wishlistCheck } = useCheckWishlist(productId);
+  const { data: canReviewData } = useCanReview(productId);
+  const { toggle: toggleWishlist, isLoading: isWishlistLoading } =
+    useToggleWishlist();
   const addToCart = useAddToCart();
+  const createReview = useCreateReview();
 
-  // Mapear producto de API a formato del componente
   const product = productData
     ? mapProductToDetailView(productData, reviewsData || [])
     : null;
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewMessage, setReviewMessage] = useState("");
+
+  // Compute real review distribution from reviewsData
+  const reviewDistribution = useMemo(() => {
+    const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } as Record<number, number>;
+    const reviews = Array.isArray(reviewsData) ? reviewsData : [];
+    for (const review of reviews) {
+      const r = review.rating;
+      if (r >= 1 && r <= 5) dist[r]++;
+    }
+    return dist;
+  }, [reviewsData]);
+
+  const totalReviews = useMemo(() => {
+    return Object.values(reviewDistribution).reduce((a, b) => a + b, 0);
+  }, [reviewDistribution]);
+
+  const isInWishlist = wishlistCheck?.isInWishlist ?? false;
 
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -82,7 +107,60 @@ export default function ProductDetailPage() {
     );
   };
 
-  // Loading state
+  const handleBuyNow = () => {
+    if (!productData) {
+      toast.error("Producto no disponible");
+      return;
+    }
+
+    addToCart.mutate(
+      { productId: productData.id, quantity },
+      {
+        onSuccess: () => {
+          router.push("/cart");
+        },
+      }
+    );
+  };
+
+  const handleToggleWishlist = () => {
+    if (!isAuthenticated) {
+      toast.error("Inicia sesión para agregar a favoritos");
+      return;
+    }
+    toggleWishlist(productId, isInWishlist);
+  };
+
+  const handleSubmitReview = () => {
+    if (!reviewMessage.trim()) {
+      toast.error("Escribe un comentario para tu reseña");
+      return;
+    }
+
+    const ratingMap: Record<number, Rating> = {
+      1: Rating.ONE,
+      2: Rating.TWO,
+      3: Rating.THREE,
+      4: Rating.FOUR,
+      5: Rating.FIVE,
+    };
+
+    createReview.mutate(
+      {
+        productId,
+        rating: ratingMap[reviewRating],
+        message: reviewMessage,
+      },
+      {
+        onSuccess: () => {
+          setShowReviewForm(false);
+          setReviewMessage("");
+          setReviewRating(5);
+        },
+      }
+    );
+  };
+
   if (isLoadingProduct) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -102,7 +180,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Producto no encontrado
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -123,6 +200,8 @@ export default function ProductDetailPage() {
     );
   }
 
+  const reviewsList = Array.isArray(reviewsData) ? reviewsData : [];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
@@ -130,7 +209,6 @@ export default function ProductDetailPage() {
         <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Image Gallery */}
           <div className="space-y-4">
-            {/* Main Image */}
             <div className="relative aspect-square rounded-lg border border-gray-200 bg-white p-8">
               {product.badge && (
                 <Badge className="gradient-accent absolute top-4 left-4 z-10 border-0 text-white">
@@ -145,7 +223,6 @@ export default function ProductDetailPage() {
               />
             </div>
 
-            {/* Thumbnail Images */}
             <div className="grid grid-cols-4 gap-3">
               {product.images.map((image, index) => (
                 <button
@@ -175,7 +252,6 @@ export default function ProductDetailPage() {
                 {product.name}
               </h1>
 
-              {/* Rating */}
               <div className="mb-4 flex items-center gap-4">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -194,7 +270,6 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              {/* SKU and Brand */}
               <div className="mb-4 flex items-center gap-4 text-sm text-gray-600">
                 <span>
                   SKU:{" "}
@@ -211,7 +286,6 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              {/* Stock Status */}
               {product.inStock ? (
                 <div className="mb-6 flex items-center gap-2 text-green-600">
                   <div className="h-2 w-2 rounded-full bg-green-600" />
@@ -289,24 +363,27 @@ export default function ProductDetailPage() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 border-gray-300 bg-transparent"
+                  className={`h-12 w-12 border-gray-300 bg-transparent ${
+                    isInWishlist
+                      ? "border-red-300 text-red-500 hover:text-red-600"
+                      : ""
+                  }`}
+                  onClick={handleToggleWishlist}
+                  disabled={isWishlistLoading}
                 >
-                  <Heart className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-12 w-12 border-gray-300 bg-transparent"
-                >
-                  <BarChart3 className="h-5 w-5" />
+                  <Heart
+                    className={`h-5 w-5 ${isInWishlist ? "fill-red-500" : ""}`}
+                  />
                 </Button>
               </div>
 
               <Button
                 variant="outline"
                 className="h-12 w-full border-gray-300 bg-transparent"
+                onClick={handleBuyNow}
+                disabled={addToCart.isPending || !productData}
               >
-                Comprar Ahora
+                {addToCart.isPending ? "Procesando..." : "Comprar Ahora"}
               </Button>
             </div>
 
@@ -404,6 +481,7 @@ export default function ProductDetailPage() {
 
             <TabsContent value="reviews" className="mt-6">
               <div className="space-y-6">
+                {/* Rating Summary */}
                 <div className="flex items-center gap-8 border-b border-gray-200 pb-6">
                   <div className="text-center">
                     <div className="mb-2 text-5xl font-bold text-gray-900">
@@ -434,20 +512,141 @@ export default function ProductDetailPage() {
                         <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
                           <div
                             className="h-full bg-orange-400"
-                            style={{ width: `${Math.random() * 100}%` }}
+                            style={{
+                              width:
+                                totalReviews > 0
+                                  ? `${(reviewDistribution[stars] / totalReviews) * 100}%`
+                                  : "0%",
+                            }}
                           />
                         </div>
+                        <span className="w-8 text-right text-sm text-gray-500">
+                          {reviewDistribution[stars]}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="py-8 text-center text-gray-600">
-                  <p>No hay reseñas todavía. ¡Sé el primero en dejar una!</p>
-                  <Button className="mt-4 bg-blue-600 hover:bg-blue-700">
-                    Escribir una Reseña
-                  </Button>
-                </div>
+                {/* Review List */}
+                {reviewsList.length > 0 ? (
+                  <div className="space-y-4">
+                    {reviewsList.map((review) => (
+                      <div
+                        key={review.id}
+                        className="border-b border-gray-100 pb-4 last:border-0"
+                      >
+                        <div className="mb-2 flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                            <User className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {review.user?.name || "Usuario"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(review.createdAt).toLocaleDateString(
+                                "es-AR"
+                              )}
+                            </p>
+                          </div>
+                          <div className="ml-auto flex items-center gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-3.5 w-3.5 ${
+                                  i < review.rating
+                                    ? "fill-orange-400 text-orange-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="pl-11 text-sm text-gray-700">
+                          {review.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="py-4 text-center text-gray-500">
+                    No hay reseñas todavía.
+                  </p>
+                )}
+
+                {/* Write Review */}
+                {canReviewData?.canReview && !showReviewForm && (
+                  <div className="pt-2 text-center">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={() => setShowReviewForm(true)}
+                    >
+                      Escribir una Reseña
+                    </Button>
+                  </div>
+                )}
+
+                {showReviewForm && (
+                  <div className="space-y-4 rounded-lg border border-gray-200 p-4">
+                    <h4 className="font-medium text-gray-900">Tu reseña</h4>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600">
+                        Calificación:
+                      </span>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            onClick={() => setReviewRating(star)}
+                          >
+                            <Star
+                              className={`h-6 w-6 cursor-pointer ${
+                                star <= reviewRating
+                                  ? "fill-orange-400 text-orange-400"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <textarea
+                      value={reviewMessage}
+                      onChange={(e) => setReviewMessage(e.target.value)}
+                      placeholder="Escribe tu opinión sobre este producto..."
+                      className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      rows={4}
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        className="bg-blue-600 hover:bg-blue-700"
+                        onClick={handleSubmitReview}
+                        disabled={createReview.isPending}
+                      >
+                        {createReview.isPending ? "Enviando..." : "Enviar Reseña"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="bg-transparent"
+                        onClick={() => {
+                          setShowReviewForm(false);
+                          setReviewMessage("");
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {!canReviewData?.canReview &&
+                  reviewsList.length === 0 &&
+                  isAuthenticated && (
+                    <p className="text-center text-sm text-gray-500">
+                      Compra este producto para dejar una reseña.
+                    </p>
+                  )}
               </div>
             </TabsContent>
           </Tabs>
@@ -460,14 +659,14 @@ export default function ProductDetailPage() {
               Productos Relacionados
             </h2>
             <Link
-              href="/"
+              href="/products/catalog/products"
               className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               Ver Todos
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {relatedProductsData?.items.map((relatedProduct) => (
+            {relatedProductsData?.map((relatedProduct) => (
               <ProductCard
                 key={relatedProduct.id}
                 {...mapProductToCardProps(relatedProduct)}

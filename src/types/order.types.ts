@@ -33,6 +33,10 @@ export interface OrderItem {
   quantity: number;
   unitPrice: number;
   subtotal: number;
+  originalUnitPrice?: number;
+  discountAmount?: number;
+  discountSource?: string;
+  discountCode?: string;
   productSnapshot: IProductSnapshot;
   variantsSnapshot: IVariantSnapshot[] | null;
   createdAt: string;
@@ -45,6 +49,8 @@ export interface OrderDetail {
   tax: number;
   shipping: number;
   total: number;
+  totalDiscount?: number;
+  promoCodeUsed?: string;
   shippingAddress: IUserAddress | null;
   shippingAddressId?: string;
   paymentMethod?: string;
@@ -56,6 +62,7 @@ export interface IOrder {
   id: string;
   orderNumber: string;
   status: OrderStatus;
+  cancellationReason?: string;
   createdAt: string;
   updatedAt: string;
   user: {
@@ -67,22 +74,8 @@ export interface IOrder {
 }
 
 // DTOs
-export interface ICreateOrderFromCartDto {
-  shippingAddress?: null;
-}
-
 export interface IUpdateOrderStatusDto {
   status: OrderStatus;
-  paymentMethod?: string;
-}
-
-export interface IConfirmPaymentDto {
-  paymentMethod: string;
-  transactionId?: string;
-  paymentDetails?: Record<
-    string,
-    string[] | number | number[] | boolean | Record<string, unknown>
-  >;
 }
 
 // Query Filters
@@ -101,6 +94,8 @@ export interface IPaginatedOrders {
   total: number;
   pages: number;
 }
+
+export type IOrdersListResponse = IPaginatedOrders;
 
 // Order Stats (ADMIN)
 export interface IOrderStats {

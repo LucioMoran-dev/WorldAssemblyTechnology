@@ -19,7 +19,10 @@
       "Bash(taskkill:*)",
       "Bash(if exist .env type .env)",
       "Bash(npm ls:*)",
-      "Bash(del \"c:\\\\Users\\\\Lucio\\\\Desktop\\\\Front-end-ecommerce\\\\src\\\\hooks\\\\use-ai-search.ts\")"
+      "Bash(del \"c:\\\\Users\\\\Lucio\\\\Desktop\\\\Front-end-ecommerce\\\\src\\\\hooks\\\\use-ai-search.ts\")",
+      "Bash(powershell -Command:*)",
+      "Bash(npx next lint:*)",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []

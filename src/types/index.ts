@@ -28,8 +28,23 @@ export * from "./file.types";
 // Health types
 export * from "./health.types";
 
-// Health types
+// Wishlist types
 export * from "./wishlist.types";
+
+// Payment types
+export * from "./payment.types";
+
+// Discount types
+export * from "./discount.types";
+
+// Newsletter types
+export * from "./newsletter.types";
+
+// Contact types
+export * from "./contact.types";
+
+// Repair types
+export * from "./repair.types";
 
 // ===== TYPES DE COMPONENTES UI (Props) =====
 // Solo interfaces que NO están en el backend

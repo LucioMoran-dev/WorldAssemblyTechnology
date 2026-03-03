@@ -179,3 +179,52 @@ export function useSetDefaultAddress() {
     },
   });
 }
+
+/**
+ * Mutation para solicitar recuperacion de contrasena
+ */
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) => userService.forgotPassword(email),
+    onSuccess: (response) => {
+      toast.success(
+        response.message ||
+          "Si el email existe, recibiras instrucciones para restablecer tu contrasena"
+      );
+    },
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as ErrorResponse)?.message ||
+          "No se pudo procesar la solicitud"
+        : "No se pudo procesar la solicitud";
+      toast.error(message);
+    },
+  });
+}
+
+/**
+ * Mutation para restablecer contrasena con token
+ */
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: ({
+      token,
+      newPassword,
+    }: {
+      token: string;
+      newPassword: string;
+    }) => userService.resetPassword(token, newPassword),
+    onSuccess: (response) => {
+      toast.success(
+        response.message || "Contrasena restablecida correctamente"
+      );
+    },
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as ErrorResponse)?.message ||
+          "No se pudo restablecer la contrasena"
+        : "No se pudo restablecer la contrasena";
+      toast.error(message);
+    },
+  });
+}

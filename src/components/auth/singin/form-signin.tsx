@@ -144,7 +144,7 @@ function FormSignin() {
                     {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                   </Button>
                   <Link
-                    href="/forgot-password"
+                    href="/auth/forgot-password"
                     className="text-sm text-blue-600 hover:underline"
                   >
                     ¿Olvidaste tu contraseña?

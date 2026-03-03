@@ -18,6 +18,7 @@ interface UseHybridSearchReturn {
   setQuery: (q: string) => void;
   localResults: IAutocompleteResult[];
   aiResults: IAutocompleteResult[];
+  aiMessage: string | null;
   isLoadingLocal: boolean;
   isLoadingAi: boolean;
   error: string | null;
@@ -44,6 +45,7 @@ export function useHybridSearch(
   const [query, setQueryState] = useState("");
   const [localResults, setLocalResults] = useState<IAutocompleteResult[]>([]);
   const [aiResults, setAiResults] = useState<IAutocompleteResult[]>([]);
+  const [aiMessage, setAiMessage] = useState<string | null>(null);
   const [isLoadingLocal, setIsLoadingLocal] = useState(false);
   const [isLoadingAi, setIsLoadingAi] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -101,8 +103,10 @@ export function useHybridSearch(
         if (payload.source === "ai") {
           searchLogger.debug("Resultados de IA recibidos", {
             count: payload.results.length,
+            message: payload.message,
           });
           setAiResults(payload.results);
+          setAiMessage(payload.message || null);
           setIsLoadingAi(false);
           eventSource.close();
         }
@@ -155,6 +159,7 @@ export function useHybridSearch(
     setQueryState("");
     setLocalResults([]);
     setAiResults([]);
+    setAiMessage(null);
     setError(null);
     setIsOpen(false);
   }, []);
@@ -171,6 +176,7 @@ export function useHybridSearch(
     setQuery,
     localResults,
     aiResults,
+    aiMessage,
     isLoadingLocal,
     isLoadingAi,
     error,

@@ -1,13 +1,16 @@
 "use client";
 
 import {
+  BadgePercent,
+  CreditCard,
+  FolderTree,
   LayoutDashboard,
+  Mail,
   Package,
+  Settings,
   ShoppingCart,
   Users,
-  FolderTree,
-  Star,
-  Settings,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,16 +19,15 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { label: "Panel Principal", href: "/admin", icon: LayoutDashboard },
-  { label: "Gestión de Productos", href: "/admin/products", icon: Package },
-  { label: "Gestión de Órdenes", href: "/admin/orders", icon: ShoppingCart },
-  { label: "Gestión de Usuarios", href: "/admin/users", icon: Users },
-  {
-    label: "Gestión de Categorías",
-    href: "/admin/categories",
-    icon: FolderTree,
-  },
-  { label: "Gestión de Reseñas", href: "/admin/reviews", icon: Star },
-  { label: "Configuración", href: "/admin/settings", icon: Settings },
+  { label: "Gestion de Productos", href: "/admin/products", icon: Package },
+  { label: "Gestion de Ordenes", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Gestion de Usuarios", href: "/admin/users", icon: Users },
+  { label: "Gestion de Categorias", href: "/admin/categories", icon: FolderTree },
+  { label: "Gestion de Descuentos", href: "/admin/discounts", icon: BadgePercent },
+  { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
+  { label: "Reparaciones", href: "/admin/repairs", icon: Wrench },
+  { label: "Pagos", href: "/admin/payments", icon: CreditCard },
+  { label: "Configuracion", href: "/admin/settings", icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -35,8 +37,12 @@ export function AdminSidebar() {
     <aside className="overflow-hidden rounded-lg border border-gray-200 bg-white">
       <nav className="flex flex-col">
         {menuItems.map((item, index) => {
-          const isActive = pathname === item.href;
+          const isActive =
+            item.href === "/admin"
+              ? pathname === "/admin"
+              : pathname.startsWith(item.href);
           const Icon = item.icon;
+
           return (
             <Link
               key={item.href}
