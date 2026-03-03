@@ -19,6 +19,9 @@ export const metadata = {
     "WorldAssemblyTech - Hardware de Computadora Premium y Productos para Gaming",
   description:
     "Compra las últimas laptops, desktops, monitores gaming y componentes de PC de marcas top como MSI, ASUS y más.",
+  icons: {
+    icon: "/WorldAsseblyTechnologyFavicon.png",
+  },
 };
 
 export default function RootLayout({
