@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { useWishlist } from "@/hooks";
-import type { WishlistItem as IWishlistItem } from "@/types";
+import type { IWishlistItem as IWishlistItem } from "@/types";
 
 function MyWishList() {
   const { data: wishlist, isLoading } = useWishlist();

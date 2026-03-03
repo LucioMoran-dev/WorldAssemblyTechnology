@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Eye, Download } from "lucide-react";
+import { Search, Eye } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -46,19 +46,20 @@ const translateStatus = (status: OrderStatus): string => {
 export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "">("");
+  const [page, setPage] = useState(1);
 
   const { data: ordersData, isLoading } = useAllOrders({
     status: statusFilter || undefined,
+    page,
+    limit: 10,
   });
+
+  const orders = ordersData?.items ?? [];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Gestión de Órdenes</h1>
-        <button className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
-          <Download className="h-4 w-4" />
-          Exportar
-        </button>
       </div>
 
       {/* Filtros */}
@@ -76,7 +77,9 @@ export default function AdminOrdersPage() {
           </div>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "")}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as OrderStatus | "")
+            }
             className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Todos los Estados</option>
@@ -124,17 +127,23 @@ export default function AdminOrdersPage() {
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="border-b border-gray-100">
                     <td colSpan={7} className="px-6 py-4">
-                      <div className="h-12 animate-pulse rounded bg-gray-200"></div>
+                      <div className="h-12 animate-pulse rounded bg-gray-200" />
                     </td>
                   </tr>
                 ))
-              ) : ordersData && ordersData.items.length > 0 ? (
-                ordersData.items
+              ) : orders.length > 0 ? (
+                orders
                   .filter((order) =>
                     searchTerm
-                      ? order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
+                      ? order.orderNumber
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        order.user.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        order.user.email
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
                       : true
                   )
                   .map((order) => (
@@ -155,17 +164,19 @@ export default function AdminOrdersPage() {
                         {formatDate(order.createdAt)}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                        ${order.orderDetail.total.toFixed(2)}
+                        ${order.orderDetail?.total?.toFixed(2) ?? "0.00"}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(order.status)}`}>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(order.status)}`}
+                        >
                           {translateStatus(order.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <Link
                           href={`/dashboard/orders/${order.id}`}
-                          className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50 inline-block"
+                          className="inline-block rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
                         >
                           <Eye className="h-4 w-4" />
                         </Link>
@@ -174,13 +185,38 @@ export default function AdminOrdersPage() {
                   ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-600">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-12 text-center text-gray-600"
+                  >
                     No se encontraron órdenes
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
+          <p className="text-sm text-gray-600">
+            Mostrando {orders.length} de {ordersData?.total ?? 0} órdenes
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1 || isLoading}
+              className="rounded border border-gray-300 px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Anterior
+            </button>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={!ordersData || page >= ordersData.pages || isLoading}
+              className="rounded border border-gray-300 px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
     </div>

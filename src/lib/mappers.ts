@@ -3,18 +3,18 @@
  * Mantiene compatibilidad con componentes existentes
  */
 
-import type { Product, CartItem, Review } from "@/types";
+import type { IProduct, ICartItem, IReviews } from "@/types";
 
 /**
  * Convierte Product del backend a ProductCardProps del frontend
  */
-export function mapProductToCardProps(product: Product) {
+export function mapProductToCardProps(product: IProduct) {
   return {
     id: product.id,
     name: product.name,
     description: product.description,
     brand: product.brand,
-    model: product.model,
+    model: product.model ?? "—",
     category: product.category?.name,
     basePrice: product.basePrice, // ✅ Propiedad correcta según ProductCardProps
     originalPrice: undefined, // Calcular si hay descuento
@@ -31,7 +31,7 @@ export function mapProductToCardProps(product: Product) {
 /**
  * Convierte CartItem del backend a ICartItems del frontend
  */
-export function mapCartItemToFrontend(cartItem: CartItem) {
+export function mapCartItemToFrontend(cartItem: ICartItem) {
   return {
     id: cartItem.id,
     name: cartItem.product.name,
@@ -43,10 +43,10 @@ export function mapCartItemToFrontend(cartItem: CartItem) {
 /**
  * Convierte Review del backend a IReviews del frontend
  */
-export function mapReviewToFrontend(review: Review) {
+export function mapReviewToFrontend(review: IReviews) {
   return {
     id: review.id,
-    productName: review.product.name,
+    productName: review.product?.name,
     rating: review.rating,
     date: new Date(review.createdAt).toLocaleDateString(),
     comment: review.message,
@@ -56,7 +56,7 @@ export function mapReviewToFrontend(review: Review) {
 /**
  * Calcula el rating promedio de un array de reviews
  */
-export function calculateAverageRating(reviews: Review[]): number {
+export function calculateAverageRating(reviews: IReviews[]): number {
   if (reviews.length === 0) return 0;
   const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
   return Math.round((sum / reviews.length) * 10) / 10;
@@ -65,7 +65,10 @@ export function calculateAverageRating(reviews: Review[]): number {
 /**
  * Convierte Product del backend a formato para vista de detalle
  */
-export function mapProductToDetailView(product: Product, reviews?: Review[]) {
+export function mapProductToDetailView(
+  product: IProduct,
+  reviews?: IReviews[]
+) {
   const averageRating = reviews ? calculateAverageRating(reviews) : 0;
   const reviewCount = reviews?.length || 0;
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -274,7 +274,12 @@ function AccountInfo() {
             >
               Restablecer
             </Button>
-            <Button type="button" variant="outline" disabled={isLoading} asChild>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isLoading}
+              asChild
+            >
               <Link href="/dashboard">Volver al Dashboard</Link>
             </Button>
           </div>

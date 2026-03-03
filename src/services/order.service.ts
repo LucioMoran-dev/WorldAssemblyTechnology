@@ -1,11 +1,11 @@
-import { apiClient } from '@/lib/api';
-import {
-  Order,
-  OrderStats,
+import { apiClient } from "@/lib/api";
+import type {
+  IOrder,
+  IOrdersListResponse,
+  IOrderStats,
   OrderListParams,
-  UpdateOrderStatusDto,
-  ConfirmPaymentDto,
-} from '@/types';
+  IUpdateOrderStatusDto,
+} from "@/types";
 
 /**
  * Servicio de órdenes
@@ -14,64 +14,70 @@ import {
 export const orderService = {
   /**
    * GET /orders/my-orders - Obtener mis órdenes
-   * Requiere: Autenticación | Rate Limit: 60/min
+   * Requiere: Autenticación (CLIENT+)
    */
-  getMyOrders: async (): Promise<Order[]> => {
-    const response = await apiClient.get<Order[]>('/orders/my-orders');
+  getMyOrders: async (): Promise<IOrder[]> => {
+    const response = await apiClient.get<IOrder[]>("/orders/my-orders");
     return response.data;
   },
 
   /**
    * GET /orders/:id - Obtener orden por ID
-   * Requiere: Autenticación | Rate Limit: 60/min
+   * Requiere: Autenticación (CLIENT+ — solo propia si CLIENT)
    */
-  getById: async (id: string): Promise<Order> => {
-    const response = await apiClient.get<Order>(`/orders/${id}`);
+  getById: async (id: string): Promise<IOrder> => {
+    const response = await apiClient.get<IOrder>(`/orders/${id}`);
     return response.data;
   },
 
   /**
    * GET /orders - Todas las órdenes (Admin only)
-   * Requiere: ADMIN | Rate Limit: 60/min
+   * Requiere: ADMIN+
    */
-  getAllOrders: async (params?: OrderListParams): Promise<Order[]> => {
-    const response = await apiClient.get<Order[]>('/orders', { params });
+  getAllOrders: async (
+    params?: OrderListParams
+  ): Promise<IOrdersListResponse> => {
+    const response = await apiClient.get<IOrdersListResponse>("/orders", {
+      params,
+    });
     return response.data;
   },
 
   /**
    * GET /orders/stats - Estadísticas de órdenes (Admin only)
-   * Requiere: ADMIN | Rate Limit: 60/min
+   * Requiere: ADMIN+
    */
-  getStats: async (): Promise<OrderStats> => {
-    const response = await apiClient.get<OrderStats>('/orders/stats');
+  getStats: async (): Promise<IOrderStats> => {
+    const response = await apiClient.get<IOrderStats>("/orders/stats");
     return response.data;
   },
 
   /**
    * PUT /orders/:id/status - Actualizar estado de orden (Admin only)
-   * Requiere: ADMIN | Rate Limit: 60/min
+   * Requiere: ADMIN+
    */
-  updateStatus: async (id: string, data: UpdateOrderStatusDto): Promise<Order> => {
-    const response = await apiClient.put<Order>(`/orders/${id}/status`, data);
+  updateStatus: async (
+    id: string,
+    data: IUpdateOrderStatusDto
+  ): Promise<IOrder> => {
+    const response = await apiClient.put<IOrder>(`/orders/${id}/status`, null, {
+      params: { status: data.status },
+    });
     return response.data;
   },
 
   /**
-   * POST /orders/:id/confirm-payment - Confirmar pago de orden
-   * Requiere: Autenticación | Rate Limit: 60/min
+   * POST /orders/:id/cancel - Cancelar orden
+   * Requiere: CLIENT+ (solo en estado pending o paid)
    */
-  confirmPayment: async (id: string, data: ConfirmPaymentDto): Promise<Order> => {
-    const response = await apiClient.post<Order>(`/orders/${id}/confirm-payment`, data);
-    return response.data;
-  },
-
-  /**
-   * POST /orders/:orderId/:userId/cancel - Cancelar orden (Super Admin only)
-   * Requiere: SUPER_ADMIN | Rate Limit: 60/min
-   */
-  cancelOrder: async (orderId: string, userId: string): Promise<Order> => {
-    const response = await apiClient.post<Order>(`/orders/${orderId}/${userId}/cancel`);
+  cancelOrder: async (
+    orderId: string,
+    reason?: string
+  ): Promise<IOrder> => {
+    const response = await apiClient.post<IOrder>(
+      `/orders/${orderId}/cancel`,
+      { reason }
+    );
     return response.data;
   },
 };

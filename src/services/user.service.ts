@@ -1,14 +1,14 @@
 import { apiClient } from "@/lib/api";
 import type {
-  User,
-  PaginatedResponse,
-  UpdateUserDto,
+  IUser,
+  IPaginatedResponse,
+  IUpdateUserDto,
   ChangePasswordDto,
-  ChangeRoleDto,
-  UserListParams,
+  IChangeRoleDto,
+  IUserListParams,
   Address,
-  CreateAddressDto,
-  UpdateAddressDto,
+  ICreateAddressDto,
+  IUpdateAddressDto,
 } from "@/types";
 
 /**
@@ -21,9 +21,9 @@ export const userService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   getUsers: async (
-    params?: UserListParams
-  ): Promise<PaginatedResponse<User>> => {
-    const response = await apiClient.get<PaginatedResponse<User>>("/users", {
+    params?: IUserListParams
+  ): Promise<IPaginatedResponse<IUser>> => {
+    const response = await apiClient.get<IPaginatedResponse<IUser>>("/users", {
       params,
     });
     return response.data;
@@ -33,8 +33,8 @@ export const userService = {
    * GET /users/:id - Obtener usuario por ID
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  getUserById: async (id: string): Promise<User> => {
-    const response = await apiClient.get<User>(`/users/${id}`);
+  getUserById: async (id: string): Promise<IUser> => {
+    const response = await apiClient.get<IUser>(`/users/${id}`);
     return response.data;
   },
 
@@ -61,8 +61,8 @@ export const userService = {
    * PUT /users/update/user - Actualizar perfil
    * Requiere: Autenticación | Rate Limit: 60/min
    */
-  updateProfile: async (data: UpdateUserDto): Promise<User> => {
-    const response = await apiClient.put<User>("/users/update/user", data);
+  updateProfile: async (data: IUpdateUserDto): Promise<IUser> => {
+    const response = await apiClient.put<IUser>("/users/update/user", data);
     return response.data;
   },
 
@@ -95,8 +95,8 @@ export const userService = {
    * PATCH /users/restore/:id - Restaurar usuario eliminado
    * Requiere: ADMIN | Rate Limit: 60/min
    */
-  restoreUser: async (id: string): Promise<User> => {
-    const response = await apiClient.patch<User>(`/users/restore/${id}`);
+  restoreUser: async (id: string): Promise<IUser> => {
+    const response = await apiClient.patch<IUser>(`/users/restore/${id}`);
     return response.data;
   },
 
@@ -104,8 +104,8 @@ export const userService = {
    * PATCH /users/roles/:id - Cambiar rol de usuario
    * Requiere: SUPER_ADMIN | Rate Limit: 60/min
    */
-  changeUserRole: async (id: string, data: ChangeRoleDto): Promise<User> => {
-    const response = await apiClient.patch<User>(`/users/roles/${id}`, data);
+  changeUserRole: async (id: string, data: IChangeRoleDto): Promise<IUser> => {
+    const response = await apiClient.patch<IUser>(`/users/roles/${id}`, data);
     return response.data;
   },
 
@@ -126,8 +126,8 @@ export const userService = {
    * POST /users/addresses - Agregar nueva dirección
    * Requiere: Autenticación
    */
-  createAddress: async (data: CreateAddressDto): Promise<Address> => {
-    const response = await apiClient.post<Address>("/users/addresses", data);
+  createAddress: async (data: ICreateAddressDto): Promise<Address> => {
+    const response = await apiClient.post<Address>("/users/addresses/add", data);
     return response.data;
   },
 
@@ -137,7 +137,7 @@ export const userService = {
    */
   updateAddress: async (
     addressId: string,
-    data: UpdateAddressDto
+    data: IUpdateAddressDto
   ): Promise<Address> => {
     const response = await apiClient.patch<Address>(
       `/users/addresses/${addressId}`,
@@ -164,6 +164,33 @@ export const userService = {
   setDefaultAddress: async (addressId: string): Promise<Address> => {
     const response = await apiClient.patch<Address>(
       `/users/addresses/${addressId}/set-default`
+    );
+    return response.data;
+  },
+
+  /**
+   * POST /users/forgot-password - Solicitar recuperación de contraseña
+   * Público - Siempre responde mensaje genérico
+   */
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>(
+      "/users/forgot-password",
+      { email }
+    );
+    return response.data;
+  },
+
+  /**
+   * POST /users/reset-password - Restablecer contraseña con token
+   * Público
+   */
+  resetPassword: async (
+    token: string,
+    newPassword: string
+  ): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>(
+      "/users/reset-password",
+      { token, newPassword }
     );
     return response.data;
   },

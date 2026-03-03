@@ -1,5 +1,5 @@
 import { apiClient, API_BASE_URL } from "@/lib/api";
-import type { AuthResponse, SignupDto, LoginDto, User } from "@/types";
+import type { IAuthResponse, ISignupDto, ILoginDto, IUser } from "@/types";
 
 /**
  * Servicio de autenticación
@@ -7,21 +7,21 @@ import type { AuthResponse, SignupDto, LoginDto, User } from "@/types";
  */
 export const authService = {
   /**
-   * POST /auth/signup - Registro de usuario
+   * POST /auth/singup - Registro de usuario
    * Público - No requiere autenticación
    */
-  async signup(data: SignupDto): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>("/auth/signup", data);
+  async signup(data: ISignupDto): Promise<IAuthResponse> {
+    const response = await apiClient.post<IAuthResponse>("/auth/singup", data);
     return response.data;
   },
 
   /**
-   * POST /auth/signin/user - Login
+   * POST /auth/singin/user - Login
    * Público - No requiere autenticación
    */
-  async login(data: LoginDto): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>(
-      "/auth/signin/user",
+  async login(data: ILoginDto): Promise<IAuthResponse> {
+    const response = await apiClient.post<IAuthResponse>(
+      "/auth/singin/user",
       data
     );
     return response.data;
@@ -36,11 +36,31 @@ export const authService = {
   },
 
   /**
+   * POST /auth/exchange-code - Intercambiar código OAuth por sesión
+   * Público - El backend setea cookie HttpOnly con access_token
+   */
+  async exchangeCode(code: string): Promise<{ userId: string; success: boolean }> {
+    const response = await apiClient.post<{ userId: string; success: boolean }>(
+      "/auth/exchange-code",
+      { code }
+    );
+    return response.data;
+  },
+
+  /**
+   * POST /auth/logout - Cerrar sesión en el backend (limpia cookie)
+   * Público
+   */
+  async logoutBackend(): Promise<{ success: boolean }> {
+    const response = await apiClient.post<{ success: boolean }>("/auth/logout");
+    return response.data;
+  },
+
+  /**
    * Guardar token en localStorage
    */
   saveToken(token: string): void {
     localStorage.setItem("token", token);
-    // Mantener compatibilidad con código existente
     localStorage.setItem("accessToken", token);
   },
 
@@ -52,9 +72,14 @@ export const authService = {
   },
 
   /**
-   * Logout - Limpiar token y usuario
+   * Logout - Limpiar token y usuario localmente + llamar al backend
    */
-  logout(): void {
+  async logout(): Promise<void> {
+    try {
+      await this.logoutBackend();
+    } catch {
+      // Si falla el backend, igual limpiamos local
+    }
     localStorage.removeItem("token");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
@@ -64,20 +89,20 @@ export const authService = {
    * Verificar si está autenticado
    */
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.getToken() || !!this.getUser();
   },
 
   /**
    * Guardar información del usuario en localStorage
    */
-  saveUser(user: User): void {
+  saveUser(user: IUser): void {
     localStorage.setItem("user", JSON.stringify(user));
   },
 
   /**
    * Obtener información del usuario desde localStorage
    */
-  getUser(): User | null {
+  getUser(): IUser | null {
     const userStr = localStorage.getItem("user");
     if (!userStr) return null;
     try {
@@ -88,5 +113,4 @@ export const authService = {
   },
 };
 
-// Exports adicionales para compatibilidad
 export default authService;

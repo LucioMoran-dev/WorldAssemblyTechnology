@@ -8,6 +8,7 @@ export * from './use-user';
 
 // Products
 export * from './use-products';
+export * from './use-hybrid-search';
 
 // Cart
 export * from './use-cart';
@@ -24,6 +25,21 @@ export * from './use-reviews';
 
 // Wishlist
 export * from './use-wishlist';
+
+// Payments
+export * from './use-payments';
+
+// Discounts
+export * from './use-discounts';
+
+// Newsletter
+export * from './use-newsletter';
+
+// Contact
+export * from './use-contact';
+
+// Repairs
+export * from './use-repairs';
 
 // Admin
 export * from './use-user-admin';

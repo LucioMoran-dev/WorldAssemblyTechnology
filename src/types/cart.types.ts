@@ -1,30 +1,30 @@
-import type { Product, ProductVariant } from "./product.types";
-import type { User } from "./user.types";
-import type { VariantSnapshot } from "./common.types";
+import type { IVariantSnapshot } from "./common.types";
+import type { IProduct, IProductVariant } from "./product.types";
+import type { IUser } from "./user.types";
 
 /**
  * Tipos relacionados con el carrito de compras
  */
 
 // Re-export VariantSnapshot para compatibilidad
-export type { VariantSnapshot };
+export type { IVariantSnapshot };
 
 // Cart Item
-export interface CartItem {
+export interface ICartItem {
   id: string;
   quantity: number;
   priceAtAddition: number;
   subtotal: number;
-  product: Product;
-  variants?: ProductVariant[];
-  selectedVariants?: VariantSnapshot[];
+  product: IProduct;
+  variants?: IProductVariant[];
+  selectedVariants?: IVariantSnapshot[];
 }
 
 // Cart
-export interface Cart {
+export interface ICart {
   id: string;
-  user: User;
-  items: CartItem[];
+  user: IUser;
+  items: ICartItem[];
   selectedAddressId?: string;
   itemCount: number;
   total: number;
@@ -33,48 +33,73 @@ export interface Cart {
 }
 
 // Cart Summary (para navbar)
-export interface CartSummary {
+export interface ICartSummary {
   itemCount: number;
   total: number;
+  hasItems?: boolean;
 }
 
 // DTOs
-export interface AddToCartDto {
+export interface IAddToCartDto {
   productId: string;
   quantity: number;
   variantIds?: string[];
 }
 
-export interface UpdateCartItemDto {
+export interface IUpdateCartItemDto {
   quantity: number;
 }
 
-export interface SelectAddressDto {
+export interface ISelectAddressDto {
   addressId: string;
 }
 
-export interface CheckoutDto {
-  shippingAddress?: null;
-  paymentMethod?: string;
+export interface ICheckoutAddressDto {
+  label: string;
+  street: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  country?: string;
+  isDefault?: boolean;
+}
+
+export interface ICheckoutDto {
+  shippingAddress: ICheckoutAddressDto;
+  promoCode?: string;
+}
+
+export interface ICartDiscountPreviewItem {
+  itemId: string;
+  productName: string;
+  originalUnitPrice: number;
+  finalUnitPrice: number;
+  discountAmount: number;
+  discountSource?: string;
+  discountCode?: string;
+  quantity: number;
+  subtotal: number;
+}
+
+export interface ICartDiscountPreview {
+  subtotalOriginal: number;
+  subtotalWithDiscount: number;
+  totalDiscount: number;
+  tax: number;
+  shipping: number;
+  total: number;
+  promoValid: boolean;
+  promoErrors: string[];
+  items: ICartDiscountPreviewItem[];
 }
 
 // Response types
-export interface SelectedAddressResponse {
-  addressId: string | null;
-  address: {
-    id: string;
-    label: string;
-    street: string;
-    city: string;
-    province: string;
-    postalCode: string;
-    country: string;
-    isDefault: boolean;
-  } | null;
+export interface ISelectedAddressResponse {
+  selectedAddressId: string | null;
 }
 
 // Legacy compatibility
-export interface StockValidationIssue {
+export interface IStockValidationIssue {
   itemId: string;
   productId: string;
   productName: string;
@@ -83,7 +108,7 @@ export interface StockValidationIssue {
   available: number;
 }
 
-export interface StockValidationResponse {
+export interface IStockValidationResponse {
   valid: boolean;
-  issues: StockValidationIssue[];
+  issues: IStockValidationIssue[];
 }

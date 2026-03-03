@@ -17,13 +17,11 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading) {
-      // Si no está autenticado, redirigir al login
       if (!isAuthenticated) {
         router.push("/auth/signin");
         return;
       }
 
-      // Si no tiene rol de admin, redirigir al home
       if (
         user &&
         user.role !== UserRole.ADMIN &&
@@ -35,7 +33,6 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, isLoading, user, router]);
 
-  // Mostrar loading mientras se verifica la autenticación
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -47,7 +44,6 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Si no está autenticado o no es admin, no mostrar nada (se está redirigiendo)
   if (
     !isAuthenticated ||
     !user ||
@@ -56,6 +52,5 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  // Usuario autenticado y con permisos correctos
   return <>{children}</>;
 }

@@ -6,9 +6,9 @@ import { toast } from "sonner";
 
 import { productService } from "@/services";
 import type {
-  ProductFilters,
-  CreateProductDto,
-  UpdateProductDto,
+  ICreateProductDto,
+  IUpdateProductDto,
+  IProductsSearchQuery,
 } from "@/types";
 
 /**
@@ -42,7 +42,7 @@ export function useAllProducts() {
  * Hook para listar productos con filtros y paginación
  * PÚBLICO - No requiere autenticación
  */
-export function useProducts(filters?: ProductFilters) {
+export function useProducts(filters?: IProductsSearchQuery) {
   return useQuery({
     queryKey: ["products", filters],
     queryFn: () => productService.getProducts(filters),
@@ -96,6 +96,18 @@ export function useProduct(id: string) {
 }
 
 /**
+ * Hook para productos relacionados
+ */
+export function useRelatedProducts(id: string, limit = 6) {
+  return useQuery({
+    queryKey: ["products", id, "related", limit],
+    queryFn: () => productService.getRelated(id, limit),
+    enabled: !!id,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+/**
  * Hook para calcular precio con variantes
  */
 export function useProductPrice(productId: string, variantIds?: string[]) {
@@ -124,7 +136,7 @@ export function useCreateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateProductDto) => productService.create(data),
+    mutationFn: (data: ICreateProductDto) => productService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
@@ -138,7 +150,7 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateProductDto }) =>
+    mutationFn: ({ id, data }: { id: string; data: IUpdateProductDto }) =>
       productService.update(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });

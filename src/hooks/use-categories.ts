@@ -5,7 +5,7 @@ import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { categoryService, type CategorySearchParams } from "@/services";
-import type { CreateCategoryDto } from "@/types";
+import type { ICreateCategoryDto } from "@/types";
 
 /**
  * Type guard para verificar si un error es de Axios
@@ -67,7 +67,7 @@ export function useCreateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateCategoryDto) => categoryService.create(data),
+    mutationFn: (data: ICreateCategoryDto) => categoryService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Categoría creada exitosamente");

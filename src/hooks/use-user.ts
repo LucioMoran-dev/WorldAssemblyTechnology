@@ -6,10 +6,10 @@ import { toast } from "sonner";
 
 import { userService } from "@/services";
 import type {
-  UpdateUserDto,
+  IUpdateUserDto,
   ChangePasswordDto,
-  CreateAddressDto,
-  UpdateAddressDto,
+  ICreateAddressDto,
+  IUpdateAddressDto,
 } from "@/types";
 
 import { useAuth } from "./use-auth";
@@ -51,7 +51,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateUserDto) => userService.updateProfile(data),
+    mutationFn: (data: IUpdateUserDto) => userService.updateProfile(data),
     onSuccess: (user) => {
       updateUser(user);
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -93,7 +93,7 @@ export function useCreateAddress() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateAddressDto) => userService.createAddress(data),
+    mutationFn: (data: ICreateAddressDto) => userService.createAddress(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
       toast.success("Dirección agregada exitosamente");
@@ -120,7 +120,7 @@ export function useUpdateAddress() {
       data,
     }: {
       addressId: string;
-      data: UpdateAddressDto;
+      data: IUpdateAddressDto;
     }) => userService.updateAddress(addressId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
@@ -175,6 +175,55 @@ export function useSetDefaultAddress() {
         ? (error.response?.data as ErrorResponse)?.message ||
           "Error al actualizar dirección"
         : "Error al actualizar dirección";
+      toast.error(message);
+    },
+  });
+}
+
+/**
+ * Mutation para solicitar recuperacion de contrasena
+ */
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) => userService.forgotPassword(email),
+    onSuccess: (response) => {
+      toast.success(
+        response.message ||
+          "Si el email existe, recibiras instrucciones para restablecer tu contrasena"
+      );
+    },
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as ErrorResponse)?.message ||
+          "No se pudo procesar la solicitud"
+        : "No se pudo procesar la solicitud";
+      toast.error(message);
+    },
+  });
+}
+
+/**
+ * Mutation para restablecer contrasena con token
+ */
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: ({
+      token,
+      newPassword,
+    }: {
+      token: string;
+      newPassword: string;
+    }) => userService.resetPassword(token, newPassword),
+    onSuccess: (response) => {
+      toast.success(
+        response.message || "Contrasena restablecida correctamente"
+      );
+    },
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as ErrorResponse)?.message ||
+          "No se pudo restablecer la contrasena"
+        : "No se pudo restablecer la contrasena";
       toast.error(message);
     },
   });

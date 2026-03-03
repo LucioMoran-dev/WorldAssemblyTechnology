@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/api';
-import { UploadImageResponse } from '@/types';
+import { apiClient } from "@/lib/api";
+import type { IUploadImageResponse } from "@/types";
 
 /**
  * Servicio de archivos
@@ -14,25 +14,27 @@ export const fileService = {
   uploadProductImage: async (
     productId: string,
     file: File,
-    onProgress?: (progress: number) => void,
-  ): Promise<UploadImageResponse> => {
+    onProgress?: (progress: number) => void
+  ): Promise<IUploadImageResponse> => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    const response = await apiClient.post<UploadImageResponse>(
+    const response = await apiClient.post<IUploadImageResponse>(
       `/files/uploadImage/${productId}`,
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
         onUploadProgress: (progressEvent) => {
           if (onProgress && progressEvent.total) {
-            const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            const percentage = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
             onProgress(percentage);
           }
         },
-      },
+      }
     );
 
     return response.data;

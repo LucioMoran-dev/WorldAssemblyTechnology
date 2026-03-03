@@ -13,3 +13,8 @@ export * from './wishlist.service';
 export * from './file.service';
 export * from './health.service';
 export * from './role.service';
+export * from './payment.service';
+export * from './discount.service';
+export * from './newsletter.service';
+export * from './contact.service';
+export * from './repair.service';

@@ -2,13 +2,13 @@
  * Tipos comunes y compartidos entre módulos
  */
 
-export interface PaginatedResponse<T> {
+export interface IPaginatedResponse<T> {
   items: T[];
   total: number;
   pages: number;
 }
 
-export interface ApiError {
+export interface IApiError {
   statusCode: number;
   timestamp?: string;
   path?: string;
@@ -16,31 +16,31 @@ export interface ApiError {
   error: string;
 }
 
-export interface ApiResponse<T> {
+export interface IApiResponse<T> {
   data?: T;
-  error?: ApiError;
+  error?: IApiError;
 }
 
-export interface MessageResponse {
+export interface IMessageResponse {
   message: string;
 }
 
-export interface PaginationParams {
+export interface IPaginationParams {
   page?: number;
   limit?: number;
 }
 
 // Roles según el backend
 export enum UserRole {
-  CLIENT = 'CLIENT',
-  ADMIN = 'ADMIN',
-  SUPER_ADMIN = 'SUPER_ADMIN'
+  CLIENT = "CLIENT",
+  ADMIN = "ADMIN",
+  SUPER_ADMIN = "SUPER_ADMIN",
 }
 
 export type Role = UserRole;
 
 // Variant Snapshot (compartido entre cart y order)
-export interface VariantSnapshot {
+export interface IVariantSnapshot {
   id: string;
   type: string;
   name: string;

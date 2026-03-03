@@ -23,7 +23,7 @@ export default function QueryProvider({
             retry: 1, // Reintentar solo 1 vez en caso de error
           },
         },
-      }),
+      })
   );
 
   return (

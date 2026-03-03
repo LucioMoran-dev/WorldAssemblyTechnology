@@ -5,7 +5,7 @@
 
 import type { AxiosError } from "axios";
 
-import type { ApiError } from "@/types";
+import type { IApiError } from "@/types";
 
 /**
  * Extrae el mensaje de error de una respuesta de API
@@ -15,7 +15,7 @@ import type { ApiError } from "@/types";
 export function handleApiError(error: unknown): string {
   // Si es un error de Axios
   if (isAxiosError(error)) {
-    const apiError = error.response?.data as ApiError | undefined;
+    const apiError = error.response?.data as IApiError | undefined;
 
     if (apiError) {
       // Múltiples mensajes de validación

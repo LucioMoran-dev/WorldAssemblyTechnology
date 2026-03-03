@@ -1,9 +1,9 @@
 import { apiClient } from "@/lib/api";
 import type {
-  Category,
-  CategoryWithProducts,
-  CreateCategoryDto,
-  UpdateCategoryDto,
+  ICategory,
+  ICategoryWithProducts,
+  ICreateCategoryDto,
+  IUpdateCategoryDto,
 } from "@/types";
 import type { IPaginatedResult } from "@/types/paginateResult";
 
@@ -40,8 +40,8 @@ export const categoryService = {
    */
   getAll: async (
     params?: CategorySearchParams
-  ): Promise<IPaginatedResult<Category>> => {
-    const response = await apiClient.get<IPaginatedResult<Category>>(
+  ): Promise<IPaginatedResult<ICategory>> => {
+    const response = await apiClient.get<IPaginatedResult<ICategory>>(
       "/categories",
       {
         params,
@@ -59,8 +59,8 @@ export const categoryService = {
    * @example
    * const category = await categoryService.getById("550e8400-e29b-41d4-a716-446655440000");
    */
-  getById: async (id: string): Promise<CategoryWithProducts> => {
-    const response = await apiClient.get<CategoryWithProducts>(
+  getById: async (id: string): Promise<ICategoryWithProducts> => {
+    const response = await apiClient.get<ICategoryWithProducts>(
       `/categories/${id}`
     );
     return response.data;
@@ -75,8 +75,8 @@ export const categoryService = {
    * @example
    * const newCategory = await categoryService.create({ categoryName: "Tablets" });
    */
-  create: async (data: CreateCategoryDto): Promise<Category> => {
-    const response = await apiClient.post<Category>("/categories", data);
+  create: async (data: ICreateCategoryDto): Promise<ICategory> => {
+    const response = await apiClient.post<ICategory>("/categories", data);
     return response.data;
   },
 
@@ -105,8 +105,8 @@ export const categoryService = {
    * @example
    * const category = await categoryService.update("550e8400-e29b-41d4-a716-446655440000", { name: "Laptops Gaming" });
    */
-  update: async (id: string, data: UpdateCategoryDto): Promise<Category> => {
-    const response = await apiClient.put<Category>(`/categories/${id}`, data);
+  update: async (id: string, data: IUpdateCategoryDto): Promise<ICategory> => {
+    const response = await apiClient.put<ICategory>(`/categories/${id}`, data);
     return response.data;
   },
 
@@ -121,7 +121,9 @@ export const categoryService = {
    * // { message: "Categoría eliminada correctamente" }
    */
   delete: async (id: string): Promise<{ message: string }> => {
-    const response = await apiClient.delete<{ message: string }>(`/categories/${id}`);
+    const response = await apiClient.delete<{ message: string }>(
+      `/categories/${id}`
+    );
     return response.data;
   },
 };

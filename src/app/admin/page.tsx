@@ -1,6 +1,6 @@
 "use client"
 
-import { ShoppingCart, Package, Users, DollarSign, TrendingUp, AlertCircle } from "lucide-react"
+import { ShoppingCart, Package, Users, DollarSign, TrendingUp, XCircle } from "lucide-react"
 import Link from "next/link"
 
 import { useAllOrders, useOrderStats } from "@/hooks"
@@ -49,7 +49,7 @@ export default function AdminDashboardPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Panel de Administración</h1>
-        <div className="text-sm text-gray-600">Última actualización: {new Date().toLocaleDateString()}</div>
+        <div className="text-sm text-gray-600">Resumen general</div>
       </div>
 
       {/* Estadísticas Principales */}
@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-gray-600">Tasa de Cancelación</h3>
-            <Users className="h-5 w-5 text-indigo-600" />
+            <XCircle className="h-5 w-5 text-red-600" />
           </div>
           {statsLoading ? (
             <div className="h-10 animate-pulse rounded bg-gray-200"></div>
@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
                     <td className="py-4 text-sm text-gray-900">{order.user.name}</td>
                     <td className="py-4 text-sm text-gray-600">{formatDate(order.createdAt)}</td>
                     <td className="py-4 text-sm text-gray-900 font-medium">
-                      ${order.orderDetail.total.toFixed(2)}
+                      ${order.orderDetail?.total?.toFixed(2) ?? "0.00"}
                     </td>
                     <td className="py-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>

@@ -1,15 +1,16 @@
 import { apiClient } from "@/lib/api";
 import type {
-  Product,
-  PaginatedResponse,
+  IProduct,
+  IPaginatedResponse,
   ProductFilters,
-  CreateProductDto,
-  UpdateProductDto,
-  CreateVariantDto,
-  UpdateVariantDto,
-  ProductVariant,
-  PriceCalculation,
-  StockInfo,
+  ICreateProductDto,
+  IUpdateProductDto,
+  ICreateVariantDto,
+  IUpdateVariantDto,
+  IProductVariant,
+  IPriceCalculation,
+  IStockInfo,
+  IHybridSearchResponse,
 } from "@/types";
 
 /**
@@ -22,8 +23,8 @@ export const productService = {
    * Público | Rate Limit: 60/min
    * ⚠️ Backend requiere page + limit para paginar
    */
-  getProductsAll: async (): Promise<PaginatedResponse<Product>> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>(
+  getProductsAll: async (): Promise<IPaginatedResponse<IProduct>> => {
+    const response = await apiClient.get<IPaginatedResponse<IProduct>>(
       "/products",
       {
         params: { page: 1, limit: 100 }, // page es obligatorio, limit alto para traer todos
@@ -38,8 +39,8 @@ export const productService = {
    */
   getProducts: async (
     filters?: ProductFilters
-  ): Promise<PaginatedResponse<Product>> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>(
+  ): Promise<IPaginatedResponse<IProduct>> => {
+    const response = await apiClient.get<IPaginatedResponse<IProduct>>(
       "/products",
       {
         params: filters,
@@ -52,8 +53,8 @@ export const productService = {
    * GET /products/featured - Productos destacados
    * Público | Rate Limit: 60/min
    */
-  getFeatured: async (limit = 10): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>("/products/featured", {
+  getFeatured: async (limit = 10): Promise<IProduct[]> => {
+    const response = await apiClient.get<IProduct[]>("/products/featured", {
       params: { limit },
     });
     return response.data;
@@ -63,8 +64,10 @@ export const productService = {
    * GET /products/brand/:brand - Productos por marca
    * Público | Rate Limit: 60/min
    */
-  getByBrand: async (brand: string): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>(`/products/brand/${brand}`);
+  getByBrand: async (brand: string): Promise<IProduct[]> => {
+    const response = await apiClient.get<IProduct[]>(
+      `/products/brand/${brand}`
+    );
     return response.data;
   },
 
@@ -72,8 +75,8 @@ export const productService = {
    * GET /products/:id - Obtener producto por ID
    * Público | Rate Limit: 60/min
    */
-  getById: async (id: string): Promise<Product> => {
-    const response = await apiClient.get<Product>(`/products/${id}`);
+  getById: async (id: string): Promise<IProduct> => {
+    const response = await apiClient.get<IProduct>(`/products/${id}`);
     return response.data;
   },
 
@@ -84,8 +87,8 @@ export const productService = {
   getByCategory: async (
     categoryId: string,
     filters?: ProductFilters
-  ): Promise<PaginatedResponse<Product>> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>(
+  ): Promise<IPaginatedResponse<IProduct>> => {
+    const response = await apiClient.get<IPaginatedResponse<IProduct>>(
       `/products/category/${categoryId}`,
       {
         params: filters,
@@ -95,13 +98,35 @@ export const productService = {
   },
 
   /**
-   * GET /products/search?q=query - Búsqueda de productos
+   * GET /products/search?q=query&ai=true&limit=8 - Búsqueda híbrida
    * Público | Rate Limit: 60/min
+   *
+   * @param query - Texto de búsqueda (mínimo 1 carácter)
+   * @param useAi - Incluir resultados de IA (default: false)
+   * @param limit - Cantidad de resultados (default: 8)
    */
-  search: async (query: string): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>("/products/search", {
-      params: { q: query },
-    });
+  search: async (
+    query: string,
+    useAi = false,
+    limit = 8
+  ): Promise<IHybridSearchResponse> => {
+    if (!query || query.trim().length < 1) {
+      return { results: [], source: "local" };
+    }
+
+    const params: Record<string, string | number | boolean> = {
+      q: query.trim(),
+      limit,
+    };
+
+    if (useAi) {
+      params.ai = true;
+    }
+
+    const response = await apiClient.get<IHybridSearchResponse>(
+      "/products/search",
+      { params }
+    );
     return response.data;
   },
 
@@ -109,10 +134,13 @@ export const productService = {
    * GET /products/:id/related - Productos relacionados
    * Público | Rate Limit: 60/min
    */
-  getRelated: async (id: string, limit = 6): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>(`/products/${id}/related`, {
-      params: { limit },
-    });
+  getRelated: async (id: string, limit = 6): Promise<IProduct[]> => {
+    const response = await apiClient.get<IProduct[]>(
+      `/products/${id}/related`,
+      {
+        params: { limit },
+      }
+    );
     return response.data;
   },
 
@@ -123,11 +151,11 @@ export const productService = {
   calculatePrice: async (
     productId: string,
     variantIds?: string[]
-  ): Promise<PriceCalculation> => {
+  ): Promise<IPriceCalculation> => {
     const params = variantIds?.length
       ? { variants: variantIds.join(",") }
       : undefined;
-    const response = await apiClient.get<PriceCalculation>(
+    const response = await apiClient.get<IPriceCalculation>(
       `/products/${productId}/price`,
       {
         params,
@@ -143,11 +171,11 @@ export const productService = {
   getStock: async (
     productId: string,
     variantIds?: string[]
-  ): Promise<StockInfo> => {
+  ): Promise<IStockInfo> => {
     const params = variantIds?.length
       ? { variants: variantIds.join(",") }
       : undefined;
-    const response = await apiClient.get<StockInfo>(
+    const response = await apiClient.get<IStockInfo>(
       `/products/${productId}/stock`,
       { params }
     );
@@ -158,8 +186,8 @@ export const productService = {
    * POST /products - Crear producto
    * Requiere: ADMIN | Rate Limit: 60/min
    */
-  create: async (data: CreateProductDto): Promise<Product> => {
-    const response = await apiClient.post<Product>("/products", data);
+  create: async (data: ICreateProductDto): Promise<IProduct> => {
+    const response = await apiClient.post<IProduct>("/products", data);
     return response.data;
   },
 
@@ -167,8 +195,8 @@ export const productService = {
    * PUT /products/:id - Actualizar producto
    * Requiere: ADMIN | Rate Limit: 60/min
    */
-  update: async (id: string, data: UpdateProductDto): Promise<Product> => {
-    const response = await apiClient.put<Product>(`/products/${id}`, data);
+  update: async (id: string, data: IUpdateProductDto): Promise<IProduct> => {
+    const response = await apiClient.put<IProduct>(`/products/${id}`, data);
     return response.data;
   },
 
@@ -189,9 +217,9 @@ export const productService = {
    */
   addVariant: async (
     productId: string,
-    data: CreateVariantDto
-  ): Promise<ProductVariant> => {
-    const response = await apiClient.post<ProductVariant>(
+    data: ICreateVariantDto
+  ): Promise<IProductVariant> => {
+    const response = await apiClient.post<IProductVariant>(
       `/products/${productId}/variants`,
       data
     );
@@ -204,9 +232,9 @@ export const productService = {
    */
   updateVariant: async (
     variantId: string,
-    data: UpdateVariantDto
-  ): Promise<ProductVariant> => {
-    const response = await apiClient.put<ProductVariant>(
+    data: IUpdateVariantDto
+  ): Promise<IProductVariant> => {
+    const response = await apiClient.put<IProductVariant>(
       `/products/variants/${variantId}`,
       data
     );

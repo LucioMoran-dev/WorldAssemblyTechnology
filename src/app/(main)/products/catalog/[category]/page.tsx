@@ -10,45 +10,14 @@ import { Button } from "@/components/ui/button";
 import { useCategories, useAllProducts } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
 import { features } from "@/seeds";
-import type { Review } from "@/types";
-
-const categoryConfig: Record<string, { title: string; breadcrumb: string }> = {
-  laptops: { title: "Laptops", breadcrumb: "Laptops" },
-  "desktop-pcs": {
-    title: "PCs de Escritorio",
-    breadcrumb: "PCs de Escritorio",
-  },
-  networking: {
-    title: "Dispositivos de Red",
-    breadcrumb: "Dispositivos de Red",
-  },
-  printers: {
-    title: "Impresoras y Escáneres",
-    breadcrumb: "Impresoras y Escáneres",
-  },
-  "pc-parts": { title: "Partes de PC", breadcrumb: "Partes de PC" },
-  products: {
-    title: "Todos los demás productos",
-    breadcrumb: "Todos los demás productos",
-  },
-  repairs: { title: "Reparaciones", breadcrumb: "Reparaciones" },
-  "all-products": {
-    title: "Todos los Productos",
-    breadcrumb: "Todos los Productos",
-  },
-  "new-products": { title: "Nuevos Productos", breadcrumb: "Nuevos Productos" },
-  "custom-builds": { title: "Personalizados", breadcrumb: "Personalizados" },
-  "msi-laptops": { title: "Laptops MSI", breadcrumb: "Laptops MSI" },
-  desktops: { title: "Escritorios", breadcrumb: "Escritorios" },
-  monitors: { title: "Monitores Gaming", breadcrumb: "Monitores Gaming" },
-};
+import type { IReviews } from "@/types";
 
 interface PageProps {
   params: Promise<{ category: string }>;
 }
 
 // Helper function to calculate average rating
-const getAverageRating = (reviews?: Review[]): number => {
+const getAverageRating = (reviews?: IReviews[]): number => {
   if (!reviews?.length) return 0;
   const sum = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
   return Math.round(sum / reviews.length);
@@ -97,11 +66,6 @@ export default function CatalogPage({ params }: PageProps) {
   const totalPages = isUsingFallback
     ? Math.ceil(allProducts.length / perPage)
     : (categoryData?.pages ?? 1);
-
-  const config = categoryConfig[category] || {
-    title: "Productos",
-    breadcrumb: "Productos",
-  };
 
   // Filters state
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -180,19 +144,6 @@ export default function CatalogPage({ params }: PageProps) {
           </div>
         </div>
       </section>
-
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-3">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-blue-600">
-              Inicio
-            </Link>
-            <span>/</span>
-            <span className="text-gray-900">{config.breadcrumb}</span>
-          </div>
-        </div>
-      </div>
 
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex flex-col gap-6 lg:flex-row">
@@ -478,7 +429,7 @@ export default function CatalogPage({ params }: PageProps) {
             {/* Title and Back Button */}
             <div className="mb-4 flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-900">
-                {config.title} ({products.length} productos)
+                {category} ({products.length} productos)
               </h1>
               <Link
                 href="/"

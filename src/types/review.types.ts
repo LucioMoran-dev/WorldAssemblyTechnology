@@ -11,37 +11,74 @@ export enum Rating {
   FIVE = 5,
 }
 
-// Review
-export interface Review {
+// Usuario en Review (público)
+export interface IReviewUser {
+  id: string;
+  name: string;
+}
+
+// Usuario en Review (admin) - incluye email
+export interface IReviewUserAdmin extends IReviewUser {
+  email: string;
+}
+
+// Producto en Review
+export interface IReviewProduct {
+  id: string;
+  name: string;
+}
+
+// Review pública (para clientes y público)
+export interface IReviews {
   id: string;
   rating: Rating;
   message: string;
   createdAt: string;
+  user?: IReviewUser;
+  product?: IReviewProduct;
+}
+
+// Review para Admin (incluye isVisible y email del usuario)
+export interface IReviewAdmin {
+  id: string;
+  rating: Rating;
+  message: string;
+  isVisible: boolean;
+  createdAt: string;
   updatedAt: string;
-  user: {
-    id: string;
-    name: string;
-  };
-  product: {
-    id: string;
-    name: string;
-  };
+  user?: IReviewUserAdmin;
+  product?: IReviewProduct;
+}
+
+// Respuesta paginada de reviews (Admin)
+export interface PaginatedReviews {
+  items: IReviewAdmin[];
+  total: number;
+  pages: number;
 }
 
 // DTOs
-export interface CreateReviewDto {
+export interface ICreateReviewDto {
   productId: string;
   rating: Rating;
   message: string;
 }
 
-export interface UpdateReviewDto {
+export interface IUpdateReviewDto {
   rating?: Rating;
   message?: string;
 }
 
+// Can Review Response
+export interface ICanReviewResponse {
+  canReview: boolean;
+  hasReviewed?: boolean;
+  message?: string;
+  reason?: string | null;
+}
+
 // Legacy compatibility
-export interface ReviewResponse {
+export interface IReviewResponse {
   id: string;
   rating: number;
   message: string;

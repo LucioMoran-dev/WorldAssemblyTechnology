@@ -1,223 +1,180 @@
+"use client";
+
 import { Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNewsletterSubscribe } from "@/hooks";
 
 const Footer = memo(function Footer() {
+  const [email, setEmail] = useState("");
+  const subscribeMutation = useNewsletterSubscribe();
+
+  const handleSubscribe = () => {
+    if (!email || !email.includes("@")) return;
+    subscribeMutation.mutate(
+      { email },
+      {
+        onSuccess: () => {
+          setEmail("");
+        },
+      }
+    );
+  };
+
   return (
     <footer className="bg-gray-900 text-white">
-      {/* Newsletter Section */}
       <div className="border-b border-gray-800">
         <div className="mx-auto max-w-7xl px-4 py-12">
           <div className="grid items-center gap-8 md:grid-cols-2">
             <div>
-              <h3 className="mb-2 text-2xl font-bold text-white">
-                Suscríbete a Nuestro Boletín.
-              </h3>
-              <p className="text-gray-400">
-                Sé el primero en enterarte de las últimas ofertas.
-              </p>
+              <h3 className="mb-2 text-2xl font-bold text-white">Suscribete al newsletter</h3>
+              <p className="text-gray-400">Recibe novedades, promos y lanzamientos.</p>
             </div>
             <div className="flex gap-2">
               <Input
                 type="email"
-                placeholder="Tu correo electrónico"
+                placeholder="Tu correo"
                 className="bg-white text-gray-900"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                onKeyDown={(event) => event.key === "Enter" && handleSubscribe()}
               />
-              <Button className="bg-blue-600 text-white hover:bg-blue-700">
-                Suscribirse
+              <Button
+                className="bg-blue-600 text-white hover:bg-blue-700"
+                onClick={handleSubscribe}
+                disabled={subscribeMutation.isPending}
+              >
+                {subscribeMutation.isPending ? "..." : "Suscribirme"}
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Footer */}
       <div className="mx-auto max-w-7xl px-4 py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
-          {/* Information */}
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div>
-            <h4 className="mb-4 font-bold text-white">Información</h4>
+            <h4 className="mb-4 font-bold text-white">Informacion</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/about" className="hover:text-white">
-                  Sobre Nosotros
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-white">
-                  Sobre Zip
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-term" className="hover:text-white">
-                  Política de Privacidad Y Términos
-                </Link>
-              </li>
-              <li>
-                <Link href="/search" className="hover:text-white">
-                  Buscar
-                </Link>
-              </li>
-              <li>
-                <Link href="/orders" className="hover:text-white">
-                  Pedidos y Devoluciones
+                  Sobre nosotros
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-white">
-                  Contáctanos
+                  Contacto
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy-term" className="hover:text-white">
+                  Privacidad y terminos
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/orders" className="hover:text-white">
+                  Pedidos y devoluciones
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* PC Parts */}
           <div>
-            <h4 className="mb-4 font-bold text-white">Partes de PC</h4>
+            <h4 className="mb-4 font-bold text-white">Catalogo</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="/cpus" className="hover:text-white">
-                  Procesadores
+                <Link href="/products/catalog/laptops" className="hover:text-white">
+                  Laptops
                 </Link>
               </li>
               <li>
-                <Link href="/add-on-cards" className="hover:text-white">
-                  Tarjetas de Expansión
+                <Link href="/products/catalog/desktop-pcs" className="hover:text-white">
+                  PCs de escritorio
                 </Link>
               </li>
               <li>
-                <Link href="/hard-drives" className="hover:text-white">
-                  Discos Duros (Internos)
+                <Link href="/products/catalog/pc-parts" className="hover:text-white">
+                  Componentes
                 </Link>
               </li>
               <li>
-                <Link href="/graphic-cards" className="hover:text-white">
-                  Tarjetas Gráficas
-                </Link>
-              </li>
-              <li>
-                <Link href="/keyboards" className="hover:text-white">
-                  Teclados / Ratones
+                <Link href="/products/catalog/products" className="hover:text-white">
+                  Ver todos
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Desktop PCs */}
           <div>
-            <h4 className="mb-4 font-bold text-white">PCs de Escritorio</h4>
+            <h4 className="mb-4 font-bold text-white">Mi cuenta</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="/custom-pcs" className="hover:text-white">
-                  PCs Personalizadas
+                <Link href="/auth/signin" className="hover:text-white">
+                  Iniciar sesion
                 </Link>
               </li>
               <li>
-                <Link href="/servers" className="hover:text-white">
-                  Servidores
+                <Link href="/auth/signup" className="hover:text-white">
+                  Crear cuenta
                 </Link>
               </li>
               <li>
-                <Link href="/msi-all-in-one" className="hover:text-white">
-                  PCs Todo en Uno MSI
+                <Link href="/dashboard/wishlist" className="hover:text-white">
+                  Wishlist
                 </Link>
               </li>
               <li>
-                <Link href="/hp-all-in-one" className="hover:text-white">
-                  PCs HP/Compaq
+                <Link href="/cart" className="hover:text-white">
+                  Carrito
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Laptops */}
           <div>
-            <h4 className="mb-4 font-bold text-white">Laptops</h4>
+            <h4 className="mb-4 font-bold text-white">Soporte</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="/everyday-use" className="hover:text-white">
-                  Portátiles de Uso Diario
+                <Link href="/repairs" className="hover:text-white">
+                  Reparaciones
                 </Link>
               </li>
               <li>
-                <Link href="/msi-workstation" className="hover:text-white">
-                  Serie Workstation MSI
+                <Link href="/newsletter/unsubscribe" className="hover:text-white">
+                  Baja newsletter
                 </Link>
               </li>
               <li>
-                <Link href="/msi-prestige" className="hover:text-white">
-                  Serie Prestige MSI
-                </Link>
-              </li>
-              <li>
-                <Link href="/tablets" className="hover:text-white">
-                  Tablets y Pads
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Address */}
-          <div>
-            <h4 className="mb-4 font-bold text-white">Dirección</h4>
-            <address className="space-y-2 text-sm text-gray-400 not-italic">
-              <p>Dirección: Calle 1234</p>
-              <p>Ciudad, 1234</p>
-              <p className="mt-4">
-                Teléfonos:{" "}
                 <a href="tel:0012345678" className="hover:text-white">
-                  (00) 1234 5678
+                  (+54) 123 456 7899
                 </a>
-              </p>
-              <p>Lunes-Jueves: 9:00 AM - 5:30 PM</p>
-              <p className="mt-4">
-                Correo:{" "}
+              </li>
+              <li>
                 <a href="mailto:shop@email.com" className="hover:text-white">
                   shop@email.com
                 </a>
-              </p>
-            </address>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
-      {/* Bottom Footer */}
       <div className="border-t border-gray-800">
-        <div className="mx-auto max-w-7xl px-4 py-6">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="flex items-center gap-4">
-              <Link href="https://facebook.com" className="hover:text-blue-500">
-                <Facebook className="h-5 w-5" />
-              </Link>
-              <Link
-                href="https://instagram.com"
-                className="hover:text-pink-500"
-              >
-                <Instagram className="h-5 w-5" />
-              </Link>
-            </div>
-            <p className="text-sm text-gray-400">
-              Copyright © 2025 WorldAssemblyTechnology. Todos los derechos
-              reservados.
-            </p>
-            <div className="flex gap-2">
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
-                VISA
-              </div>
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
-                MC
-              </div>
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
-                AMEX
-              </div>
-              <div className="flex h-8 w-12 items-center justify-center rounded bg-gray-700 text-xs font-semibold">
-                PP
-              </div>
-            </div>
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 md:flex-row">
+          <div className="flex items-center gap-4">
+            <Link href="https://facebook.com" className="hover:text-blue-500">
+              <Facebook className="h-5 w-5" />
+            </Link>
+            <Link href="https://instagram.com" className="hover:text-pink-500">
+              <Instagram className="h-5 w-5" />
+            </Link>
           </div>
+          <p className="text-sm text-gray-400">
+            Copyright 2026 WorldAssemblyTechnology. Todos los derechos reservados.
+          </p>
         </div>
       </div>
     </footer>

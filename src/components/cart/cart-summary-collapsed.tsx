@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import type { CartSummaryCollapsedProps } from "@/types";
@@ -22,11 +22,11 @@ function CartSummaryCollapsed({
           onClick={onExpandShipping}
           className="flex w-full items-center justify-between text-left font-medium"
         >
-          <span>Estimar Envío e Impuestos</span>
+          <span>Estimar EnvÃ­o e Impuestos</span>
           <span className="text-xl font-light">-</span>
         </button>
         <p className="mt-2 text-sm text-gray-500">
-          Ingresa tu destino para obtener una estimación de envío.
+          Ingresa tu destino para obtener una estimaciÃ³n de envÃ­o.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ function CartSummaryCollapsed({
           onClick={onExpandDiscount}
           className="flex w-full items-center justify-between text-left font-medium"
         >
-          <span>Aplicar Código de Descuento</span>
+          <span>Aplicar CÃ³digo de Descuento</span>
           <span className="text-xl font-light">-</span>
         </button>
       </div>
@@ -48,12 +48,12 @@ function CartSummaryCollapsed({
           <span className="font-semibold">${subtotal.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="font-medium">Envío</span>
+          <span className="font-medium">EnvÃ­o</span>
           <span className="font-semibold">${shipping.toFixed(2)}</span>
         </div>
         <p className="text-xs text-gray-500">
-          (Tarifa Estándar - El precio puede variar según el artículo/destino.
-          El personal de la tienda se pondrá en contacto contigo.)
+          (Tarifa EstÃ¡ndar - El precio puede variar segÃºn el artÃ­culo/destino.
+          El personal de la tienda se pondrÃ¡ en contacto contigo.)
         </p>
         <div className="flex justify-between text-sm">
           <span className="font-medium">Impuesto</span>
@@ -71,7 +71,7 @@ function CartSummaryCollapsed({
 
       {/* Checkout Buttons */}
       <div className="space-y-3">
-        <Link href="/checkout">
+        <Link href="/cart/checkout">
           <Button className="h-12 w-full bg-blue-600 text-white hover:bg-blue-700">
             Proceder al Pago
           </Button>
@@ -83,7 +83,7 @@ function CartSummaryCollapsed({
           variant="outline"
           className="h-12 w-full border-gray-300 bg-transparent"
         >
-          Pagar con Múltiples Direcciones
+          Pagar con MÃºltiples Direcciones
         </Button>
       </div>
 
@@ -93,9 +93,9 @@ function CartSummaryCollapsed({
           <div className="flex h-4 w-8 items-center justify-center rounded bg-gradient-to-r from-purple-400 to-blue-400 text-[10px] font-bold text-white">
             zip
           </div>
-          <span>cómpralo ahora, hasta 6 meses sin intereses</span>
+          <span>cÃ³mpralo ahora, hasta 6 meses sin intereses</span>
           <Link href="#" className="text-blue-600 underline">
-            más información
+            mÃ¡s informaciÃ³n
           </Link>
         </div>
       </div>
@@ -104,3 +104,4 @@ function CartSummaryCollapsed({
 }
 
 export default CartSummaryCollapsed;
+
