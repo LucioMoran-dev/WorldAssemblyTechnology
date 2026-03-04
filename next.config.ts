@@ -41,11 +41,7 @@ const nextConfig: NextConfig = {
      - Turbopack es el nuevo bundler de Next.js
      - Más rápido que Webpack en desarrollo
   */
-  turbopack: {
-    resolveAlias: {
-      "mapbox-gl": "mapbox-gl/dist/mapbox-gl.js",
-    },
-  },
+  turbopack: {},
 
   images: {
     formats: ["image/avif", "image/webp"],
@@ -182,10 +178,10 @@ const nextConfig: NextConfig = {
               isDev
                 ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com"
                 : "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
-              "style-src 'self' 'unsafe-inline' https://api.mapbox.com",
+              "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://*.cloudinary.com https://images.unsplash.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.mapbox.com https://*.tiles.mapbox.com",
+              "connect-src 'self' https://back-end-ecommerce-tech.onrender.com",
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -269,13 +265,6 @@ const nextConfig: NextConfig = {
             reuseExistingChunk: true,
           },
 
-          // Mapbox (muy grande ~500KB)
-          mapbox: {
-            test: /mapbox/,
-            name: "mapbox",
-            priority: 10,
-            reuseExistingChunk: true,
-          },
 
           // Recharts (gráficos grandes)
           recharts: {
@@ -323,7 +312,6 @@ const nextConfig: NextConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-      "mapbox-gl": "mapbox-gl/dist/mapbox-gl.js",
     };
 
     config.ignoreWarnings = [
@@ -362,7 +350,7 @@ const nextConfig: NextConfig = {
   //   language: "typescript",
   // },
 
-  transpilePackages: ["react-map-gl", "@mapbox/mapbox-gl-geocoder"],
+  transpilePackages: [],
 
   devIndicators: {
     position: "bottom-right",
