@@ -1,25 +1,84 @@
-import { redirect } from "next/navigation";
+"use client";
 
-interface PageProps {
-  searchParams?: Record<string, string | string[] | undefined>;
+import { CheckCircle2, ShoppingBag, Home } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+
+import { Button } from "@/components/ui/button";
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        </div>
+      }
+    >
+      <OrderSuccessContent />
+    </Suspense>
+  );
 }
 
-function toQuery(searchParams?: Record<string, string | string[] | undefined>): string {
-  if (!searchParams) return "";
-  const params = new URLSearchParams();
+function OrderSuccessContent() {
+  const searchParams = useSearchParams();
 
-  Object.entries(searchParams).forEach(([key, value]) => {
-    if (typeof value === "string") {
-      params.set(key, value);
-    } else if (Array.isArray(value)) {
-      value.forEach((item) => params.append(key, item));
-    }
-  });
+  const paymentId = searchParams.get("payment_id");
+  const status = searchParams.get("status");
+  const externalReference = searchParams.get("external_reference");
 
-  const query = params.toString();
-  return query ? `?${query}` : "";
-}
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+          <CheckCircle2 className="h-10 w-10 text-green-600" />
+        </div>
 
-export default function PaymentsSuccessAliasPage({ searchParams }: PageProps) {
-  redirect(`/orders/success${toQuery(searchParams)}`);
+        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+          ¡Pago exitoso!
+        </h1>
+        <p className="mb-6 text-gray-600">
+          Tu compra fue procesada correctamente. Recibirás un email con los
+          detalles de tu pedido.
+        </p>
+
+        {(paymentId || externalReference) && (
+          <div className="mb-6 rounded-md border border-green-200 bg-green-50 p-4 text-left text-sm">
+            {paymentId && (
+              <p className="text-gray-700">
+                <span className="font-medium">ID de pago:</span> {paymentId}
+              </p>
+            )}
+            {externalReference && (
+              <p className="text-gray-700">
+                <span className="font-medium">Referencia:</span>{" "}
+                {externalReference}
+              </p>
+            )}
+            {status && (
+              <p className="text-gray-700">
+                <span className="font-medium">Estado:</span> {status}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Button asChild>
+            <Link href="/dashboard/orders">
+              <ShoppingBag className="mr-2 h-4 w-4" />
+              Ver mis pedidos
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="bg-transparent">
+            <Link href="/">
+              <Home className="mr-2 h-4 w-4" />
+              Ir al inicio
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
