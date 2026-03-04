@@ -3,12 +3,20 @@
 import { CheckCircle2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useNewsletterUnsubscribe } from "@/hooks";
 
 export default function NewsletterUnsubscribePage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-[70vh] items-center justify-center">Cargando...</div>}>
+      <UnsubscribeContent />
+    </Suspense>
+  );
+}
+
+function UnsubscribeContent() {
   const searchParams = useSearchParams();
   const unsubscribe = useNewsletterUnsubscribe();
 
