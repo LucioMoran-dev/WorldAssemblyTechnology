@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 
@@ -10,18 +10,22 @@ function AccountInformation() {
   return (
     <>
       <section>
-        <h2 className="mb-6 text-xl font-bold text-gray-900">
-          Información de Cuenta
+        <h2 className="text-foreground mb-6 text-xl font-bold">
+          Informacion de tu cuenta
         </h2>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Información de Contacto */}
-          <div className="rounded-lg border border-gray-200 p-6">
-            <h3 className="mb-4 font-semibold text-gray-900">
-              Información de Contacto
+          {/* InformaciÃ³n de Contacto */}
+          <div className="border-border rounded-lg border p-6">
+            <h3 className="text-foreground mb-4 font-semibold">
+              Informacion de Contacto
             </h3>
-            <p className="mb-1 text-gray-700">{user?.name || "Usuario"}</p>
-            <p className="mb-4 text-gray-600">{user?.email || "correo@ejemplo.com"}</p>
+            <p className="text-muted-foreground mb-1">
+              {user?.name || "Usuario"}
+            </p>
+            <p className="text-muted-foreground mb-4">
+              {user?.email || "correo@ejemplo.com"}
+            </p>
             <div className="flex gap-4 text-sm">
               <Link
                 href="/dashboard/account-info"
@@ -39,16 +43,16 @@ function AccountInformation() {
           </div>
 
           {/* Boletines */}
-          <div className="rounded-lg border border-gray-200 p-6">
-            <h3 className="mb-4 font-semibold text-gray-900">Boletines</h3>
-            <p className="mb-4 text-gray-600">
-              No estás suscrito a nuestro boletín.
+          <div className="border-border rounded-lg border p-6">
+            <h3 className="text-foreground mb-4 font-semibold">Boletines</h3>
+            <p className="text-muted-foreground mb-4">
+              Quieres suscribirte a nuetro boletin?
             </p>
             <Link
               href="/dashboard/newsletter"
               className="text-sm text-blue-600 hover:underline"
             >
-              Editar
+              suscribirte
             </Link>
           </div>
         </div>

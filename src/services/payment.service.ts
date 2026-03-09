@@ -5,6 +5,7 @@ import type {
   IPayment,
   IPaymentStatusResponse,
   IPaymentListParams,
+  IPaginatedResponse,
 } from "@/types";
 
 /**
@@ -27,11 +28,16 @@ export const paymentService = {
   },
 
   /**
-   * GET /payments/my-payments - Obtener mis pagos
+   * GET /payments/my-payments - Obtener mis pagos (paginado)
    * Requiere: Autenticación (cualquier rol)
    */
-  getMyPayments: async (): Promise<IPayment[]> => {
-    const response = await apiClient.get<IPayment[]>("/payments/my-payments");
+  getMyPayments: async (
+    params?: IPaymentListParams
+  ): Promise<IPaginatedResponse<IPayment>> => {
+    const response = await apiClient.get<IPaginatedResponse<IPayment>>(
+      "/payments/my-payments",
+      { params }
+    );
     return response.data;
   },
 
@@ -49,11 +55,16 @@ export const paymentService = {
   },
 
   /**
-   * GET /payments - Listar todos los pagos (Admin)
+   * GET /payments - Listar todos los pagos (Admin, paginado)
    * Requiere: ADMIN+
    */
-  getAllPayments: async (params?: IPaymentListParams): Promise<IPayment[]> => {
-    const response = await apiClient.get<IPayment[]>("/payments", { params });
+  getAllPayments: async (
+    params?: IPaymentListParams
+  ): Promise<IPaginatedResponse<IPayment>> => {
+    const response = await apiClient.get<IPaginatedResponse<IPayment>>(
+      "/payments",
+      { params }
+    );
     return response.data;
   },
 

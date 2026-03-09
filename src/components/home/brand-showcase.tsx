@@ -1,11 +1,11 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 
 import { brands } from "@/seeds";
 
 export function BrandShowcase() {
   return (
-    <div className="border-border border-y bg-white py-8">
+    <div className="border-border border-y bg-card py-8">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-2 items-center gap-8 md:grid-cols-4 lg:grid-cols-7">
           {brands.map((brand) => (
@@ -29,3 +29,4 @@ export function BrandShowcase() {
     </div>
   );
 }
+

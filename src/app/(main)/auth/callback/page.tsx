@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default function AuthCallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="flex min-h-screen items-center justify-center bg-muted/40">
           <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
         </div>
       }
@@ -53,11 +53,11 @@ function AuthCallbackContent() {
 
         if (!code) {
           throw new Error(
-            "No se encontró el código de autenticación en la URL"
+            "No se encontrÃ³ el cÃ³digo de autenticaciÃ³n en la URL"
           );
         }
 
-        // Paso 1: Intercambiar código OAuth por sesión
+        // Paso 1: Intercambiar cÃ³digo OAuth por sesiÃ³n
         const exchangeResult =
           (await authService.exchangeCode(code)) as ExchangeCodeResponse;
 
@@ -65,7 +65,7 @@ function AuthCallbackContent() {
           throw new Error("No se pudo completar el intercambio OAuth");
         }
 
-        // Paso 2: Si el backend devolvió accessToken en el body, guardarlo
+        // Paso 2: Si el backend devolviÃ³ accessToken en el body, guardarlo
         // Esto permite que las siguientes llamadas usen Bearer token
         if (exchangeResult.accessToken) {
           authService.saveToken(exchangeResult.accessToken);
@@ -74,32 +74,32 @@ function AuthCallbackContent() {
         // Paso 3: Obtener datos del usuario
         let user: IUser | null = null;
 
-        // Si el exchange devolvió datos del usuario, usarlos directo
+        // Si el exchange devolviÃ³ datos del usuario, usarlos directo
         if (exchangeResult.user && exchangeResult.user.id) {
           user = exchangeResult.user;
         }
 
-        // Si no, intentar obtener el perfil del usuario vía API
+        // Si no, intentar obtener el perfil del usuario vÃ­a API
         if (!user) {
           try {
             user = await userService.getUserById(exchangeResult.userId);
           } catch {
-            // getUserById falló — probablemente 401 porque el backend
+            // getUserById fallÃ³ â€” probablemente 401 porque el backend
             // solo lee Bearer token del header, no la cookie HttpOnly
-            // que setea exchange-code. Es una limitación conocida del backend.
+            // que setea exchange-code. Es una limitaciÃ³n conocida del backend.
           }
         }
 
         if (!user) {
-          // Autenticación exitosa pero no podemos obtener el perfil.
+          // AutenticaciÃ³n exitosa pero no podemos obtener el perfil.
           // Esto pasa cuando el AuthGuard del backend no lee cookies.
           throw new Error(
-            "La autenticación con Google fue exitosa pero no se pudo obtener tu perfil. " +
-              "Por favor iniciá sesión con email y contraseña."
+            "La autenticaciÃ³n con Google fue exitosa pero no se pudo obtener tu perfil. " +
+              "Por favor iniciÃ¡ sesiÃ³n con email y contraseÃ±a."
           );
         }
 
-        // Paso 4: Guardar sesión en el store
+        // Paso 4: Guardar sesiÃ³n en el store
         const token = exchangeResult.accessToken || null;
         login(token, user);
 
@@ -121,7 +121,7 @@ function AuthCallbackContent() {
         setErrorMessage(
           error instanceof Error
             ? error.message
-            : "Error al completar el inicio de sesión"
+            : "Error al completar el inicio de sesiÃ³n"
         );
 
         localStorage.removeItem("token");
@@ -134,38 +134,38 @@ function AuthCallbackContent() {
   }, [searchParams, login, router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-muted/40">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 text-center shadow-lg">
         {status === "loading" && (
           <>
             <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-blue-600" />
-            <h2 className="mb-2 text-xl font-semibold text-gray-900">
-              Completando inicio de sesión...
+            <h2 className="mb-2 text-xl font-semibold text-foreground">
+              Completando inicio de sesiÃ³n...
             </h2>
-            <p className="text-gray-600">Espera un momento</p>
+            <p className="text-muted-foreground">Espera un momento</p>
           </>
         )}
 
         {status === "success" && (
           <>
             <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-600" />
-            <h2 className="mb-2 text-xl font-semibold text-gray-900">
-              Inicio de sesión exitoso
+            <h2 className="mb-2 text-xl font-semibold text-foreground">
+              Inicio de sesiÃ³n exitoso
             </h2>
-            <p className="text-gray-600">Redirigiendo...</p>
+            <p className="text-muted-foreground">Redirigiendo...</p>
           </>
         )}
 
         {status === "error" && (
           <>
             <XCircle className="mx-auto mb-4 h-12 w-12 text-red-600" />
-            <h2 className="mb-2 text-xl font-semibold text-gray-900">
-              Error de autenticación
+            <h2 className="mb-2 text-xl font-semibold text-foreground">
+              Error de autenticaciÃ³n
             </h2>
-            <p className="mb-6 text-sm text-gray-600">{errorMessage}</p>
+            <p className="mb-6 text-sm text-muted-foreground">{errorMessage}</p>
             <div className="flex justify-center gap-3">
               <Button asChild variant="outline" className="bg-transparent">
-                <Link href="/auth/signin">Iniciar sesión</Link>
+                <Link href="/auth/signin">Iniciar sesiÃ³n</Link>
               </Button>
               <Button asChild>
                 <Link href="/">Ir al inicio</Link>
@@ -177,3 +177,4 @@ function AuthCallbackContent() {
     </div>
   );
 }
+

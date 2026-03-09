@@ -1,11 +1,5 @@
-/**
- * Constantes de UI estáticas que NO vienen de la base de datos
- * Solo para elementos de interfaz como features, brands, testimonios, etc.
- */
-
 import { Cpu, HardDrive, Laptop, Monitor, Package } from "lucide-react";
 
-// Features del footer
 export const features = [
   {
     icon: "🚚",
@@ -54,7 +48,6 @@ export const dashboardMenuItems = [
   { label: "Mis Pedidos", href: "/dashboard/orders" },
   { label: "Mis Direcciones", href: "/dashboard/addresses" },
   { label: "Lista de Deseos", href: "/dashboard/wishlist" },
-  { label: "Métodos de Pago Guardados", href: "/dashboard/payment-methods" },
   { label: "Acuerdos de Facturación", href: "/dashboard/billing" },
   { label: "Suscripciones al Boletín", href: "/dashboard/newsletter" },
 ];
@@ -75,6 +68,74 @@ export const testimonials = [
     quote:
       "La mejor tienda de tecnología. Precios competitivos y atención personalizada. Totalmente recomendado.",
     author: "— María González",
+  },
+];
+
+export interface HeroSlide {
+  id: string;
+  badge: string;
+  title: string;
+  description: string;
+  primaryCtaLabel: string;
+  primaryCtaHref: string;
+  secondaryCtaLabel: string;
+  secondaryCtaHref: string;
+  footnote: string;
+  image: string;
+  imageAlt: string;
+  chipTitle: string;
+  chipValue: string;
+  chipSubtitle: string;
+}
+
+export const heroSlides: HeroSlide[] = [
+  {
+    id: "desktop-msi-monitor-gift",
+    badge: "OFERTA EXCLUSIVA",
+    title: "CONSIGUE UN MONITOR GAMING DE REGALO",
+    description: "AL COMPRAR CUALQUIER DESKTOP GAMING MSI SELECCIONADO",
+    primaryCtaLabel: "COMPRAR AHORA",
+    primaryCtaHref: "/products/catalog/desktop-pcs",
+    secondaryCtaLabel: "MAS INFORMACION",
+    secondaryCtaHref: "/products/catalog/monitors",
+    footnote: "*Promocion valida hasta el 31 de diciembre de 2026",
+    image: "/msi-gaming-laptop-with-rgb-lighting.jpg",
+    imageAlt: "Desktop gamer MSI en promocion",
+    chipTitle: "Intel Core",
+    chipValue: "i9",
+    chipSubtitle: "13th Gen",
+  },
+  {
+    id: "laptops-gaming-hot-deal",
+    badge: "NUEVO INGRESO",
+    title: "LAPTOPS GAMING CON DESCUENTOS REALES",
+    description: "ENCONTRA MODELOS CON RTX Y STOCK INMEDIATO",
+    primaryCtaLabel: "VER LAPTOPS",
+    primaryCtaHref: "/products/catalog/laptops",
+    secondaryCtaLabel: "VER OFERTAS",
+    secondaryCtaHref: "/products/catalog/products",
+    footnote: "*Financiacion disponible en productos seleccionados",
+    image: "/gaming-laptop-red-and-black.jpg",
+    imageAlt: "Laptop gaming roja con teclado RGB",
+    chipTitle: "NVIDIA",
+    chipValue: "RTX",
+    chipSubtitle: "Serie 40",
+  },
+  {
+    id: "custom-builds-premium",
+    badge: "ARMA TU PC",
+    title: "CONFIGURA TU CUSTOM BUILD A MEDIDA",
+    description: "SELECCIONA COMPONENTES PREMIUM Y RECIBI ASESORIA TECNICA",
+    primaryCtaLabel: "IR A CUSTOM BUILDS",
+    primaryCtaHref: "/products/catalog/custom-builds",
+    secondaryCtaLabel: "VER COMPONENTES",
+    secondaryCtaHref: "/products/catalog/pc-parts",
+    footnote: "*Soporte tecnico y armado profesional incluido",
+    image: "/custom-gaming-pc-with-rgb-lights.jpg",
+    imageAlt: "PC custom con iluminacion RGB",
+    chipTitle: "Power",
+    chipValue: "DDR5",
+    chipSubtitle: "High Speed",
   },
 ];
 

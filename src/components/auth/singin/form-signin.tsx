@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -20,7 +20,9 @@ import { authLogger } from "@/utils/logger";
 
 const loginSchema = z.object({
   email: z.string().email("Por favor ingresa una dirección de email válida"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+  password: z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -47,13 +49,13 @@ function FormSignin() {
         password: data.password,
       });
 
-      // ✅ El backend devuelve 'accessToken', no 'token'
+      // El backend devuelve 'accessToken', no 'token'
       const { accessToken, user } = response;
 
-      authLogger.info('Login successful', {
+      authLogger.info("Login successful", {
         hasToken: !!accessToken,
         user: user.name,
-        role: user.role
+        role: user.role,
       });
 
       login(accessToken, user);
@@ -76,7 +78,7 @@ function FormSignin() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="flex-1 bg-gray-50">
+      <main className="bg-muted/40 flex-1">
         <div className="container mx-auto px-4 py-8">
           <h1 className="mb-8 text-3xl font-bold">
             Inicio de Sesión del Cliente
@@ -84,11 +86,11 @@ function FormSignin() {
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* Formulario de Login */}
-            <div className="rounded-lg bg-white p-8 shadow-sm">
+            <div className="bg-card rounded-lg p-8 shadow-sm">
               <h2 className="mb-4 text-xl font-semibold">
                 Clientes Registrados
               </h2>
-              <p className="mb-6 text-gray-600">
+              <p className="text-muted-foreground mb-6">
                 Si tienes una cuenta, inicia sesión con tu dirección de email.
               </p>
 
@@ -156,7 +158,7 @@ function FormSignin() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="text-muted-foreground bg-white px-2">
+                    <span className="text-muted-foreground bg-card px-2">
                       O continuar con
                     </span>
                   </div>

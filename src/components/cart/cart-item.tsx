@@ -1,4 +1,4 @@
-import { X, Edit2 } from "lucide-react";
+﻿import { X, Edit2 } from "lucide-react";
 import Image from "next/image";
 
 import type { CartItemProps } from "@/types";
@@ -9,17 +9,17 @@ function CartItem({ item, quantity, onUpdateQuantity }: CartItemProps) {
   const subtotal = item.price * quantity;
 
   return (
-    <div className="grid grid-cols-12 items-center gap-4 border-b border-gray-200 p-4">
+    <div className="grid grid-cols-12 items-center gap-4 border-b border-border p-4">
       <div className="col-span-5 flex gap-4">
         <Image
           src={item.image || "/placeholder.svg"}
           alt={item.name}
           width={80}
           height={80}
-          className="rounded bg-gray-50 object-contain"
+          className="rounded bg-muted/40 object-contain"
         />
         <div className="flex-1">
-          <p className="line-clamp-3 text-sm text-gray-900">{item.name}</p>
+          <p className="line-clamp-3 text-sm text-foreground">{item.name}</p>
         </div>
       </div>
 
@@ -44,11 +44,11 @@ function CartItem({ item, quantity, onUpdateQuantity }: CartItemProps) {
       </div>
 
       <div className="col-span-1 flex justify-end gap-2">
-        <button className="rounded p-1 hover:bg-gray-100">
-          <X className="h-4 w-4 text-gray-600" />
+        <button className="rounded p-1 hover:bg-muted">
+          <X className="h-4 w-4 text-muted-foreground" />
         </button>
-        <button className="rounded p-1 hover:bg-gray-100">
-          <Edit2 className="h-4 w-4 text-gray-600" />
+        <button className="rounded p-1 hover:bg-muted">
+          <Edit2 className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>
     </div>
@@ -56,3 +56,4 @@ function CartItem({ item, quantity, onUpdateQuantity }: CartItemProps) {
 }
 
 export default CartItem;
+

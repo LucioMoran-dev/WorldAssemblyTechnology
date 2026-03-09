@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@radix-ui/react-label";
@@ -39,11 +39,11 @@ export function FormContact() {
   const isSubmitting = contactMutation.isPending;
 
   return (
-    <div className="rounded-lg border border-gray-100 bg-white p-8 shadow-sm lg:col-span-2">
-      <h2 className="mb-2 text-xl font-semibold text-gray-900">
+    <div className="rounded-lg border border-border bg-card p-8 shadow-sm lg:col-span-2">
+      <h2 className="mb-2 text-xl font-semibold text-foreground">
         Enviar un Mensaje
       </h2>
-      <p className="mb-8 text-gray-500">
+      <p className="mb-8 text-muted-foreground">
         Completa el formulario y nuestro equipo te respondera lo antes posible.
       </p>
 
@@ -62,7 +62,7 @@ export function FormContact() {
           <div>
             <Label
               htmlFor="name"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-muted-foreground"
             >
               Nombre Completo <span className="text-red-500">*</span>
             </Label>
@@ -71,7 +71,7 @@ export function FormContact() {
               type="text"
               placeholder="Tu nombre"
               {...register("name")}
-              className={`h-12 ${errors.name ? "border-red-500 focus-visible:ring-red-500" : "border-gray-300"}`}
+              className={`h-12 ${errors.name ? "border-red-500 focus-visible:ring-red-500" : "border-border"}`}
             />
             {errors.name && (
               <p className="mt-1.5 text-sm text-red-500">
@@ -84,7 +84,7 @@ export function FormContact() {
           <div>
             <Label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-muted-foreground"
             >
               Correo Electronico <span className="text-red-500">*</span>
             </Label>
@@ -93,7 +93,7 @@ export function FormContact() {
               type="email"
               placeholder="tu@email.com"
               {...register("email")}
-              className={`h-12 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : "border-gray-300"}`}
+              className={`h-12 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : "border-border"}`}
             />
             {errors.email && (
               <p className="mt-1.5 text-sm text-red-500">
@@ -107,7 +107,7 @@ export function FormContact() {
         <div>
           <Label
             htmlFor="phone"
-            className="mb-2 block text-sm font-medium text-gray-700"
+            className="mb-2 block text-sm font-medium text-muted-foreground"
           >
             Telefono <span className="text-red-500">*</span>
           </Label>
@@ -116,7 +116,7 @@ export function FormContact() {
             type="tel"
             placeholder="+54 11 1234 5678"
             {...register("phone")}
-            className={`h-12 ${errors.phone ? "border-red-500 focus-visible:ring-red-500" : "border-gray-300"}`}
+            className={`h-12 ${errors.phone ? "border-red-500 focus-visible:ring-red-500" : "border-border"}`}
           />
           {errors.phone && (
             <p className="mt-1.5 text-sm text-red-500">
@@ -129,7 +129,7 @@ export function FormContact() {
         <div>
           <Label
             htmlFor="reason"
-            className="mb-2 block text-sm font-medium text-gray-700"
+            className="mb-2 block text-sm font-medium text-muted-foreground"
           >
             Motivo de Contacto <span className="text-red-500">*</span>
           </Label>
@@ -138,7 +138,7 @@ export function FormContact() {
             placeholder="Describenos el motivo de tu consulta..."
             rows={5}
             {...register("reason")}
-            className={`resize-none ${errors.reason ? "border-red-500 focus-visible:ring-red-500" : "border-gray-300"}`}
+            className={`resize-none ${errors.reason ? "border-red-500 focus-visible:ring-red-500" : "border-border"}`}
           />
           {errors.reason && (
             <p className="mt-1.5 text-sm text-red-500">
@@ -168,3 +168,4 @@ export function FormContact() {
     </div>
   );
 }
+

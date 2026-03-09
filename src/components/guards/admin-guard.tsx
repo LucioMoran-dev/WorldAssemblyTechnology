@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -7,10 +7,6 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks";
 import { UserRole } from "@/types";
 
-/**
- * Guard para proteger rutas de administrador
- * Verifica que el usuario esté autenticado y tenga rol ADMIN o SUPER_ADMIN
- */
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -38,7 +34,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-12 w-12 animate-spin text-blue-600" />
-          <p className="mt-4 text-gray-600">Verificando permisos...</p>
+          <p className="mt-4 text-muted-foreground">Verificando permisos...</p>
         </div>
       </div>
     );
@@ -54,3 +50,4 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
+

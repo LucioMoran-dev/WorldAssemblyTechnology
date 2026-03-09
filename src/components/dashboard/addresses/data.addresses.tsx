@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { Edit, MapPin, Plus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 
+import { ActionDialog } from "@/components/ui/action-dialog";
 import { Button } from "@/components/ui/button";
 import {
   useCreateAddress,
@@ -26,6 +27,19 @@ function DataAddresses() {
   const [province, setProvince] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("Argentina");
+  const [editDialog, setEditDialog] = useState<{
+    addressId: string;
+    label: string;
+    street: string;
+    city: string;
+    province: string;
+    postalCode: string;
+    country: string;
+  } | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    addressId: string;
+    label: string;
+  } | null>(null);
 
   const resetForm = () => {
     setLabel("Casa");
@@ -70,27 +84,40 @@ function DataAddresses() {
       country: string;
     }
   ) => {
-    const nextStreet = window.prompt("Direccion", current.street);
-    if (!nextStreet) return;
-
-    updateAddress.mutate({
+    setEditDialog({
       addressId,
+      ...current,
+    });
+  };
+
+  const handleConfirmEdit = async () => {
+    if (!editDialog || !editDialog.street.trim()) return;
+
+    await updateAddress.mutateAsync({
+      addressId: editDialog.addressId,
       data: {
-        label: current.label,
-        street: nextStreet,
-        city: current.city,
-        province: current.province,
-        postalCode: current.postalCode,
-        country: current.country,
+        label: editDialog.label,
+        street: editDialog.street,
+        city: editDialog.city,
+        province: editDialog.province,
+        postalCode: editDialog.postalCode,
+        country: editDialog.country,
       },
     });
+    setEditDialog(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteDialog) return;
+    await deleteAddress.mutateAsync(deleteDialog.addressId);
+    setDeleteDialog(null);
   };
 
   if (isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
         {[...Array(2)].map((_, index) => (
-          <div key={index} className="h-48 animate-pulse rounded-lg bg-gray-200" />
+          <div key={index} className="bg-muted h-48 animate-pulse rounded-lg" />
         ))}
       </div>
     );
@@ -99,7 +126,9 @@ function DataAddresses() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">Direcciones guardadas</h2>
+        <h2 className="text-foreground text-lg font-semibold">
+          Direcciones guardadas
+        </h2>
         <Button onClick={() => setShowCreateForm((current) => !current)}>
           <Plus className="mr-2 h-4 w-4" />
           {showCreateForm ? "Cancelar" : "Agregar direccion"}
@@ -107,40 +136,40 @@ function DataAddresses() {
       </div>
 
       {showCreateForm ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <div className="border-border bg-card rounded-lg border p-4">
           <div className="grid gap-3 md:grid-cols-2">
             <input
-              className="rounded border border-gray-300 px-3 py-2"
+              className="border-border rounded border px-3 py-2"
               placeholder="Etiqueta"
               value={label}
               onChange={(event) => setLabel(event.target.value)}
             />
             <input
-              className="rounded border border-gray-300 px-3 py-2"
+              className="border-border rounded border px-3 py-2"
               placeholder="Pais"
               value={country}
               onChange={(event) => setCountry(event.target.value)}
             />
             <input
-              className="rounded border border-gray-300 px-3 py-2 md:col-span-2"
+              className="border-border rounded border px-3 py-2 md:col-span-2"
               placeholder="Direccion"
               value={street}
               onChange={(event) => setStreet(event.target.value)}
             />
             <input
-              className="rounded border border-gray-300 px-3 py-2"
+              className="border-border rounded border px-3 py-2"
               placeholder="Ciudad"
               value={city}
               onChange={(event) => setCity(event.target.value)}
             />
             <input
-              className="rounded border border-gray-300 px-3 py-2"
+              className="border-border rounded border px-3 py-2"
               placeholder="Provincia"
               value={province}
               onChange={(event) => setProvince(event.target.value)}
             />
             <input
-              className="rounded border border-gray-300 px-3 py-2"
+              className="border-border rounded border px-3 py-2"
               placeholder="Codigo postal"
               value={postalCode}
               onChange={(event) => setPostalCode(event.target.value)}
@@ -159,7 +188,10 @@ function DataAddresses() {
       {addresses.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2">
           {addresses.map((address) => (
-            <div key={address.id} className="relative rounded-lg border border-gray-200 p-6">
+            <div
+              key={address.id}
+              className="border-border relative rounded-lg border p-6"
+            >
               {address.isDefault ? (
                 <span className="absolute top-4 right-4 rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
                   Predeterminada
@@ -167,18 +199,24 @@ function DataAddresses() {
               ) : null}
 
               <div className="mb-4 flex items-start gap-3">
-                <MapPin className="mt-1 h-5 w-5 text-gray-400" />
+                <MapPin className="text-muted-foreground mt-1 h-5 w-5" />
                 <div>
-                  <h3 className="mb-1 font-semibold text-gray-900">{address.label}</h3>
-                  <p className="text-sm text-gray-600">{address.street}</p>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="text-foreground mb-1 font-semibold">
+                    {address.label}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {address.street}
+                  </p>
+                  <p className="text-muted-foreground text-sm">
                     {address.city}, {address.province} {address.postalCode}
                   </p>
-                  <p className="text-sm text-gray-600">{address.country}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {address.country}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 border-t border-gray-200 pt-4">
+              <div className="border-border flex flex-wrap gap-2 border-t pt-4">
                 <Button
                   variant="outline"
                   size="sm"
@@ -211,7 +249,12 @@ function DataAddresses() {
                   variant="outline"
                   size="sm"
                   className="text-red-600 hover:text-red-700"
-                  onClick={() => deleteAddress.mutate(address.id)}
+                  onClick={() =>
+                    setDeleteDialog({
+                      addressId: address.id,
+                      label: address.label,
+                    })
+                  }
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -220,20 +263,75 @@ function DataAddresses() {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-gray-200 p-12 text-center">
+        <div className="border-border rounded-lg border p-12 text-center">
           <MapPin className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="mb-2 text-lg font-semibold text-gray-900">
+          <h3 className="text-foreground mb-2 text-lg font-semibold">
             No hay direcciones guardadas
           </h3>
-          <p className="mb-6 text-gray-600">
+          <p className="text-muted-foreground mb-6">
             Agrega tu primera direccion para facilitar tus compras.
           </p>
-          <Button onClick={() => setShowCreateForm(true)} className="bg-blue-600 hover:bg-blue-700">
+          <Button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             <Plus className="mr-2 h-4 w-4" />
             Agregar direccion
           </Button>
         </div>
       )}
+
+      <ActionDialog
+        open={Boolean(editDialog)}
+        onOpenChange={(open) => {
+          if (!open) setEditDialog(null);
+        }}
+        title="Editar direccion"
+        description="Actualiza la calle de la direccion seleccionada."
+        confirmLabel="Guardar"
+        isPending={updateAddress.isPending}
+        confirmDisabled={!editDialog?.street.trim()}
+        onConfirm={handleConfirmEdit}
+      >
+        <div className="space-y-2">
+          <label className="text-muted-foreground text-sm font-medium">
+            Direccion
+          </label>
+          <input
+            type="text"
+            value={editDialog?.street || ""}
+            onChange={(event) =>
+              setEditDialog((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      street: event.target.value,
+                    }
+                  : prev
+              )
+            }
+            className="border-border focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+            placeholder="Calle y numero"
+          />
+        </div>
+      </ActionDialog>
+
+      <ActionDialog
+        open={Boolean(deleteDialog)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteDialog(null);
+        }}
+        title="Eliminar direccion"
+        description={
+          deleteDialog
+            ? `Se eliminara la direccion "${deleteDialog.label}".`
+            : undefined
+        }
+        confirmLabel="Eliminar"
+        variant="destructive"
+        isPending={deleteAddress.isPending}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

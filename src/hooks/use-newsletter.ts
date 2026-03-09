@@ -37,20 +37,25 @@ export function useNewsletterSubscribe() {
   });
 }
 
-/**
- * Mutation para desuscribirse (público, recibe token)
- */
 export function useNewsletterUnsubscribe() {
   return useMutation({
     mutationFn: (token: string) => newsletterService.unsubscribe(token),
-    onSuccess: () => {
-      toast.success("Te has desuscrito del newsletter");
+
+    onSuccess: (result) => {
+      if (result.alreadyUnsubscribed) {
+        toast.info(result.message);
+        return;
+      }
+
+      toast.success(result.message);
     },
+
     onError: (error: unknown) => {
       const message = isAxiosError(error)
         ? (error.response?.data as { message?: string })?.message ||
           "Error al desuscribirse"
         : "Error al desuscribirse";
+
       toast.error(message);
     },
   });

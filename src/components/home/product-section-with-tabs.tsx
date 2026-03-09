@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState, useCallback } from "react";
 
 import type { IProductCardProps } from "@/types";
 
-import { ProductCard } from "./product-card";
+import { ProductCard } from "./product-card-home";
 
 interface ProductSectionWithTabsProps {
   tabs: string[];
@@ -25,15 +25,15 @@ export function ProductSectionWithTabs({
 
   return (
     <div>
-      <div className="mb-6 flex gap-4 overflow-x-auto border-b border-gray-300">
+      <div className="mb-6 flex gap-4 overflow-x-auto border-b border-border">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => handleTabChange(tab)}
             className={`px-2 pb-3 text-sm font-medium whitespace-nowrap transition-colors ${
               activeTab === tab
-                ? "border-b-2 border-gray-900 text-gray-900"
-                : "text-gray-600 hover:text-gray-900"
+                ? "border-b-2 border-gray-900 text-foreground"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {tab}
@@ -49,3 +49,4 @@ export function ProductSectionWithTabs({
     </div>
   );
 }
+

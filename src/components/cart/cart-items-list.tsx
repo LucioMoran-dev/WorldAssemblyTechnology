@@ -1,4 +1,4 @@
-import type { CartItemsListProps } from "@/types";
+﻿import type { CartItemsListProps } from "@/types";
 
 import ActionButtons from "./action-buttons";
 import CartItem from "./cart-item";
@@ -11,7 +11,7 @@ function CartItemsList({
 }: CartItemsListProps) {
   return (
     <div className="lg:col-span-2">
-      <div className="mb-4 rounded-lg bg-white shadow-sm">
+      <div className="mb-4 rounded-lg bg-card shadow-sm">
         <CartTableHeader />
 
         {items.map((item) => (
@@ -30,3 +30,4 @@ function CartItemsList({
 }
 
 export default CartItemsList;
+

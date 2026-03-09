@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 
@@ -13,15 +13,15 @@ export function NewProductsSection() {
 
   if (isLoading) {
     return (
-      <section className="border-b border-gray-200 bg-white py-12">
+      <section className="border-border bg-card border-b py-12">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-6 flex items-center justify-between">
-            <div className="h-8 w-48 animate-pulse rounded bg-gray-200" />
-            <div className="h-6 w-64 animate-pulse rounded bg-gray-200" />
+            <div className="bg-muted h-8 w-48 animate-pulse rounded" />
+            <div className="bg-muted h-6 w-64 animate-pulse rounded" />
           </div>
           <div className="grid grid-cols-2 gap-4 py-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {[...Array(12)].map((_, i) => (
-              <div key={i} className="h-64 animate-pulse rounded bg-gray-200" />
+              <div key={i} className="bg-muted h-64 animate-pulse rounded" />
             ))}
           </div>
         </div>
@@ -36,18 +36,20 @@ export function NewProductsSection() {
 
   return (
     <section
-      className="border-b border-gray-200 bg-white py-12 pt-24"
+      className="border-border bg-card border-b py-12 pt-24"
       style={{ overflowX: "clip", overflowY: "visible" }}
     >
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">Nuevos Productos</h2>
+          <h2 className="text-foreground text-2xl font-bold">
+            Nuevos Productos
+          </h2>
           <Link href="/products/catalog/products">
             <Button
               variant="link"
               className="text-blue-600 hover:text-blue-700"
             >
-              Ver Todos los Nuevos Productos →
+              Ver Todos los Nuevos Productos destacados
             </Button>
           </Link>
         </div>

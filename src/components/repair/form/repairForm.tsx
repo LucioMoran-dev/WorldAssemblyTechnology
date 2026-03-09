@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2 } from "lucide-react";
@@ -42,11 +42,11 @@ export function RepairForm() {
 
   return (
     <div className="lg:col-span-2">
-      <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="mb-2 text-2xl font-bold text-gray-900">
+      <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
+        <h2 className="mb-2 text-2xl font-bold text-foreground">
           Solicitar Reparación
         </h2>
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-muted-foreground">
           Completa el formulario y nos contactaremos contigo en menos de 24
           horas.
         </p>
@@ -66,12 +66,12 @@ export function RepairForm() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Contact Info */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">
+              <h3 className="font-semibold text-foreground">
                 Información de Contacto
               </h3>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="mb-1 block text-sm font-medium text-muted-foreground">
                     Nombre Completo *
                   </label>
                   <Input
@@ -86,7 +86,7 @@ export function RepairForm() {
                   )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="mb-1 block text-sm font-medium text-muted-foreground">
                     Email *
                   </label>
                   <Input
@@ -103,7 +103,7 @@ export function RepairForm() {
                 </div>
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-muted-foreground">
                   Teléfono *
                 </label>
                 <Input
@@ -122,7 +122,7 @@ export function RepairForm() {
 
             {/* Device Type Selection */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">
+              <h3 className="font-semibold text-foreground">
                 Tipo de Dispositivo *
               </h3>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -137,8 +137,8 @@ export function RepairForm() {
                       value={device.value}
                       className="peer sr-only"
                     />
-                    <device.icon className="mb-2 h-8 w-8 text-gray-400 peer-checked:text-blue-600" />
-                    <span className="text-sm font-medium text-gray-700 peer-checked:text-blue-600">
+                    <device.icon className="mb-2 h-8 w-8 text-muted-foreground peer-checked:text-blue-600" />
+                    <span className="text-sm font-medium text-muted-foreground peer-checked:text-blue-600">
                       {device.name}
                     </span>
                     <div className="pointer-events-none absolute inset-0 rounded-lg border-2 border-transparent peer-checked:border-blue-600" />
@@ -154,12 +154,12 @@ export function RepairForm() {
 
             {/* Device Details */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">
+              <h3 className="font-semibold text-foreground">
                 Detalles del Dispositivo
               </h3>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="mb-1 block text-sm font-medium text-muted-foreground">
                     Marca *
                   </label>
                   <Input
@@ -174,7 +174,7 @@ export function RepairForm() {
                   )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="mb-1 block text-sm font-medium text-muted-foreground">
                     Modelo *
                   </label>
                   <Input
@@ -193,21 +193,21 @@ export function RepairForm() {
 
             {/* Issue Description */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">
+              <h3 className="font-semibold text-foreground">
                 Descripción del Problema
               </h3>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-muted-foreground">
                   Describe el problema *
                 </label>
                 <textarea
                   {...register("issueDescription")}
                   rows={4}
                   placeholder="Por ejemplo: La pantalla no enciende, se calienta mucho, hace ruidos extraños, etc."
-                  className={`w-full resize-none rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                  className={`w-full resize-none rounded-lg border px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none ${
                     errors.issueDescription
                       ? "border-red-500"
-                      : "border-gray-300"
+                      : "border-border"
                   }`}
                 />
                 {errors.issueDescription && (
@@ -217,13 +217,13 @@ export function RepairForm() {
                 )}
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-muted-foreground">
                   Urgencia *
                 </label>
                 <select
                   {...register("urgency")}
-                  className={`w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    errors.urgency ? "border-red-500" : "border-gray-300"
+                  className={`w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none ${
+                    errors.urgency ? "border-red-500" : "border-border"
                   }`}
                 >
                   <option value="">Selecciona una opción</option>
@@ -251,3 +251,4 @@ export function RepairForm() {
     </div>
   );
 }
+

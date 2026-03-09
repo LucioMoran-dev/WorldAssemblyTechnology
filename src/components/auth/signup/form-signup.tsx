@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -19,7 +19,7 @@ const registerSchema = z
     name: z
       .string()
       .min(3, "El nombre completo debe tener al menos 3 caracteres"),
-    email: z.string().email("Por favor ingresa una dirección de email válida"),
+    email: z.string().email("Por favor ingresa una dirección de email válido"),
     phone: z
       .string()
       .min(10, "Por favor ingresa un número de teléfono válido")
@@ -93,15 +93,15 @@ function FormSignup() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="flex-1 bg-gray-50">
+      <main className="bg-muted/40 flex-1">
         <div className="container mx-auto px-4 py-8">
           <h1 className="mb-8 text-3xl font-bold">Registro de Cliente</h1>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* Formulario de Registro */}
-            <div className="rounded-lg bg-white p-8 shadow-sm">
+            <div className="bg-card rounded-lg p-8 shadow-sm">
               <h2 className="mb-2 text-xl font-semibold">Crear Nueva Cuenta</h2>
-              <p className="mb-6 text-gray-600">
+              <p className="text-muted-foreground mb-6">
                 Completa tu información para crear tu cuenta.
               </p>
 
@@ -177,7 +177,8 @@ function FormSignup() {
                       htmlFor="phone"
                       className="mb-2 block text-sm font-medium"
                     >
-                      Número de Teléfono <span className="text-red-500">*</span>
+                      Número de Teléfono{" "}
+                      <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="phone"
@@ -262,7 +263,8 @@ function FormSignup() {
                     htmlFor="confirmPassword"
                     className="mb-2 block text-sm font-medium"
                   >
-                    Confirmar Contraseña <span className="text-red-500">*</span>
+                    Confirmar Contraseña{" "}
+                    <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="confirmPassword"
@@ -290,7 +292,7 @@ function FormSignup() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="text-muted-foreground bg-white px-2">
+                    <span className="text-muted-foreground bg-card px-2">
                       O continuar con
                     </span>
                   </div>

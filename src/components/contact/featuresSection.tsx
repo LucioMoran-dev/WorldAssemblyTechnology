@@ -1,6 +1,6 @@
-export function FeaturesSection() {
+﻿export function FeaturesSection() {
   return (
-    <div className="mt-16 bg-white py-12">
+    <div className="mt-16 bg-card py-12">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="text-center">
@@ -20,7 +20,7 @@ export function FeaturesSection() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold">Soporte al Producto</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Hasta 3 anos de garantia en sitio para tu tranquilidad.
             </p>
           </div>
@@ -41,7 +41,7 @@ export function FeaturesSection() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold">Cuenta Personal</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Con grandes descuentos, envio gratis y un especialista de soporte
               dedicado.
             </p>
@@ -63,7 +63,7 @@ export function FeaturesSection() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold">Ahorros Increibles</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Hasta 70% de descuento en productos nuevos, al mejor precio
               garantizado.
             </p>
@@ -73,3 +73,4 @@ export function FeaturesSection() {
     </div>
   );
 }
+

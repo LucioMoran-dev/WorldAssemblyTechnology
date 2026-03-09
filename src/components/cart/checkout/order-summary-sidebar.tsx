@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ChevronDown, Tag } from "lucide-react";
 import Image from "next/image";
@@ -46,7 +46,7 @@ function OrderSummarySidebar({
 
   return (
     <div className="lg:col-span-1">
-      <div className="sticky top-24 rounded-lg bg-white p-6 shadow-sm">
+      <div className="sticky top-24 rounded-lg bg-card p-6 shadow-sm">
         <button
           onClick={() => setOrderSummaryExpanded(!orderSummaryExpanded)}
           className="mb-4 flex w-full items-center justify-between"
@@ -59,27 +59,27 @@ function OrderSummarySidebar({
 
         {orderSummaryExpanded && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-4 text-sm">
+            <div className="flex items-center justify-between border-b border-border pb-4 text-sm">
               <span className="font-medium">
                 {itemCount} {itemCount === 1 ? "articulo" : "articulos"} en el carrito
               </span>
             </div>
 
             {items.length === 0 ? (
-              <p className="py-4 text-center text-sm text-gray-500">Tu carrito esta vacio</p>
+              <p className="py-4 text-center text-sm text-muted-foreground">Tu carrito esta vacio</p>
             ) : (
               items.map((item) => (
-                <div key={item.id} className="flex gap-3 border-b border-gray-200 pb-4">
+                <div key={item.id} className="flex gap-3 border-b border-border pb-4">
                   <Image
                     src={item.product.imgUrls[0] || "/placeholder.svg"}
                     alt={item.product.name}
                     width={60}
                     height={60}
-                    className="rounded bg-gray-50 object-contain"
+                    className="rounded bg-muted/40 object-contain"
                   />
                   <div className="flex-1">
-                    <p className="mb-1 line-clamp-2 text-sm text-gray-900">{item.product.name}</p>
-                    <p className="text-xs text-gray-600">Cant: {item.quantity}</p>
+                    <p className="mb-1 line-clamp-2 text-sm text-foreground">{item.product.name}</p>
+                    <p className="text-xs text-muted-foreground">Cant: {item.quantity}</p>
                     <p className="mt-1 text-sm font-semibold">{formatMoney(item.subtotal)}</p>
                   </div>
                 </div>
@@ -87,8 +87,8 @@ function OrderSummarySidebar({
             )}
 
             {onApplyPromo && onPromoCodeChange && (
-              <div className="rounded-lg border border-dashed border-gray-300 p-3">
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+              <div className="rounded-lg border border-dashed border-border p-3">
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
                   <Tag className="h-4 w-4" />
                   Codigo promocional
                 </label>
@@ -110,9 +110,9 @@ function OrderSummarySidebar({
               </div>
             )}
 
-            <div className="space-y-2 border-t border-gray-200 pt-4">
+            <div className="space-y-2 border-t border-border pt-4">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
+                <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-semibold">{formatMoney(subtotal)}</span>
               </div>
 
@@ -124,25 +124,25 @@ function OrderSummarySidebar({
               )}
 
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal final</span>
+                <span className="text-muted-foreground">Subtotal final</span>
                 <span className="font-semibold">{formatMoney(subtotalWithDiscount)}</span>
               </div>
 
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Envio</span>
+                <span className="text-muted-foreground">Envio</span>
                 <span className="font-semibold">
                   {discountPreview ? formatMoney(shipping) : "-"}
                 </span>
               </div>
 
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Impuestos</span>
+                <span className="text-muted-foreground">Impuestos</span>
                 <span className="font-semibold">
                   {discountPreview ? formatMoney(tax) : "-"}
                 </span>
               </div>
 
-              <div className="flex justify-between border-t border-gray-200 pt-2 text-lg font-bold">
+              <div className="flex justify-between border-t border-border pt-2 text-lg font-bold">
                 <span>Total</span>
                 <span className="text-blue-600">{formatMoney(total)}</span>
               </div>
@@ -161,3 +161,4 @@ function OrderSummarySidebar({
 }
 
 export default OrderSummarySidebar;
+

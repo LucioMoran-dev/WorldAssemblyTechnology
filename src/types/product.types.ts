@@ -18,6 +18,7 @@ export enum VariantType {
 export interface ICategory {
   id: string;
   name: string;
+  category_name?: string;
   description?: string;
   products?: IProduct[];
 }
@@ -134,6 +135,10 @@ export interface IProductsSearchQuery {
   name?: string;
   basePrice?: number;
   brand?: string;
+  categoryId?: string;
+  color?: string;
+  minPrice?: number;
+  maxPrice?: number;
   featured?: boolean;
   page?: number;
   limit?: number;

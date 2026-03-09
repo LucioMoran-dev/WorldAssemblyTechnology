@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -44,7 +44,7 @@ function AccountInfo() {
     }
 
     if (!formData.email.trim()) {
-      toast.error("El correo electrónico es obligatorio");
+      toast.error("El correo electrÃ³nico es obligatorio");
       return;
     }
 
@@ -60,24 +60,24 @@ function AccountInfo() {
         username: user?.username || "",
       });
 
-      // Si se marcó cambiar contraseña, validar y cambiarla
+      // Si se marcÃ³ cambiar contraseÃ±a, validar y cambiarla
       if (formData.changePassword) {
         if (
           !formData.currentPassword ||
           !formData.newPassword ||
           !formData.confirmPassword
         ) {
-          toast.error("Todos los campos de contraseña son obligatorios");
+          toast.error("Todos los campos de contraseÃ±a son obligatorios");
           return;
         }
 
         if (formData.newPassword.length < 8) {
-          toast.error("La nueva contraseña debe tener al menos 8 caracteres");
+          toast.error("La nueva contraseÃ±a debe tener al menos 8 caracteres");
           return;
         }
 
         if (formData.newPassword !== formData.confirmPassword) {
-          toast.error("Las contraseñas no coinciden");
+          toast.error("Las contraseÃ±as no coinciden");
           return;
         }
 
@@ -87,7 +87,7 @@ function AccountInfo() {
           confirmPassword: formData.confirmPassword,
         });
 
-        // Limpiar campos de contraseña después del cambio exitoso
+        // Limpiar campos de contraseÃ±a despuÃ©s del cambio exitoso
         setFormData((prev) => ({
           ...prev,
           changePassword: false,
@@ -106,16 +106,16 @@ function AccountInfo() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900">
-        Editar Información de Cuenta
+      <h1 className="text-foreground text-3xl font-bold">
+        Editar Informacion de Cuenta
       </h1>
 
       <div className="max-w-2xl">
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Información de Cuenta */}
-          <section className="rounded-lg border border-gray-200 p-6">
-            <h2 className="mb-6 text-lg font-bold text-gray-900">
-              Información de Cuenta
+          {/* InformaciÃ³n de Cuenta */}
+          <section className="border-border rounded-lg border p-6">
+            <h2 className="text-foreground mb-6 text-lg font-bold">
+              Informacion de Cuenta
             </h2>
 
             <div className="space-y-4">
@@ -134,7 +134,7 @@ function AccountInfo() {
               </div>
 
               <div>
-                <Label htmlFor="email">Correo Electrónico *</Label>
+                <Label htmlFor="email">Correo ElectrÃ³nico *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -146,8 +146,8 @@ function AccountInfo() {
                   disabled={isLoading}
                   required
                 />
-                <p className="mt-1 text-xs text-gray-500">
-                  Este correo será usado para iniciar sesión y recibir
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Este correo serÃ¡ usado para iniciar sesiÃ³n y recibir
                   notificaciones
                 </p>
               </div>
@@ -163,29 +163,29 @@ function AccountInfo() {
                       changePassword: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300"
+                  className="border-border rounded"
                   disabled={isLoading}
                 />
                 <Label
                   htmlFor="changePassword"
                   className="cursor-pointer font-normal"
                 >
-                  Cambiar Contraseña
+                  Cambiar ContraseÃ±a
                 </Label>
               </div>
             </div>
           </section>
 
-          {/* Cambiar Contraseña */}
+          {/* Cambiar ContraseÃ±a */}
           {formData.changePassword && (
-            <section className="rounded-lg border border-gray-200 p-6">
-              <h2 className="mb-6 text-lg font-bold text-gray-900">
-                Cambiar Contraseña
+            <section className="border-border rounded-lg border p-6">
+              <h2 className="text-foreground mb-6 text-lg font-bold">
+                Cambiar ContraseÃ±a
               </h2>
 
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="currentPassword">Contraseña Actual *</Label>
+                  <Label htmlFor="currentPassword">ContraseÃ±a Actual *</Label>
                   <Input
                     id="currentPassword"
                     type="password"
@@ -203,7 +203,7 @@ function AccountInfo() {
                 </div>
 
                 <div>
-                  <Label htmlFor="newPassword">Nueva Contraseña *</Label>
+                  <Label htmlFor="newPassword">Nueva ContraseÃ±a *</Label>
                   <Input
                     id="newPassword"
                     type="password"
@@ -216,15 +216,15 @@ function AccountInfo() {
                     required={formData.changePassword}
                     minLength={8}
                   />
-                  <p className="mt-1 text-xs text-gray-500">
-                    Mínimo 8 caracteres, incluye mayúsculas, minúsculas y
-                    números
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    MÃ­nimo 8 caracteres, incluye mayÃºsculas, minÃºsculas y
+                    nÃºmeros
                   </p>
                 </div>
 
                 <div>
                   <Label htmlFor="confirmPassword">
-                    Confirmar Nueva Contraseña *
+                    Confirmar Nueva ContraseÃ±a *
                   </Label>
                   <Input
                     id="confirmPassword"
@@ -246,7 +246,7 @@ function AccountInfo() {
             </section>
           )}
 
-          {/* Botones de acción */}
+          {/* Botones de acciÃ³n */}
           <div className="flex gap-4">
             <Button
               type="submit"

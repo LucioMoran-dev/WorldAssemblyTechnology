@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPin, Plus } from "lucide-react";
@@ -126,17 +126,17 @@ function ShippingForm() {
 
   return (
     <div className="lg:col-span-2">
-      <div className="rounded-lg bg-white p-6 shadow-sm">
-        <h2 className="mb-2 text-xl font-bold text-gray-900">Direccion de envio</h2>
+      <div className="rounded-lg bg-card p-6 shadow-sm">
+        <h2 className="mb-2 text-xl font-bold text-foreground">Direccion de envio</h2>
         {authUser?.email && (
-          <p className="mb-6 text-sm text-gray-600">Sesion: {authUser.email}</p>
+          <p className="mb-6 text-sm text-muted-foreground">Sesion: {authUser.email}</p>
         )}
 
         {isLoading || mode === null ? (
           <div className="space-y-3">
-            <div className="h-16 animate-pulse rounded-lg bg-gray-100" />
-            <div className="h-16 animate-pulse rounded-lg bg-gray-100" />
-            <div className="h-16 animate-pulse rounded-lg bg-gray-100" />
+            <div className="h-16 animate-pulse rounded-lg bg-muted" />
+            <div className="h-16 animate-pulse rounded-lg bg-muted" />
+            <div className="h-16 animate-pulse rounded-lg bg-muted" />
           </div>
         ) : (
           <div className="space-y-6">
@@ -165,7 +165,7 @@ function ShippingForm() {
                     {addresses.map((address) => (
                       <label
                         key={address.id}
-                        className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-4"
+                        className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4"
                       >
                         <input
                           type="radio"
@@ -175,17 +175,17 @@ function ShippingForm() {
                           onChange={(event) => setSelectedAddressId(event.target.value)}
                           className="mt-1"
                         />
-                        <MapPin className="mt-0.5 h-4 w-4 text-gray-500" />
+                        <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
                         <div className="text-sm">
-                          <p className="font-semibold text-gray-900">
+                          <p className="font-semibold text-foreground">
                             {address.label}
                             {address.isDefault ? " (Predeterminada)" : ""}
                           </p>
-                          <p className="text-gray-700">{address.street}</p>
-                          <p className="text-gray-700">
+                          <p className="text-muted-foreground">{address.street}</p>
+                          <p className="text-muted-foreground">
                             {address.city}, {address.province} {address.postalCode}
                           </p>
-                          <p className="text-gray-700">{address.country}</p>
+                          <p className="text-muted-foreground">{address.country}</p>
                         </div>
                       </label>
                     ))}
@@ -269,3 +269,4 @@ function ShippingForm() {
 }
 
 export default ShippingForm;
+

@@ -1,6 +1,6 @@
-function CollectionSection() {
+﻿function CollectionSection() {
   return (
-    <div className="mt-16 bg-white py-12">
+    <div className="bg-card mt-16 py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="text-center">
@@ -20,8 +20,9 @@ function CollectionSection() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold">Soporte de Producto</h3>
-            <p className="text-sm text-gray-600">
-              Hasta 3 años de garantía en sitio disponible para tu tranquilidad.
+            <p className="text-muted-foreground text-sm">
+              Hasta 3 años de garantía en sitio disponible para tu
+              tranquilidad.
             </p>
           </div>
 
@@ -42,7 +43,7 @@ function CollectionSection() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold">Cuenta Personal</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-muted-foreground text-sm">
               Con grandes descuentos, entrega gratuita y un especialista de
               soporte dedicado.
             </p>
@@ -65,7 +66,7 @@ function CollectionSection() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold">Ahorros Increíbles</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-muted-foreground text-sm">
               Hasta 70% de descuento en productos nuevos, puedes estar seguro
               del mejor precio.
             </p>

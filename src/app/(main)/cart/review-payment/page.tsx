@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AlertTriangle, Check, ChevronLeft, CreditCard, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -154,21 +154,21 @@ export default function ReviewPaymentPage() {
 
   if (isLoadingCart) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+      <div className="flex min-h-screen items-center justify-center bg-muted/40">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-border border-t-blue-600" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-muted/40">
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold">Revision y pago</h1>
           <Button
             onClick={() => router.push("/cart/checkout")}
             variant="outline"
-            className="border-gray-300 bg-transparent px-6 text-gray-700 hover:bg-gray-50"
+            className="border-border bg-transparent px-6 text-muted-foreground hover:bg-muted/40"
           >
             <ChevronLeft className="mr-2 h-4 w-4" />
             Volver
@@ -181,7 +181,7 @@ export default function ReviewPaymentPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
                 <Check className="h-5 w-5" />
               </div>
-              <span className="font-semibold text-gray-900">Envio</span>
+              <span className="font-semibold text-foreground">Envio</span>
             </div>
             <div className="h-0.5 w-32 bg-blue-600" />
             <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ export default function ReviewPaymentPage() {
 
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
-            <div className="rounded-lg bg-white p-6 shadow-sm">
+            <div className="rounded-lg bg-card p-6 shadow-sm">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-bold">Direccion de envio</h2>
                 <Button
@@ -210,17 +210,17 @@ export default function ReviewPaymentPage() {
               </div>
 
               {shippingAddress ? (
-                <div className="grid gap-4 rounded-lg bg-gray-50 p-4 md:grid-cols-2">
+                <div className="grid gap-4 rounded-lg bg-muted/40 p-4 md:grid-cols-2">
                   <div>
-                    <p className="mb-1 text-sm text-gray-600">Etiqueta</p>
+                    <p className="mb-1 text-sm text-muted-foreground">Etiqueta</p>
                     <p className="font-medium">{shippingAddress.label}</p>
                   </div>
                   <div>
-                    <p className="mb-1 text-sm text-gray-600">Pais</p>
+                    <p className="mb-1 text-sm text-muted-foreground">Pais</p>
                     <p className="font-medium">{shippingAddress.country || "Argentina"}</p>
                   </div>
                   <div className="md:col-span-2">
-                    <p className="mb-1 text-sm text-gray-600">Direccion</p>
+                    <p className="mb-1 text-sm text-muted-foreground">Direccion</p>
                     <p className="font-medium">{shippingAddress.street}</p>
                     <p className="font-medium">
                       {shippingAddress.city}, {shippingAddress.province} {shippingAddress.postalCode}
@@ -240,9 +240,9 @@ export default function ReviewPaymentPage() {
               )}
             </div>
 
-            <div className="rounded-lg bg-white p-6 shadow-sm">
+            <div className="rounded-lg bg-card p-6 shadow-sm">
               <h2 className="mb-3 text-xl font-bold">Pago con MercadoPago</h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Al confirmar tu pedido te redirigimos a MercadoPago para completar el pago de forma segura.
               </p>
 
@@ -277,3 +277,4 @@ export default function ReviewPaymentPage() {
     </div>
   );
 }
+

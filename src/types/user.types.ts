@@ -107,12 +107,26 @@ export interface IUpdateAddressDto {
 }
 
 export interface IChangeRoleDto {
-  role: UserRole;
+  roleId: string;
+}
+
+export interface IRole {
+  id: string;
+  name: string;
 }
 
 export interface IUserListParams {
   page?: number;
   limit?: number;
+  username?: string;
+  email?: string;
+}
+
+export interface IResetPassword {
+  token: string;
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 // Legacy compatibility

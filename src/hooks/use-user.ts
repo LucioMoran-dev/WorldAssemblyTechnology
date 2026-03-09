@@ -10,6 +10,7 @@ import type {
   ChangePasswordDto,
   ICreateAddressDto,
   IUpdateAddressDto,
+  IResetPassword,
 } from "@/types";
 
 import { useAuth } from "./use-auth";
@@ -207,23 +208,20 @@ export function useForgotPassword() {
  */
 export function useResetPassword() {
   return useMutation({
-    mutationFn: ({
-      token,
-      newPassword,
-    }: {
-      token: string;
-      newPassword: string;
-    }) => userService.resetPassword(token, newPassword),
+    mutationFn: (data: IResetPassword) => userService.resetPassword(data),
+
     onSuccess: (response) => {
       toast.success(
         response.message || "Contrasena restablecida correctamente"
       );
     },
+
     onError: (error: unknown) => {
       const message = isAxiosError(error)
         ? (error.response?.data as ErrorResponse)?.message ||
           "No se pudo restablecer la contrasena"
         : "No se pudo restablecer la contrasena";
+
       toast.error(message);
     },
   });

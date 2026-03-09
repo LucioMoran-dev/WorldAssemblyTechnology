@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { XCircle, RotateCcw, Home } from "lucide-react";
 import Link from "next/link";
@@ -30,34 +30,34 @@ function OrderFailureContent() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 text-center shadow-lg">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
           <XCircle className="h-10 w-10 text-red-600" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+        <h1 className="mb-2 text-2xl font-bold text-foreground">
           El pago no pudo procesarse
         </h1>
-        <p className="mb-6 text-gray-600">
-          Hubo un problema con tu pago. Podés intentarlo nuevamente o elegir
+        <p className="mb-6 text-muted-foreground">
+          Hubo un problema con tu pago. PodÃ©s intentarlo nuevamente o elegir
           otro medio de pago.
         </p>
 
         {(paymentId || externalReference) && (
           <div className="mb-6 rounded-md border border-red-200 bg-red-50 p-4 text-left text-sm">
             {paymentId && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">ID de pago:</span> {paymentId}
               </p>
             )}
             {externalReference && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">Referencia:</span>{" "}
                 {externalReference}
               </p>
             )}
             {status && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">Estado:</span> {status}
               </p>
             )}
@@ -82,3 +82,4 @@ function OrderFailureContent() {
     </div>
   );
 }
+

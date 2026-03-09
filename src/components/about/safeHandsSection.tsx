@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 export function SafeHandsSection() {
   return (
@@ -19,20 +19,20 @@ export function SafeHandsSection() {
                 </svg>
               </div>
               <h2 className="text-3xl font-bold">
-                Ahora Estás en Manos
+                Ahora EstÃ¡s en Manos
                 <br />
                 Seguras
               </h2>
             </div>
             <p className="mb-4 text-gray-300">
-              Experimenta un aumento del 60% en el rendimiento informático
-              respecto a la generación anterior. Las laptops MSI equipan el
-              procesador Intel® Core™ i7 de 10ma Gen. con el máximo poder de
-              cómputo para brindarte una experiencia de juego sin igual.
+              Experimenta un aumento del 60% en el rendimiento informÃ¡tico
+              respecto a la generaciÃ³n anterior. Las laptops MSI equipan el
+              procesador IntelÂ® Coreâ„¢ i7 de 10ma Gen. con el mÃ¡ximo poder de
+              cÃ³mputo para brindarte una experiencia de juego sin igual.
             </p>
-            <p className="text-sm text-gray-400">
-              *Rendimiento comparado con i7-9700. Las especificaciones varían
-              según el modelo.
+            <p className="text-sm text-muted-foreground">
+              *Rendimiento comparado con i7-9700. Las especificaciones varÃ­an
+              segÃºn el modelo.
             </p>
           </div>
           <div className="relative h-[400px]">
@@ -48,3 +48,4 @@ export function SafeHandsSection() {
     </section>
   );
 }
+

@@ -9,6 +9,7 @@ import type {
   Address,
   ICreateAddressDto,
   IUpdateAddressDto,
+  IResetPassword,
 } from "@/types";
 
 /**
@@ -127,7 +128,10 @@ export const userService = {
    * Requiere: Autenticación
    */
   createAddress: async (data: ICreateAddressDto): Promise<Address> => {
-    const response = await apiClient.post<Address>("/users/addresses/add", data);
+    const response = await apiClient.post<Address>(
+      "/users/addresses/add",
+      data
+    );
     return response.data;
   },
 
@@ -184,14 +188,12 @@ export const userService = {
    * POST /users/reset-password - Restablecer contraseña con token
    * Público
    */
-  resetPassword: async (
-    token: string,
-    newPassword: string
-  ): Promise<{ message: string }> => {
+  resetPassword: async (data: IResetPassword): Promise<{ message: string }> => {
     const response = await apiClient.post<{ message: string }>(
       "/users/reset-password",
-      { token, newPassword }
+      data
     );
+
     return response.data;
   },
 };

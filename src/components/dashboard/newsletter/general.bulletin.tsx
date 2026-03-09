@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+﻿import { Mail } from "lucide-react";
 
 function GeneralBulletin() {
   return (
@@ -7,12 +7,12 @@ function GeneralBulletin() {
         <Mail className="h-6 w-6 text-blue-600" />
       </div>
       <div>
-        <h2 className="mb-2 text-xl font-bold text-gray-900">
-          Boletín General
+        <h2 className="text-foreground mb-2 text-xl font-bold">
+          Boletin General
         </h2>
-        <p className="text-gray-600">
-          Recibe las últimas noticias, ofertas especiales y actualizaciones de
-          productos directamente en tu correo electrónico.
+        <p className="text-muted-foreground">
+          Recibe las ultimas noticias, ofertas especiales y actualizaciones de
+          productos directamente en tu correo electronico.
         </p>
       </div>
     </div>

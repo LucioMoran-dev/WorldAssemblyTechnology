@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useFeaturedProducts } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
 
-import { ProductCard } from "../product-card";
+import { ProductCard } from "../product-card-home";
 
 export function FeaturedProductsSection() {
   const { data, isLoading } = useFeaturedProducts(20);
@@ -46,10 +46,10 @@ export function FeaturedProductsSection() {
 
   if (isLoading) {
     return (
-      <section className="border-b border-gray-200 bg-white py-12">
+      <section className="border-b border-border bg-card py-12">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-foreground">
               Productos Destacados
             </h2>
           </div>
@@ -58,7 +58,7 @@ export function FeaturedProductsSection() {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-80 w-64 flex-shrink-0 animate-pulse rounded-lg bg-gray-200"
+                  className="h-80 w-64 flex-shrink-0 animate-pulse rounded-lg bg-muted"
                 />
               ))}
             </div>
@@ -73,10 +73,13 @@ export function FeaturedProductsSection() {
   }
 
   return (
-    <section className="border-b border-gray-200 bg-white py-12" style={{ overflowX: "clip", overflowY: "visible" }}>
+    <section
+      className="border-b border-border bg-card py-12"
+      style={{ overflowX: "clip", overflowY: "visible" }}
+    >
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Productos Destacados
           </h2>
           <Link href="/products/catalog/featured">
@@ -84,20 +87,20 @@ export function FeaturedProductsSection() {
               variant="link"
               className="text-blue-600 hover:text-blue-700"
             >
-              Ver Todos →
+              Ver Todos â†’
             </Button>
           </Link>
         </div>
 
-        <div className="relative pb-6 pt-4">
-          {/* Botón de scroll izquierdo */}
+        <div className="relative pt-4 pb-6">
+          {/* BotÃ³n de scroll izquierdo */}
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute top-1/2 left-0 z-10 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg transition-all hover:bg-gray-100"
+              className="absolute top-1/2 left-0 z-10 -translate-y-1/2 transform rounded-full bg-card p-2 shadow-lg transition-all hover:bg-muted"
               aria-label="Scroll left"
             >
-              <ChevronLeft className="h-6 w-6 text-gray-800" />
+              <ChevronLeft className="h-6 w-6 text-foreground" />
             </button>
           )}
 
@@ -118,14 +121,14 @@ export function FeaturedProductsSection() {
             ))}
           </div>
 
-          {/* Botón de scroll derecho */}
+          {/* BotÃ³n de scroll derecho */}
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute top-1/2 right-0 z-10 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg transition-all hover:bg-gray-100"
+              className="absolute top-1/2 right-0 z-10 -translate-y-1/2 transform rounded-full bg-card p-2 shadow-lg transition-all hover:bg-muted"
               aria-label="Scroll right"
             >
-              <ChevronRight className="h-6 w-6 text-gray-800" />
+              <ChevronRight className="h-6 w-6 text-foreground" />
             </button>
           )}
         </div>
@@ -139,3 +142,4 @@ export function FeaturedProductsSection() {
     </section>
   );
 }
+

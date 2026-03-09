@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Heart, BarChart3, ShoppingCart } from "lucide-react";
 import Image from "next/image";
@@ -48,14 +48,26 @@ export function ProductCard({
   const isInWishlist = wishlistCheck?.isInWishlist || false;
 
   const imageArray =
-    imgUrls || images || (image ? [image] : ["/placeholder.svg"]);
+    imgUrls?.length && imgUrls.length > 0
+      ? imgUrls
+      : images?.length && images.length > 0
+        ? images
+        : image
+          ? [image]
+          : ["/placeholder.svg"];
+  const hasDiscountBadge = Boolean(originalPrice && originalPrice > basePrice);
+  const hasTopBadge = Boolean(hasDiscountBadge || badge);
+  const discountPercent =
+    typeof originalPrice === "number" && originalPrice > basePrice
+      ? Math.round(((originalPrice - basePrice) / originalPrice) * 100)
+      : 0;
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // Evita que el Link se active
     e.stopPropagation(); // Evita que el evento suba al contenedor
 
     if (!isAuthenticated) {
-      toast.error("Debes iniciar sesión para agregar el producto a el carrito");
+      toast.error("Debes iniciar sesiÃ³n para agregar el producto a el carrito");
       return;
     }
 
@@ -67,16 +79,16 @@ export function ProductCard({
 
     addToCart.mutate(
       {
-        productId: id, // Asegúrate de que este 'id' sea el string de Mongo/Postgres
+        productId: id, // AsegÃºrate de que este 'id' sea el string de Mongo/Postgres
         quantity: 1,
       },
       {
         onSuccess: () => {
-          productLogger.info("Producto añadido al carrito", { id });
+          productLogger.info("Producto aÃ±adido al carrito", { id });
         },
         onError: (error) => {
-          productLogger.info("Error al añadir al carrito", error);
-          productLogger.error("Error al añadir producto al carrito", error);
+          productLogger.info("Error al aÃ±adir al carrito", error);
+          productLogger.error("Error al aÃ±adir producto al carrito", error);
         },
       }
     );
@@ -87,7 +99,7 @@ export function ProductCard({
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      toast.error("Debes iniciar sesión para agregar a favoritos");
+      toast.error("Debes iniciar sesiÃ³n para agregar a favoritos");
       return;
     }
 
@@ -117,7 +129,7 @@ export function ProductCard({
   };
 
   useEffect(() => {
-    if (!isHovered) {
+    if (!isHovered || imageArray.length <= 1) {
       setCurrentImageIndex(0);
       return;
     }
@@ -131,41 +143,46 @@ export function ProductCard({
 
   return (
     // Wrapper con altura fija - mantiene el espacio en el layout
-    <div className="relative" style={{ minHeight: "340px" }}>
+    <div className="relative min-h-[340px]">
       {/* Card flotante - completamente aislada del layout */}
       <div
-        className="group absolute inset-0 flex flex-col rounded-xl border transition-all duration-300 ease-out"
+        className="group absolute top-0 right-0 left-0 flex flex-col rounded-xl border transition-all duration-300 ease-out"
         style={{
           backgroundColor: "white",
           borderColor: isHovered
             ? "rgba(59, 130, 246, 0.3)"
             : "rgba(229, 231, 235, 1)",
           boxShadow: isHovered
-            ? "0 40px 80px -20px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(59, 130, 246, 0.5), 0 20px 40px rgba(59, 130, 246, 0.3)"
+            ? "0 24px 48px -18px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(59, 130, 246, 0.45), 0 10px 24px rgba(59, 130, 246, 0.18)"
             : "0 1px 3px rgba(0, 0, 0, 0.08)",
           zIndex: isHovered ? 20 : 1, // Por debajo del CategoryCard (30) y navbar (50)
           transform: isHovered
-            ? "translateY(-20px) scale(1.08)"
+            ? "translateY(-12px) scale(1.04)"
             : "translateY(0) scale(1)",
-          height: isHovered ? "470px" : "auto",
+          minHeight: isHovered ? "450px" : "340px",
+          height: isHovered ? "auto" : "340px",
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Discount Badge tiene prioridad sobre badge normal */}
-        {originalPrice && originalPrice > basePrice ? (
-          <Badge className="animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 bg-gradient-to-r from-red-500 to-pink-500 text-xs font-bold text-white shadow-lg shadow-red-500/30 duration-200">
-            -{Math.round(((originalPrice - basePrice) / originalPrice) * 100)}%
+        {hasDiscountBadge ? (
+          <Badge className="animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 bg-gradient-to-r from-red-500 to-pink-500 px-2 py-0.5 text-[11px] font-bold leading-none text-white shadow-md shadow-red-500/20 duration-200">
+            -{discountPercent}%
           </Badge>
         ) : badge ? (
-          <Badge className="gradient-accent animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 text-xs font-bold text-white shadow-lg duration-200">
+          <Badge className="gradient-accent animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 px-2 py-0.5 text-[11px] font-bold leading-none text-white shadow-md duration-200">
             {badge}
           </Badge>
         ) : null}
 
         {inStock && (
-          <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full border border-green-100 bg-gradient-to-r from-green-50 to-emerald-50 px-2.5 py-1 text-xs text-green-600 shadow-sm">
-            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
+          <div
+            className={`absolute left-3 z-10 flex items-center gap-1 rounded-full border border-green-100 bg-gradient-to-r from-green-50 to-emerald-50 px-2 py-0.5 text-[11px] text-green-600 shadow-sm ${
+              hasTopBadge ? "top-11" : "top-3"
+            }`}
+          >
+            <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
             <span className="font-semibold">En Stock</span>
           </div>
         )}
@@ -180,10 +197,10 @@ export function ProductCard({
           <Button
             size="icon"
             variant="secondary"
-            className={`border bg-white/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95 ${
+            className={`border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95 ${
               isInWishlist
                 ? "border-red-200 text-red-500 shadow-red-500/20 hover:border-red-300 hover:bg-red-50"
-                : "border-gray-200 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30"
+                : "border-border hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30"
             }`}
             onClick={handleToggleWishlist}
             disabled={addToWishlist.isPending || removeFromWishlist.isPending}
@@ -195,7 +212,7 @@ export function ProductCard({
           <Button
             size="icon"
             variant="secondary"
-            className="border border-gray-200 bg-white/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30 active:scale-95"
+            className="border border-border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30 active:scale-95"
           >
             <BarChart3 className="h-4 w-4" />
           </Button>
@@ -204,7 +221,7 @@ export function ProductCard({
         {/* Product Image */}
         <Link
           href={`/products/${id}`}
-          className="block rounded-t-xl bg-gray-50"
+          className="block rounded-t-xl bg-muted/40"
         >
           <div
             className={`relative aspect-square overflow-hidden transition-all duration-300 ${isHovered ? "p-3" : "p-4"}`}
@@ -239,11 +256,11 @@ export function ProductCard({
 
         {/* Product Info */}
         <div
-          className={`flex flex-1 flex-col transition-all duration-300 ${isHovered ? "p-4" : "p-2.5"}`}
+          className={`flex flex-1 flex-col transition-all duration-300 ${isHovered ? "p-3" : "p-2.5"}`}
         >
           {/* Rating - Solo en hover */}
           {isHovered && (
-            <div className="animate-in fade-in mb-1.5 flex items-center gap-2 duration-200">
+            <div className="animate-in fade-in mb-1 flex items-center gap-2 duration-200">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <svg
@@ -256,21 +273,21 @@ export function ProductCard({
                   </svg>
                 ))}
               </div>
-              <span className="text-xs text-gray-500">Reseñas ({reviews})</span>
+              <span className="text-xs text-muted-foreground">ReseÃ±as ({reviews})</span>
             </div>
           )}
 
           {/* Brand & Category - Solo en hover */}
           {isHovered && (brand || category) && (
-            <div className="animate-in fade-in mb-1.5 flex items-center gap-2 text-xs duration-200">
+            <div className="animate-in fade-in mb-1 flex items-center gap-2 text-xs duration-200">
               {brand && (
                 <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 font-semibold text-blue-600">
                   {brand}
                 </span>
               )}
-              {brand && category && <span className="text-gray-300">•</span>}
+              {brand && category && <span className="text-gray-300">â€¢</span>}
               {category && (
-                <span className="font-medium text-gray-600">{category}</span>
+                <span className="font-medium text-muted-foreground">{category}</span>
               )}
             </div>
           )}
@@ -278,9 +295,9 @@ export function ProductCard({
           {/* Product Name */}
           <Link href={`/products/${id}`}>
             <h3
-              className={`line-clamp-2 font-medium text-gray-900 transition-all hover:text-blue-600 ${
+              className={`line-clamp-2 font-medium text-foreground transition-all hover:text-blue-600 ${
                 isHovered
-                  ? "mb-1.5 text-sm leading-snug"
+                  ? "mb-1 text-sm leading-snug"
                   : "mb-2 text-sm leading-tight"
               }`}
             >
@@ -291,9 +308,9 @@ export function ProductCard({
           {/* Description - Solo visible en hover */}
           {description && (
             <p
-              className={`text-xs leading-relaxed text-gray-600 transition-all duration-300 ${
+              className={`text-xs leading-relaxed text-muted-foreground transition-all duration-300 ${
                 isHovered
-                  ? "mb-1.5 line-clamp-2 opacity-100"
+                  ? "mb-1 line-clamp-2 opacity-100"
                   : "h-0 overflow-hidden opacity-0"
               }`}
             >
@@ -303,7 +320,7 @@ export function ProductCard({
 
           {/* Model - Solo visible en hover */}
           {model && isHovered && (
-            <div className="mb-1.5 text-xs text-gray-500">
+            <div className="mb-1 text-xs text-muted-foreground">
               <span className="font-medium">Modelo:</span> {model}
             </div>
           )}
@@ -313,10 +330,10 @@ export function ProductCard({
 
           {/* Price - Always at bottom */}
           <div
-            className={`flex items-center gap-2 ${isHovered ? "mb-3" : "mb-0"}`}
+            className={`flex items-center gap-2 ${isHovered ? "mb-2" : "mb-0"}`}
           >
             {originalPrice && (
-              <span className="text-sm font-medium text-gray-400 line-through">
+              <span className="text-sm font-medium text-muted-foreground line-through">
                 ${originalPrice.toFixed(2)}
               </span>
             )}
@@ -329,29 +346,42 @@ export function ProductCard({
             </span>
           </div>
 
-          {/* Add to Cart Button */}
-          <Button
-            className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md transition-all duration-500 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 ${
-              isHovered
-                ? "translate-y-0 scale-100 opacity-100"
-                : "pointer-events-none translate-y-4 scale-95 opacity-0"
-            }`}
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={!inStock || addToCart.isPending}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            {addToCart.isPending ? (
-              <span className="flex items-center gap-2">
-                <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Agregando...
-              </span>
-            ) : (
-              "Agregar al Carrito"
-            )}
-          </Button>
+          {/* Add to Cart / Stock State */}
+          {inStock ? (
+            <Button
+              className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md transition-all duration-500 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 ${
+                isHovered
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "pointer-events-none translate-y-4 scale-95 !opacity-0"
+              }`}
+              size="sm"
+              onClick={handleAddToCart}
+              disabled={addToCart.isPending}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              {addToCart.isPending ? (
+                <span className="flex items-center gap-2">
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Agregando...
+                </span>
+              ) : (
+                "Agregar al Carrito"
+              )}
+            </Button>
+          ) : (
+            <div
+              className={`flex h-9 w-full items-center justify-center rounded-md border border-border bg-muted text-sm font-semibold text-muted-foreground transition-all duration-500 ${
+                isHovered
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "pointer-events-none translate-y-4 scale-95 !opacity-0"
+              }`}
+            >
+              Sin stock
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+

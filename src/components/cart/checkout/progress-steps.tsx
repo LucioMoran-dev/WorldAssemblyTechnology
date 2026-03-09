@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+﻿import { Check } from "lucide-react";
 
 function ProgressSteps() {
   return (
@@ -10,7 +10,7 @@ function ProgressSteps() {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
               <Check className="h-5 w-5" />
             </div>
-            <span className="font-semibold text-blue-600">Envío</span>
+            <span className="font-semibold text-blue-600">EnvÃ­o</span>
           </div>
 
           {/* Connector Line */}
@@ -18,10 +18,10 @@ function ProgressSteps() {
 
           {/* Step 2 - Inactive */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-600">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted font-semibold text-muted-foreground">
               2
             </div>
-            <span className="text-gray-600">Revisión y Pagos</span>
+            <span className="text-muted-foreground">RevisiÃ³n y Pagos</span>
           </div>
         </div>
       </div>
@@ -30,3 +30,4 @@ function ProgressSteps() {
 }
 
 export default ProgressSteps;
+

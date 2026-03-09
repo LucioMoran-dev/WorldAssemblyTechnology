@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
+const apiUrl =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://back-end-ecommerce-tech.onrender.com";
+const allowLocalApiInCsp = process.env.ALLOW_LOCAL_API_IN_CSP === "true";
+const connectSrc = [
+  "'self'",
+  "https://back-end-ecommerce-tech.onrender.com",
+  apiUrl,
+  ...(allowLocalApiInCsp ? ["http://localhost:3001"] : []),
+].join(" ");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -181,7 +191,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://*.cloudinary.com https://images.unsplash.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://back-end-ecommerce-tech.onrender.com",
+              `connect-src ${connectSrc}`,
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",
