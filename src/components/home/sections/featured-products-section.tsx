@@ -93,7 +93,7 @@ export function FeaturedProductsSection() {
         </div>
 
         <div className="relative pt-4 pb-6">
-          {/* BotÃ³n de scroll izquierdo */}
+          {/* Botón de scroll izquierdo */}
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
@@ -121,7 +121,7 @@ export function FeaturedProductsSection() {
             ))}
           </div>
 
-          {/* BotÃ³n de scroll derecho */}
+          {/* Botón de scroll derecho */}
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}

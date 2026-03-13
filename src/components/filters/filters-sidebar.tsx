@@ -75,10 +75,12 @@ function SidebarContent({
       {/* Marcas */}
       {showBrands && (
         <FilterSection title="Marcas">
-          <BrandFilter
-            value={filters.brand ?? ""}
-            onChange={(v) => setFilter("brand", v)}
-          />
+          <div className="max-h-72 overflow-y-auto">
+            <BrandFilter
+              value={filters.brand ?? ""}
+              onChange={(v) => setFilter("brand", v)}
+            />
+          </div>
         </FilterSection>
       )}
     </div>

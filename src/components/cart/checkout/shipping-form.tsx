@@ -19,11 +19,11 @@ const CHECKOUT_SHIPPING_STORAGE_KEY = "checkout_shipping_address";
 
 const addressSchema = z.object({
   label: z.string().min(2, "Etiqueta requerida"),
-  street: z.string().min(5, "Direccion requerida"),
+  street: z.string().min(5, "Dirección requerida"),
   city: z.string().min(2, "Ciudad requerida"),
   province: z.string().min(2, "Provincia requerida"),
-  postalCode: z.string().min(3, "Codigo postal requerido"),
-  country: z.string().min(2, "Pais requerido"),
+  postalCode: z.string().min(3, "Código postal requerido"),
+  country: z.string().min(2, "País requerido"),
 });
 
 type AddressFormValues = z.infer<typeof addressSchema>;

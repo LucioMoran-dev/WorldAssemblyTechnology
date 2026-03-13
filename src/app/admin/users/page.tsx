@@ -106,7 +106,7 @@ function AdminUsersContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">Gestion de Usuarios</h1>
+        <h1 className="text-3xl font-bold text-foreground">Gestión de Usuarios</h1>
         <Button className="flex items-center gap-2" disabled>
           <UserPlus className="h-4 w-4" />
           Agregar Usuario

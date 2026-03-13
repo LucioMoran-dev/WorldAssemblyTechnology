@@ -21,7 +21,7 @@ export default function NotFound() {
         </div>
       </motion.div>
 
-      {/* Ãcono principal */}
+      {/* Ícono principal */}
       <motion.div
         initial={{ rotate: -10, opacity: 0, scale: 0.8 }}
         animate={{ rotate: 0, opacity: 1, scale: 1 }}
@@ -31,7 +31,7 @@ export default function NotFound() {
         <Monitor className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16" />
       </motion.div>
 
-      {/* TÃ­tulo y subtÃ­tulo */}
+      {/* Título y subtítulo */}
       <motion.h1
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -57,7 +57,7 @@ export default function NotFound() {
         className="text-muted-foreground mb-10 max-w-md text-sm sm:text-base md:max-w-xl"
       >
         Parece que este circuito no existe en nuestro sistema. Pero no te
-        preocupes, nuestro equipo de robots ya estÃ¡ trabajando en ello ðŸ§ ðŸ¤–
+        preocupes, nuestro equipo de robots ya está trabajando en ello ðŸ§ ðŸ¤–
       </motion.p>
 
       {/* Botones */}

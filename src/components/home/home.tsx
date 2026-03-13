@@ -19,7 +19,7 @@ import { Testimonial } from "./testimonial";
 
 export function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <Header />
 
       <main>
@@ -80,14 +80,15 @@ export function Home() {
         <CustomerStats stats={customerStats} />
 
         {/* Testimonial */}
-        {testimonials[0] && (
+        {testimonials.map((testimonial, index) => (
           <Testimonial
-            quote={testimonials[0].quote}
-            author={testimonials[0].author}
-            activeSlide={0}
+            key={index}
+            quote={testimonial.quote}
+            author={testimonial.author}
+            activeSlide={index}
             totalSlides={testimonials.length}
           />
-        )}
+        ))}
 
         {/* Features Grid */}
         <FeaturesGrid features={features} />

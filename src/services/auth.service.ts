@@ -1,5 +1,5 @@
 import { apiClient, API_BASE_URL } from "@/lib/api";
-import type { IAuthResponse, ISignupDto, ILoginDto, IUser } from "@/types";
+import type { IAuthResponse, ISingUpDto, ILoginDto, IUser } from "@/types";
 
 /**
  * Servicio de autenticación
@@ -10,7 +10,7 @@ export const authService = {
    * POST /auth/singup - Registro de usuario
    * Público - No requiere autenticación
    */
-  async signup(data: ISignupDto): Promise<IAuthResponse> {
+  async singup(data: ISingUpDto): Promise<IAuthResponse> {
     const response = await apiClient.post<IAuthResponse>("/auth/singup", data);
     return response.data;
   },
@@ -39,7 +39,9 @@ export const authService = {
    * POST /auth/exchange-code - Intercambiar código OAuth por sesión
    * Público - El backend setea cookie HttpOnly con access_token
    */
-  async exchangeCode(code: string): Promise<{ userId: string; success: boolean }> {
+  async exchangeCode(
+    code: string
+  ): Promise<{ userId: string; success: boolean }> {
     const response = await apiClient.post<{ userId: string; success: boolean }>(
       "/auth/exchange-code",
       { code }

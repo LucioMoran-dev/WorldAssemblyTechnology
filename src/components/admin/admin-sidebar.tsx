@@ -19,11 +19,11 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { label: "Panel Principal", href: "/admin", icon: LayoutDashboard },
-  { label: "Gestion de Productos", href: "/admin/products", icon: Package },
-  { label: "Gestion de Ordenes", href: "/admin/orders", icon: ShoppingCart },
-  { label: "Gestion de Usuarios", href: "/admin/users", icon: Users },
-  { label: "Gestion de Categorias", href: "/admin/categories", icon: FolderTree },
-  { label: "Gestion de Descuentos", href: "/admin/discounts", icon: BadgePercent },
+  { label: "Gestión de Productos", href: "/admin/products", icon: Package },
+  { label: "Gestión de Ordenes", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Gestión de Usuarios", href: "/admin/users", icon: Users },
+  { label: "Gestión de Categorias", href: "/admin/categories", icon: FolderTree },
+  { label: "Gestión de Descuentos", href: "/admin/discounts", icon: BadgePercent },
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { label: "Reparaciones", href: "/admin/repairs", icon: Wrench },
   { label: "Pagos", href: "/admin/payments", icon: CreditCard },

@@ -11,7 +11,7 @@ export function FeaturesSectionAbout() {
             </div>
             <h3 className="mb-2 text-xl font-bold">Soporte de Productos</h3>
             <p className="text-muted-foreground">
-              Hasta 3 aÃ±os de garantÃ­a en el sitio
+              Hasta 3 años de garantía en el sitio
               <br />
               disponible para tu tranquilidad.
             </p>
@@ -22,7 +22,7 @@ export function FeaturesSectionAbout() {
             </div>
             <h3 className="mb-2 text-xl font-bold">Cuenta Personal</h3>
             <p className="text-muted-foreground">
-              Con grandes descuentos, envÃ­o gratis y<br />
+              Con grandes descuentos, envío gratis y<br />
               un especialista de soporte dedicado.
             </p>
           </div>
@@ -30,7 +30,7 @@ export function FeaturesSectionAbout() {
             <div className="bg-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
               <Tag className="h-8 w-8 text-white" />
             </div>
-            <h3 className="mb-2 text-xl font-bold">Ahorros IncreÃ­bles</h3>
+            <h3 className="mb-2 text-xl font-bold">Ahorros Increíbles</h3>
             <p className="text-muted-foreground">
               Hasta 70% de descuento en productos nuevos,
               <br />

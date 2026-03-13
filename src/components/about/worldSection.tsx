@@ -29,7 +29,7 @@ export function WorldSection() {
             <p className="leading-relaxed text-muted-foreground">
               Shop.com es un proveedor de bienes y servicios de TI con sede en
               Melbourne, de propiedad australiana; operando desde 1991. Nuestra
-              base de clientes abarca individuos, pequeÃ±as empresas, escuelas y
+              base de clientes abarca individuos, pequeñas empresas, escuelas y
               organizaciones gubernamentales. Proporcionamos soluciones
               completas de TI empresarial, realizadas con hardware de alta
               calidad y un servicio al cliente excepcional.

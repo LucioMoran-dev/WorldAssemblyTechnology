@@ -15,7 +15,6 @@
           <span>Consejos y guias de expertos sobre tecnologia</span>
         </li>
         <li className="flex items-start gap-2">
-          <span className="mt-1 text-blue-600">âœ“</span>
           <span>Notificaciones sobre eventos y promociones especiales</span>
         </li>
       </ul>

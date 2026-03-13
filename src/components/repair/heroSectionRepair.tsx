@@ -14,21 +14,21 @@ export function HeroSectionRepair() {
             </h1>
           </div>
           <p className="mb-6 text-xl text-blue-100">
-            Expertos certificados para reparar tu equipo tecnolÃ³gico.
-            DiagnÃ³stico gratuito y garantÃ­a de 90 dÃ­as.
+            Expertos certificados para reparar tu equipo tecnológico.
+            Diagnóstico gratuito y garantía de 90 días.
           </p>
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-300" />
-              <span>TÃ©cnicos Certificados</span>
+              <span>Técnicos Certificados</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-green-300" />
-              <span>ReparaciÃ³n RÃ¡pida</span>
+              <span>Reparación Rápida</span>
             </div>
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-green-300" />
-              <span>GarantÃ­a 90 DÃ­as</span>
+              <span>Garantía 90 Días</span>
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ export default function AdminSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">
-          ConfiguraciÃ³n del Sistema
+          Configuración del Sistema
         </h1>
       </div>
 
@@ -45,7 +45,7 @@ export default function AdminSettingsPage() {
             <Database
               className={`h-4 w-4 ${isSeedingCategory ? "animate-pulse text-purple-600" : ""}`}
             />
-            {isSeedingCategory ? "Cargando..." : "Seed CategorÃ­as"}
+            {isSeedingCategory ? "Cargando..." : "Seed Categorías"}
           </Button>
 
           <Button
@@ -62,7 +62,7 @@ export default function AdminSettingsPage() {
         </div>
       </section>
 
-      {/* ConfiguraciÃ³n General - Solo lectura (sin endpoint backend) */}
+      {/* Configuración General - Solo lectura (sin endpoint backend) */}
       <section className="rounded-lg border border-border bg-card p-6 opacity-60">
         <div className="mb-6 flex items-center gap-3">
           <div className="rounded-lg bg-blue-50 p-2">
@@ -70,10 +70,10 @@ export default function AdminSettingsPage() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-foreground">
-              ConfiguraciÃ³n General
+              Configuración General
             </h2>
             <p className="text-sm text-muted-foreground">
-              PrÃ³ximamente â€” Ajustes generales del sistema
+              Próximamente — Ajustes generales del sistema
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function AdminSettingsPage() {
           <div>
             <h2 className="text-xl font-bold text-foreground">Notificaciones</h2>
             <p className="text-sm text-muted-foreground">
-              PrÃ³ximamente â€” Configurar alertas del sistema
+              Próximamente — Configurar alertas del sistema
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function AdminSettingsPage() {
               className="h-4 w-4 rounded text-blue-600"
             />
             <span className="text-sm text-muted-foreground">
-              Notificar nuevas Ã³rdenes
+              Notificar nuevas órdenes
             </span>
           </label>
           <label className="flex items-center gap-3">
@@ -148,7 +148,7 @@ export default function AdminSettingsPage() {
               className="h-4 w-4 rounded text-blue-600"
             />
             <span className="text-sm text-muted-foreground">
-              Notificar nuevas reseÃ±as
+              Notificar nuevas reseñas
             </span>
           </label>
         </div>

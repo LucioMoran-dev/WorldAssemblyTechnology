@@ -67,7 +67,7 @@ export function ProductCard({
     e.stopPropagation(); // Evita que el evento suba al contenedor
 
     if (!isAuthenticated) {
-      toast.error("Debes iniciar sesiÃ³n para agregar el producto a el carrito");
+      toast.error("Debes iniciar sesión para agregar el producto a el carrito");
       return;
     }
 
@@ -79,16 +79,16 @@ export function ProductCard({
 
     addToCart.mutate(
       {
-        productId: id, // AsegÃºrate de que este 'id' sea el string de Mongo/Postgres
+        productId: id, // Asegúrate de que este 'id' sea el string de Mongo/Postgres
         quantity: 1,
       },
       {
         onSuccess: () => {
-          productLogger.info("Producto aÃ±adido al carrito", { id });
+          productLogger.info("Producto añadido al carrito", { id });
         },
         onError: (error) => {
-          productLogger.info("Error al aÃ±adir al carrito", error);
-          productLogger.error("Error al aÃ±adir producto al carrito", error);
+          productLogger.info("Error al añadir al carrito", error);
+          productLogger.error("Error al añadir producto al carrito", error);
         },
       }
     );
@@ -99,7 +99,7 @@ export function ProductCard({
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      toast.error("Debes iniciar sesiÃ³n para agregar a favoritos");
+      toast.error("Debes iniciar sesión para agregar a favoritos");
       return;
     }
 
@@ -273,7 +273,7 @@ export function ProductCard({
                   </svg>
                 ))}
               </div>
-              <span className="text-xs text-muted-foreground">ReseÃ±as ({reviews})</span>
+              <span className="text-xs text-muted-foreground">Reseñas ({reviews})</span>
             </div>
           )}
 
@@ -285,7 +285,7 @@ export function ProductCard({
                   {brand}
                 </span>
               )}
-              {brand && category && <span className="text-gray-300">â€¢</span>}
+              {brand && category && <span className="text-gray-300">•</span>}
               {category && (
                 <span className="font-medium text-muted-foreground">{category}</span>
               )}

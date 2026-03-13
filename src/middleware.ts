@@ -33,8 +33,8 @@ export function middleware(request: NextRequest) {
     decodeRoleFromJwt(backendToken);
 
   const isAuthRoute =
-    pathname.startsWith("/auth/signin") ||
-    pathname.startsWith("/auth/signup") ||
+    pathname.startsWith("/auth/singin") ||
+    pathname.startsWith("/auth/singup") ||
     pathname.startsWith("/auth/singin") ||
     pathname.startsWith("/auth/singup");
 

@@ -22,11 +22,11 @@ function CartSummaryCollapsed({
           onClick={onExpandShipping}
           className="flex w-full items-center justify-between text-left font-medium"
         >
-          <span>Estimar EnvÃ­o e Impuestos</span>
+          <span>Estimar Envío e Impuestos</span>
           <span className="text-xl font-light">-</span>
         </button>
         <p className="mt-2 text-sm text-muted-foreground">
-          Ingresa tu destino para obtener una estimaciÃ³n de envÃ­o.
+          Ingresa tu destino para obtener una estimación de envío.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ function CartSummaryCollapsed({
           onClick={onExpandDiscount}
           className="flex w-full items-center justify-between text-left font-medium"
         >
-          <span>Aplicar CÃ³digo de Descuento</span>
+          <span>Aplicar Código de Descuento</span>
           <span className="text-xl font-light">-</span>
         </button>
       </div>
@@ -48,12 +48,12 @@ function CartSummaryCollapsed({
           <span className="font-semibold">${subtotal.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="font-medium">EnvÃ­o</span>
+          <span className="font-medium">Envío</span>
           <span className="font-semibold">${shipping.toFixed(2)}</span>
         </div>
         <p className="text-xs text-muted-foreground">
-          (Tarifa EstÃ¡ndar - El precio puede variar segÃºn el artÃ­culo/destino.
-          El personal de la tienda se pondrÃ¡ en contacto contigo.)
+          (Tarifa Estándar - El precio puede variar según el artículo/destino.
+          El personal de la tienda se pondrá en contacto contigo.)
         </p>
         <div className="flex justify-between text-sm">
           <span className="font-medium">Impuesto</span>
@@ -83,7 +83,7 @@ function CartSummaryCollapsed({
           variant="outline"
           className="h-12 w-full border-border bg-transparent"
         >
-          Pagar con MÃºltiples Direcciones
+          Pagar con Múltiples Direcciones
         </Button>
       </div>
 
@@ -93,9 +93,9 @@ function CartSummaryCollapsed({
           <div className="flex h-4 w-8 items-center justify-center rounded bg-gradient-to-r from-purple-400 to-blue-400 text-[10px] font-bold text-white">
             zip
           </div>
-          <span>cÃ³mpralo ahora, hasta 6 meses sin intereses</span>
+          <span>cómpralo ahora, hasta 6 meses sin intereses</span>
           <Link href="#" className="text-blue-600 underline">
-            mÃ¡s informaciÃ³n
+            más información
           </Link>
         </div>
       </div>

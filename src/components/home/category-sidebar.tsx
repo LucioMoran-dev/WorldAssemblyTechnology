@@ -12,7 +12,7 @@ export function CategorySidebar() {
     return (
       <div className="border-border overflow-hidden rounded-lg border bg-card">
         <div className="bg-primary px-4 py-3 text-white">
-          <h2 className="text-lg font-bold">CategorÃ­as</h2>
+          <h2 className="text-lg font-bold">Categorías</h2>
         </div>
         <div className="divide-border divide-y">
           {[...Array(6)].map((_, i) => (
@@ -30,12 +30,12 @@ export function CategorySidebar() {
   return (
     <div className="border-border overflow-hidden rounded-lg border bg-card">
       <div className="bg-primary px-4 py-3 text-white">
-        <h2 className="text-lg font-bold">CategorÃ­as</h2>
+        <h2 className="text-lg font-bold">Categorías</h2>
       </div>
       <nav className="divide-border divide-y">
         {categories.items.map((category) => {
           const categoryName =
-            category.category_name ?? category.name ?? "Sin categorÃ­a";
+            category.category_name ?? category.name ?? "Sin categoría";
           const categorySlug = categoryName
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")

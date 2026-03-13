@@ -21,7 +21,7 @@ export function FooterLinks() {
       <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <div>
           <h4 className="mb-4 font-bold text-white">Información</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <ul className="text-muted-foreground space-y-2 text-sm">
             <li>
               <Link href="/about" className="hover:text-white">
                 Sobre nosotros
@@ -47,7 +47,7 @@ export function FooterLinks() {
 
         <div>
           <h4 className="mb-4 font-bold text-white">Catálogo</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <ul className="text-muted-foreground space-y-2 text-sm">
             <li>
               <Link
                 href="/products/catalog/laptops"
@@ -85,26 +85,23 @@ export function FooterLinks() {
 
         <div>
           <h4 className="mb-4 font-bold text-white">Mi cuenta</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <ul className="text-muted-foreground space-y-2 text-sm">
             {!isAuthenticated ? (
               <>
                 <li>
-                  <Link href="/auth/signin" className="hover:text-white">
+                  <Link href="/auth/singin" className="hover:text-white">
                     Iniciar sesión
                   </Link>
                 </li>
                 <li>
-                  <Link href="/auth/signup" className="hover:text-white">
+                  <Link href="/auth/singup" className="hover:text-white">
                     Crear cuenta
                   </Link>
                 </li>
               </>
             ) : (
               <li>
-                <button
-                  onClick={handleLogout}
-                  className="hover:text-white"
-                >
+                <button onClick={handleLogout} className="hover:text-white">
                   Cerrar Sesión
                 </button>
               </li>
@@ -124,7 +121,7 @@ export function FooterLinks() {
 
         <div>
           <h4 className="mb-4 font-bold text-white">Soporte</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <ul className="text-muted-foreground space-y-2 text-sm">
             <li>
               <Link href="/repairs" className="hover:text-white">
                 Reparaciones
@@ -151,4 +148,3 @@ export function FooterLinks() {
     </div>
   );
 }
-

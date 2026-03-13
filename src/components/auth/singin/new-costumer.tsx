@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 
 function NewCostumer() {
   return (
-    <div className="bg-muted/40 rounded-lg p-8">
+    <div className="bg-muted/40 w-full rounded-lg p-8">
       <h2 className="mb-4 text-xl font-semibold">¿Nuevo Cliente?</h2>
       <p className="text-muted-foreground mb-4">
         Crear una cuenta tiene muchos beneficios:
@@ -22,7 +22,7 @@ function NewCostumer() {
         </li>
       </ul>
 
-      <Link href="/auth/signup">
+      <Link href="/auth/singup">
         <Button className="w-full bg-blue-600 px-8 hover:bg-blue-700 sm:w-auto">
           Crear Una Cuenta
         </Button>

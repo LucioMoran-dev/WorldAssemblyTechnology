@@ -71,7 +71,7 @@ function AdminOrdersContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">Gestion de Ordenes</h1>
+        <h1 className="text-3xl font-bold text-foreground">Gestión de Ordenes</h1>
       </div>
 
       <FiltersPanel activeCount={activeFilterCount} onClearAll={clearAllFilters}>

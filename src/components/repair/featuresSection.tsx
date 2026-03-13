@@ -10,10 +10,10 @@ export function FeaturesSection() {
               <Wrench className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 font-bold text-foreground">
-              Soporte TÃ©cnico Experto
+              Soporte Técnico Experto
             </h3>
             <p className="text-sm text-muted-foreground">
-              TÃ©cnicos certificados con aÃ±os de experiencia en reparaciÃ³n de
+              Técnicos certificados con años de experiencia en reparación de
               equipos.
             </p>
           </div>
@@ -21,18 +21,18 @@ export function FeaturesSection() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600">
               <Clock className="h-8 w-8 text-white" />
             </div>
-            <h3 className="mb-2 font-bold text-foreground">ReparaciÃ³n RÃ¡pida</h3>
+            <h3 className="mb-2 font-bold text-foreground">Reparación Rápida</h3>
             <p className="text-sm text-muted-foreground">
-              La mayorÃ­a de reparaciones se completan en 2-3 dÃ­as hÃ¡biles.
+              La mayoría de reparaciones se completan en 2-3 días hábiles.
             </p>
           </div>
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600">
               <Shield className="h-8 w-8 text-white" />
             </div>
-            <h3 className="mb-2 font-bold text-foreground">GarantÃ­a Extendida</h3>
+            <h3 className="mb-2 font-bold text-foreground">Garantía Extendida</h3>
             <p className="text-sm text-muted-foreground">
-              90 dÃ­as de garantÃ­a en todas las reparaciones realizadas.
+              90 días de garantía en todas las reparaciones realizadas.
             </p>
           </div>
         </div>

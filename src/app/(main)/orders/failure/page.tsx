@@ -39,7 +39,7 @@ function OrderFailureContent() {
           El pago no pudo procesarse
         </h1>
         <p className="mb-6 text-muted-foreground">
-          Hubo un problema con tu pago. PodÃ©s intentarlo nuevamente o elegir
+          Hubo un problema con tu pago. Podés intentarlo nuevamente o elegir
           otro medio de pago.
         </p>
 

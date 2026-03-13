@@ -261,14 +261,14 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                 ) : (
                   <>
                     <Link
-                      href="/auth/signin"
+                      href="/auth/singin"
                       className="text-foreground hover:bg-muted block px-4 py-2 text-sm font-medium"
                       onClick={() => setIsAccountMenuOpen(false)}
                     >
                       Iniciar Sesion
                     </Link>
                     <Link
-                      href="/auth/signup"
+                      href="/auth/singup"
                       className="text-muted-foreground hover:bg-muted block px-4 py-2 text-sm"
                       onClick={() => setIsAccountMenuOpen(false)}
                     >

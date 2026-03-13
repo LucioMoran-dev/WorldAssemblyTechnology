@@ -2,14 +2,7 @@
 
 import Image from "next/image";
 
-const BRANDS = [
-  { name: "MSI", src: "/msi-logo.jpg" },
-  { name: "Razer", src: "/razer-logo.png" },
-  { name: "HP", src: "/hp-logo-abstract.png" },
-  { name: "ASUS", src: "/asus-logo.jpg" },
-  { name: "Intel", src: "/intel-logo.png" },
-  { name: "Gigabyte", src: "/gigabyte-logo.jpg" },
-];
+import { brands } from "@/seeds";
 
 interface BrandFilterProps {
   value: string;
@@ -35,8 +28,8 @@ export function BrandFilter({ value, onChange, showAllButton = true }: BrandFilt
           Todas las Marcas
         </button>
       )}
-      <div className="grid grid-cols-3 gap-3">
-        {BRANDS.map((brand) => {
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+        {brands.map((brand) => {
           const isSelected = normalizedValue === brand.name.toLowerCase();
 
           return (
@@ -44,17 +37,17 @@ export function BrandFilter({ value, onChange, showAllButton = true }: BrandFilt
               key={brand.name}
               onClick={() => onChange(isSelected ? "" : brand.name)}
               title={brand.name}
-              className={`flex aspect-square items-center justify-center rounded-lg border p-2 transition-all ${
+              className={`flex aspect-square items-center justify-center rounded-lg border p-1.5 transition-all ${
                 isSelected
                   ? "border-blue-600 bg-blue-50 shadow-sm"
                   : "border-gray-200 bg-white hover:border-gray-400"
               }`}
             >
               <Image
-                src={brand.src}
+                src={brand.logo}
                 alt={brand.name}
-                width={60}
-                height={60}
+                width={50}
+                height={50}
                 className="object-contain"
               />
             </button>

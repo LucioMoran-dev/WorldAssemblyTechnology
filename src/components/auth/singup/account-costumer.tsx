@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 
 function AccountCostumer() {
   return (
-    <div className="rounded-lg bg-muted/40 p-8">
+    <div className="bg-muted/40 rounded-lg p-8">
       <h2 className="mb-4 text-xl font-semibold">¿Ya Tienes Una Cuenta?</h2>
-      <p className="mb-4 text-muted-foreground">
+      <p className="text-muted-foreground mb-4">
         Inicia sesión para acceder a tu cuenta y disfrutar estos beneficios:
       </p>
 
-      <ul className="mb-6 space-y-2 text-muted-foreground">
+      <ul className="text-muted-foreground mb-6 space-y-2">
         <li className="flex items-start">
           <span className="mr-2">•</span>
           <span>Pagar más rápido</span>
@@ -25,7 +25,7 @@ function AccountCostumer() {
         </li>
       </ul>
 
-      <Link href="/auth/signin">
+      <Link href="/auth/singin">
         <Button
           variant="outline"
           className="w-full border-blue-600 bg-transparent text-blue-600 hover:bg-blue-50"

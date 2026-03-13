@@ -47,7 +47,7 @@ export function Testimonial({
             size="lg"
             className="mt-8 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-7 text-base font-semibold text-white shadow-[0_10px_24px_rgba(37,99,235,0.32)] transition-all duration-200 hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-[0_14px_28px_rgba(37,99,235,0.4)] active:translate-y-0 active:scale-[0.99]"
           >
-            DÃ©janos tu ReseÃ±a
+            Déjanos tu Reseña
           </Button>
         </div>
       </div>

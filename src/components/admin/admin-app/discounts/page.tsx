@@ -131,7 +131,7 @@ export default function AdminDiscountsPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-foreground">Gestion de descuentos</h1>
+      <h1 className="text-3xl font-bold text-foreground">Gestión de descuentos</h1>
 
       <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="mb-4 text-xl font-semibold text-foreground">

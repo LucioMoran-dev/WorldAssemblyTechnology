@@ -125,10 +125,21 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
+    let hasPriceFilter = false;
     for (const key of Object.keys(defaults)) {
       const val = (filters as Record<string, string | undefined>)[key];
       const def = (defaults as Record<string, string | undefined>)[key];
-      if (val && val !== def) count++;
+      if (val && val !== def) {
+        // Count minPrice + maxPrice as a single "price" filter
+        if (key === "minPrice" || key === "maxPrice") {
+          if (!hasPriceFilter) {
+            hasPriceFilter = true;
+            count++;
+          }
+        } else {
+          count++;
+        }
+      }
     }
     return count;
   }, [filters, defaults]);

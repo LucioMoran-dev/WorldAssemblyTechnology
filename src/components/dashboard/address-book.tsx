@@ -25,7 +25,7 @@ function AddressBook() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* DirecciÃ³n de FacturaciÃ³n Predeterminada */}
+          {/* Dirección de Facturación Predeterminada */}
           <div className="border-border rounded-lg border p-6">
             <h3 className="text-foreground mb-4 font-semibold">
               Direcciones de Facturacion Predeterminada
@@ -56,7 +56,7 @@ function AddressBook() {
             </Link>
           </div>
 
-          {/* DirecciÃ³n de EnvÃ­o Predeterminada */}
+          {/* Dirección de Envío Predeterminada */}
           <div className="border-border rounded-lg border p-6">
             <h3 className="text-foreground mb-4 font-semibold">
               Direcciones de Envio Predeterminada

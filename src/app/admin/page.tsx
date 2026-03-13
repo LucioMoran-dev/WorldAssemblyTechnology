@@ -48,11 +48,11 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">Panel de AdministraciÃ³n</h1>
+        <h1 className="text-3xl font-bold text-foreground">Panel de Administración</h1>
         <div className="text-sm text-muted-foreground">Resumen general</div>
       </div>
 
-      {/* EstadÃ­sticas Principales */}
+      {/* Estadísticas Principales */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-card border border-border rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
 
         <div className="bg-card border border-border rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Ã“rdenes</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">Órdenes</h3>
             <ShoppingCart className="h-5 w-5 text-blue-600" />
           </div>
           {statsLoading ? (
@@ -91,7 +91,7 @@ export default function AdminDashboardPage() {
 
         <div className="bg-card border border-border rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Tasa de CompletaciÃ³n</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">Tasa de Completación</h3>
             <Package className="h-5 w-5 text-purple-600" />
           </div>
           {statsLoading ? (
@@ -108,7 +108,7 @@ export default function AdminDashboardPage() {
 
         <div className="bg-card border border-border rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Tasa de CancelaciÃ³n</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">Tasa de Cancelación</h3>
             <XCircle className="h-5 w-5 text-red-600" />
           </div>
           {statsLoading ? (
@@ -122,10 +122,10 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Ã“rdenes Recientes */}
+      {/* Órdenes Recientes */}
       <section className="bg-card border border-border rounded-lg p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-foreground">Ã“rdenes Recientes</h2>
+          <h2 className="text-xl font-bold text-foreground">Órdenes Recientes</h2>
           <Link href="/admin/orders" className="text-sm text-blue-600 hover:underline">
             Ver Todas
           </Link>
@@ -170,7 +170,7 @@ export default function AdminDashboardPage() {
               ) : (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-muted-foreground">
-                    No hay Ã³rdenes recientes
+                    No hay órdenes recientes
                   </td>
                 </tr>
               )}
@@ -179,9 +179,9 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Accesos RÃ¡pidos */}
+      {/* Accesos Rápidos */}
       <section>
-        <h2 className="text-xl font-bold text-foreground mb-6">Accesos RÃ¡pidos</h2>
+        <h2 className="text-xl font-bold text-foreground mb-6">Accesos Rápidos</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <Link
             href="/admin/products"
@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
           >
             <Package className="h-8 w-8 text-blue-600 mb-4" />
             <h3 className="font-bold text-foreground mb-2">Agregar Producto</h3>
-            <p className="text-sm text-muted-foreground">Crear un nuevo producto en el catÃ¡logo</p>
+            <p className="text-sm text-muted-foreground">Crear un nuevo producto en el catálogo</p>
           </Link>
 
           <Link
@@ -197,8 +197,8 @@ export default function AdminDashboardPage() {
             className="bg-card border border-border rounded-lg p-6 hover:border-blue-600 hover:shadow-lg transition-all"
           >
             <ShoppingCart className="h-8 w-8 text-blue-600 mb-4" />
-            <h3 className="font-bold text-foreground mb-2">Ver Ã“rdenes</h3>
-            <p className="text-sm text-muted-foreground">Gestionar todas las Ã³rdenes de clientes</p>
+            <h3 className="font-bold text-foreground mb-2">Ver Órdenes</h3>
+            <p className="text-sm text-muted-foreground">Gestionar todas las órdenes de clientes</p>
           </Link>
 
           <Link

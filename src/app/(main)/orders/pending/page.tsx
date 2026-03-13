@@ -39,7 +39,7 @@ function OrderPendingContent() {
           Pago pendiente
         </h1>
         <p className="mb-6 text-muted-foreground">
-          Tu pago estÃ¡ siendo procesado. Te notificaremos por email cuando se
+          Tu pago está siendo procesado. Te notificaremos por email cuando se
           confirme. Esto puede demorar unos minutos.
         </p>
 

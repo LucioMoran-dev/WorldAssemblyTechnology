@@ -36,10 +36,10 @@ function OrderSuccessContent() {
         </div>
 
         <h1 className="mb-2 text-2xl font-bold text-foreground">
-          Â¡Pago exitoso!
+          ¡Pago exitoso!
         </h1>
         <p className="mb-6 text-muted-foreground">
-          Tu compra fue procesada correctamente. RecibirÃ¡s un email con los
+          Tu compra fue procesada correctamente. Recibirás un email con los
           detalles de tu pedido.
         </p>
 

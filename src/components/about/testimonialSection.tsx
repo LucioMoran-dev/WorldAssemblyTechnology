@@ -12,13 +12,13 @@
           </svg>
         </div>
         <blockquote className="mb-6 text-lg leading-relaxed text-muted-foreground">
-          Mi primer pedido llegÃ³ hoy en perfectas condiciones. Desde el momento
-          en que enviÃ© una pregunta sobre el artÃ­culo hasta realizar la compra,
-          el envÃ­o y ahora la entrega, su empresa, Tecs, se mantuvo en contacto.
+          Mi primer pedido llegó hoy en perfectas condiciones. Desde el momento
+          en que envié una pregunta sobre el artículo hasta realizar la compra,
+          el envío y ahora la entrega, su empresa, Tecs, se mantuvo en contacto.
           Un servicio excelente. Espero comprar en su sitio en el futuro y lo
-          recomendarÃ­a ampliamente.
+          recomendaría ampliamente.
         </blockquote>
-        <p className="text-foreground font-semibold">â€” Tama Brown</p>
+        <p className="text-foreground font-semibold">— Tama Brown</p>
         <div className="mt-4 flex justify-center gap-2">
           <div className="bg-primary h-2 w-2 rounded-full" />
           <div className="h-2 w-2 rounded-full bg-gray-300" />

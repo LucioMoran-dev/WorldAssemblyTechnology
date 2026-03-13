@@ -27,17 +27,17 @@ export function QualitySection() {
                 </svg>
               </div>
               <h2 className="text-3xl font-bold">
-                La MÃ¡s Alta Calidad
+                La Más Alta Calidad
                 <br />
                 de Productos
               </h2>
             </div>
             <p className="leading-relaxed text-muted-foreground">
-              Garantizamos la mÃ¡s alta calidad de los productos que vendemos.
-              Varias dÃ©cadas de operaciÃ³n exitosa y millones de clientes
-              satisfechos nos permiten estar seguros de eso. AdemÃ¡s, todos los
-              artÃ­culos que vendemos pasan por un exhaustivo control de calidad,
-              por lo que ninguna discrepancia en las caracterÃ­sticas puede
+              Garantizamos la más alta calidad de los productos que vendemos.
+              Varias décadas de operación exitosa y millones de clientes
+              satisfechos nos permiten estar seguros de eso. Además, todos los
+              artículos que vendemos pasan por un exhaustivo control de calidad,
+              por lo que ninguna discrepancia en las características puede
               escapar al ojo de nuestros profesionales.
             </p>
           </div>

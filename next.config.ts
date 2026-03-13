@@ -68,6 +68,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "pngimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "placehold.co",
         pathname: "/**",
       },
@@ -274,7 +279,6 @@ const nextConfig: NextConfig = {
             priority: 10,
             reuseExistingChunk: true,
           },
-
 
           // Recharts (gráficos grandes)
           recharts: {

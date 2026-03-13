@@ -17,7 +17,7 @@ function CartUser() {
   const [selectedCountry, setSelectedCountry] = useState("Australia");
   const [shippingMethod, setShippingMethod] = useState("standard");
 
-  // 1. Mapeo exacto basado en tu mÃ©todo mapCartToResponse de NestJS
+  // 1. Mapeo exacto basado en tu método mapCartToResponse de NestJS
   const items =
     cart?.items.map((item) => ({
       id: item.id,
@@ -28,7 +28,7 @@ function CartUser() {
       subtotal: item.subtotal,
     })) || [];
 
-  // 2. CÃ¡lculos financieros
+  // 2. Cálculos financieros
   // Nota: cart.total ya viene calculado desde NestJS (recalculateCartTotal)
   const subtotal = cart?.total || 0;
   const shipping = shippingMethod === "standard" ? 21.0 : 0.0;
@@ -51,8 +51,8 @@ function CartUser() {
 
     const newQuantity = item.quantity + delta;
 
-    // Si la cantidad llega a 0, podrÃ­as optar por eliminarlo o dejar que el backend lo maneje
-    // SegÃºn tu UpdateCartItemDTO, 0 es permitido para eliminar.
+    // Si la cantidad llega a 0, podrías optar por eliminarlo o dejar que el backend lo maneje
+    // Según tu UpdateCartItemDTO, 0 es permitido para eliminar.
     updateItemMutation.mutate({
       itemId,
       data: { quantity: Math.max(0, newQuantity) },
@@ -82,8 +82,8 @@ function CartUser() {
             items={items}
             quantities={quantities}
             onUpdateQuantity={handleUpdateQuantity}
-            // AsegÃºrate de que CartItemsListProps incluya onRemoveItem
-            // o pÃ¡salo si CartItemsList lo soporta
+            // Asegúrate de que CartItemsListProps incluya onRemoveItem
+            // o pásalo si CartItemsList lo soporta
           />
 
           <SummarySidebar

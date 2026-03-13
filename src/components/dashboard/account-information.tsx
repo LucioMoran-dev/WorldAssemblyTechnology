@@ -15,7 +15,7 @@ function AccountInformation() {
         </h2>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* InformaciÃ³n de Contacto */}
+          {/* Información de Contacto */}
           <div className="border-border rounded-lg border p-6">
             <h3 className="text-foreground mb-4 font-semibold">
               Informacion de Contacto
