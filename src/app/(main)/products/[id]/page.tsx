@@ -18,7 +18,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { ProductCard } from "@/components/home/product-card";
+import { ProductCard } from "@/components/home/product-card-home";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -624,7 +624,9 @@ export default function ProductDetailPage() {
                         onClick={handleSubmitReview}
                         disabled={createReview.isPending}
                       >
-                        {createReview.isPending ? "Enviando..." : "Enviar Reseña"}
+                        {createReview.isPending
+                          ? "Enviando..."
+                          : "Enviar Reseña"}
                       </Button>
                       <Button
                         variant="outline"

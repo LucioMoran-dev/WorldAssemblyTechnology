@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -106,15 +106,15 @@ function AccountInfo() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900">
+      <h1 className="text-foreground text-3xl font-bold">
         Editar Información de Cuenta
       </h1>
 
       <div className="max-w-2xl">
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Información de Cuenta */}
-          <section className="rounded-lg border border-gray-200 p-6">
-            <h2 className="mb-6 text-lg font-bold text-gray-900">
+          <section className="border-border rounded-lg border p-6">
+            <h2 className="text-foreground mb-6 text-lg font-bold">
               Información de Cuenta
             </h2>
 
@@ -146,7 +146,7 @@ function AccountInfo() {
                   disabled={isLoading}
                   required
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="text-muted-foreground mt-1 text-xs">
                   Este correo será usado para iniciar sesión y recibir
                   notificaciones
                 </p>
@@ -163,7 +163,7 @@ function AccountInfo() {
                       changePassword: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300"
+                  className="border-border rounded"
                   disabled={isLoading}
                 />
                 <Label
@@ -178,8 +178,8 @@ function AccountInfo() {
 
           {/* Cambiar Contraseña */}
           {formData.changePassword && (
-            <section className="rounded-lg border border-gray-200 p-6">
-              <h2 className="mb-6 text-lg font-bold text-gray-900">
+            <section className="border-border rounded-lg border p-6">
+              <h2 className="text-foreground mb-6 text-lg font-bold">
                 Cambiar Contraseña
               </h2>
 
@@ -216,7 +216,7 @@ function AccountInfo() {
                     required={formData.changePassword}
                     minLength={8}
                   />
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="text-muted-foreground mt-1 text-xs">
                     Mínimo 8 caracteres, incluye mayúsculas, minúsculas y
                     números
                   </p>

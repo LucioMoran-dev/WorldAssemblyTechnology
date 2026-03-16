@@ -1,7 +1,7 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @plugin "tailwindcss-animate";
-/* ❌ ELIMINA ESTA LÍNEA: @import "tw-animate-css"; */
+/* ? ELIMINA ESTA LÍNEA: @import "tw-animate-css"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -130,6 +130,11 @@
   html {
     scroll-behavior: smooth;
   }
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
 }
 
 /* Glassmorphism utility classes */
@@ -239,9 +244,82 @@
   background: oklch(0.45 0.15 250);
 }
 
-/* ⚠️ ADVERTENCIA: Esto aplica transiciones a TODOS los elementos
-   Considera eliminarlo o hacerlo más específico para mejor performance */
-* {
+/* Dark-mode compatibility layer for remaining legacy utility classes */
+.dark .bg-white {
+  background-color: var(--card);
+}
+
+.dark .bg-gray-50 {
+  background-color: oklch(0.22 0 0);
+}
+
+.dark .bg-gray-100 {
+  background-color: oklch(0.25 0 0);
+}
+
+.dark .bg-gray-200 {
+  background-color: oklch(0.3 0 0);
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-black {
+  color: var(--foreground);
+}
+
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-gray-400 {
+  color: var(--muted-foreground);
+}
+
+.dark .text-gray-300 {
+  color: oklch(0.82 0 0);
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: var(--border);
+}
+
+.dark .ring-offset-white {
+  --tw-ring-offset-color: var(--background);
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background-color: oklch(0.24 0 0);
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background-color: oklch(0.28 0 0);
+}
+
+.dark .hover\:text-gray-900:hover,
+.dark .hover\:text-black:hover {
+  color: var(--foreground);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.2 0 0);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.38 0.02 250);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.5 0.1 250);
+}
+
+/* Transiciones solo para elementos interactivos */
+a,
+button,
+input,
+select,
+textarea,
+[role="button"] {
   transition-property:
     color, background-color, border-color, opacity, transform, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -278,4 +356,18 @@
 
 .swiper-slide {
   overflow: visible !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

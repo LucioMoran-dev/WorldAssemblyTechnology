@@ -1,8 +1,8 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 export function QualitySection() {
   return (
-    <section className="bg-white py-16">
+    <section className="bg-card py-16">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid items-center gap-12 md:grid-cols-2">
           <div className="relative h-[400px]">
@@ -32,7 +32,7 @@ export function QualitySection() {
                 de Productos
               </h2>
             </div>
-            <p className="leading-relaxed text-gray-600">
+            <p className="leading-relaxed text-muted-foreground">
               Garantizamos la más alta calidad de los productos que vendemos.
               Varias décadas de operación exitosa y millones de clientes
               satisfechos nos permiten estar seguros de eso. Además, todos los
@@ -46,3 +46,4 @@ export function QualitySection() {
     </section>
   );
 }
+

@@ -30,15 +30,15 @@ export function useCreatePreference() {
 }
 
 /**
- * Query para obtener mis pagos
+ * Query para obtener mis pagos (paginado)
  */
-export function useMyPayments() {
+export function useMyPayments(params?: IPaymentListParams) {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const isLoading = useAuth((state) => state.isLoading);
 
   return useQuery({
-    queryKey: ["payments", "my-payments"],
-    queryFn: () => paymentService.getMyPayments(),
+    queryKey: ["payments", "my-payments", params],
+    queryFn: () => paymentService.getMyPayments(params),
     enabled: !isLoading && isAuthenticated,
     staleTime: 1 * 60 * 1000,
   });
@@ -57,7 +57,7 @@ export function usePaymentStatus(paymentId: string) {
 }
 
 /**
- * Query para listar todos los pagos (Admin)
+ * Query para listar todos los pagos (Admin, paginado)
  */
 export function useAllPayments(params?: IPaymentListParams) {
   return useQuery({

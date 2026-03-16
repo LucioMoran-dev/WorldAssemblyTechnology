@@ -1,11 +1,11 @@
-import { FeaturesSection } from "@/components/repair/featuresSection";
+﻿import { FeaturesSection } from "@/components/repair/featuresSection";
 import { MainFormSection } from "@/components/repair/form/mainFormSection";
 import { HeroSectionRepair } from "@/components/repair/heroSectionRepair";
 
 export default function RepairsPage() {
   return (
     <>
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-muted/40">
         {/* Hero Section */}
         <HeroSectionRepair />
 
@@ -18,3 +18,4 @@ export default function RepairsPage() {
     </>
   );
 }
+

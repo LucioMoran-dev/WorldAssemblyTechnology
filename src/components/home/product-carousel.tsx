@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import type { IProductCardProps } from "@/types";
 
-import { ProductCard } from "./product-card";
+import { ProductCard } from "./product-card-home";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -25,7 +25,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
 
   if (!products || products.length === 0) {
     return (
-      <div className="py-12 text-center text-gray-500">
+      <div className="py-12 text-center text-muted-foreground">
         No hay productos disponibles
       </div>
     );
@@ -84,7 +84,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
       <button
         onClick={handlePrev}
         disabled={isBeginning}
-        className={`absolute top-1/2 left-0 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-gray-800 lg:-left-6 lg:opacity-0`}
+        className={`absolute top-1/2 left-0 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-card shadow-lg transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-card disabled:hover:text-foreground lg:-left-6 lg:opacity-0`}
         aria-label="Anterior"
       >
         <ChevronLeft className="h-6 w-6" />
@@ -93,7 +93,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
       <button
         onClick={handleNext}
         disabled={isEnd}
-        className={`absolute top-1/2 right-0 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-gray-800 lg:-right-6 lg:opacity-0`}
+        className={`absolute top-1/2 right-0 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-card shadow-lg transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-card disabled:hover:text-foreground lg:-right-6 lg:opacity-0`}
         aria-label="Siguiente"
       >
         <ChevronRight className="h-6 w-6" />
@@ -101,3 +101,4 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
     </div>
   );
 }
+

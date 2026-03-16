@@ -13,8 +13,6 @@ export const routeNames: Record<"main" | "dashboard" | "admin", RouteMap> = {
     "/help": "Ayuda",
     "/privacy-term": "Politica de Privacidad",
     "/auth": "Autenticacion",
-    "/auth/signin": "Iniciar Sesion",
-    "/auth/signup": "Registrarse",
     "/auth/singin": "Iniciar Sesion",
     "/auth/singup": "Registrarse",
     "/auth/forgot-password": "Recuperar Contrasena",

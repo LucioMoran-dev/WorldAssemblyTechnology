@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 export function SafeHandsSection() {
   return (
@@ -27,10 +27,10 @@ export function SafeHandsSection() {
             <p className="mb-4 text-gray-300">
               Experimenta un aumento del 60% en el rendimiento informático
               respecto a la generación anterior. Las laptops MSI equipan el
-              procesador Intel® Core™ i7 de 10ma Gen. con el máximo poder de
+              procesador IntelÂ® Coreâ„¢ i7 de 10ma Gen. con el máximo poder de
               cómputo para brindarte una experiencia de juego sin igual.
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               *Rendimiento comparado con i7-9700. Las especificaciones varían
               según el modelo.
             </p>
@@ -48,3 +48,4 @@ export function SafeHandsSection() {
     </section>
   );
 }
+

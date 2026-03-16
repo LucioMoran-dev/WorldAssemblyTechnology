@@ -1,11 +1,11 @@
-import HeaderWithSignIn from "./header-with-signin";
+﻿import HeaderWithSignIn from "./header-with-signin";
 import OrderSummarySidebar from "./order-summary-sidebar";
 import ProgressSteps from "./progress-steps";
 import ShippingForm from "./shipping-form";
 
 function Checkout() {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-muted/40">
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
         <HeaderWithSignIn />
         <ProgressSteps />
@@ -19,3 +19,4 @@ function Checkout() {
 }
 
 export default Checkout;
+

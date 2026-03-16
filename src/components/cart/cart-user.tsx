@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 
@@ -61,11 +61,11 @@ function CartUser() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-gray-50">
+      <div className="flex min-h-screen flex-col bg-muted/40">
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
           <div className="animate-pulse space-y-4">
-            <div className="h-12 w-1/3 rounded bg-gray-200" />
-            <div className="h-64 rounded bg-gray-200" />
+            <div className="h-12 w-1/3 rounded bg-muted" />
+            <div className="h-64 rounded bg-muted" />
           </div>
         </main>
       </div>
@@ -73,7 +73,7 @@ function CartUser() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-muted/40">
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
         <CartHeader />
 
@@ -110,3 +110,4 @@ function CartUser() {
 }
 
 export default CartUser;
+

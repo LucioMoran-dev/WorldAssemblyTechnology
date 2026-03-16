@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Clock, ShoppingBag, Home } from "lucide-react";
 import Link from "next/link";
@@ -30,15 +30,15 @@ function OrderPendingContent() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 text-center shadow-lg">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
           <Clock className="h-10 w-10 text-yellow-600" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+        <h1 className="mb-2 text-2xl font-bold text-foreground">
           Pago pendiente
         </h1>
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-muted-foreground">
           Tu pago está siendo procesado. Te notificaremos por email cuando se
           confirme. Esto puede demorar unos minutos.
         </p>
@@ -46,18 +46,18 @@ function OrderPendingContent() {
         {(paymentId || externalReference) && (
           <div className="mb-6 rounded-md border border-yellow-200 bg-yellow-50 p-4 text-left text-sm">
             {paymentId && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">ID de pago:</span> {paymentId}
               </p>
             )}
             {externalReference && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">Referencia:</span>{" "}
                 {externalReference}
               </p>
             )}
             {status && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">Estado:</span> {status}
               </p>
             )}
@@ -82,3 +82,4 @@ function OrderPendingContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Shield, Wrench } from "lucide-react";
+﻿import { CheckCircle2, Clock, Shield, Wrench } from "lucide-react";
 
 export function HeroSectionRepair() {
   return (
@@ -6,7 +6,7 @@ export function HeroSectionRepair() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="max-w-3xl">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-card/20 backdrop-blur-sm">
               <Wrench className="h-8 w-8" />
             </div>
             <h1 className="text-4xl font-bold md:text-5xl">
@@ -36,3 +36,4 @@ export function HeroSectionRepair() {
     </section>
   );
 }
+

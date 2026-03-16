@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Download, Eye, Package } from "lucide-react";
 import Link from "next/link";
@@ -17,7 +17,7 @@ const getStatusColor = (status: OrderStatus) => {
     [OrderStatus.DELIVERED]: "bg-green-100 text-green-800",
     [OrderStatus.CANCELLED]: "bg-red-100 text-red-800",
   };
-  return colors[status] || "bg-gray-100 text-gray-800";
+  return colors[status] || "bg-muted text-foreground";
 };
 
 // Helper para formatear la fecha
@@ -37,10 +37,7 @@ function OrderMap() {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div
-            key={i}
-            className="h-48 animate-pulse rounded-lg bg-gray-200"
-          />
+          <div key={i} className="bg-muted h-48 animate-pulse rounded-lg" />
         ))}
       </div>
     );
@@ -51,18 +48,15 @@ function OrderMap() {
       {orders && orders.length > 0 ? (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div
-              key={order.id}
-              className="rounded-lg border border-gray-200 p-6"
-            >
+            <div key={order.id} className="border-border rounded-lg border p-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <Package className="h-8 w-8 text-gray-400" />
+                  <Package className="text-muted-foreground h-8 w-8" />
                   <div>
-                    <h3 className="font-bold text-gray-900">
+                    <h3 className="text-foreground font-bold">
                       Pedido #{order.id.slice(0, 8)}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-muted-foreground text-sm">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
@@ -74,22 +68,24 @@ function OrderMap() {
                 </span>
               </div>
 
-              <div className="mb-4 grid gap-4 border-y border-gray-200 py-4 md:grid-cols-3">
+              <div className="border-border mb-4 grid gap-4 border-y py-4 md:grid-cols-3">
                 <div>
-                  <p className="text-sm text-gray-600">Total</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="text-muted-foreground text-sm">Total</p>
+                  <p className="text-foreground font-semibold">
                     ${order.orderDetail.total.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Artículos</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="text-muted-foreground text-sm">Articulos</p>
+                  <p className="text-foreground font-semibold">
                     {order.orderDetail.items.length} productos
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Número de Orden</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="text-muted-foreground text-sm">
+                    Numero de Orden
+                  </p>
+                  <p className="text-foreground font-semibold">
                     #{order.id.slice(0, 8)}
                   </p>
                 </div>
@@ -111,12 +107,12 @@ function OrderMap() {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-gray-200 p-12 text-center">
+        <div className="border-border rounded-lg border p-12 text-center">
           <Package className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="mb-2 text-lg font-semibold text-gray-900">
-            No tienes pedidos aún
+          <h3 className="text-foreground mb-2 text-lg font-semibold">
+            No tienes pedidos aun
           </h3>
-          <p className="mb-6 text-gray-600">
+          <p className="text-muted-foreground mb-6">
             Comienza a explorar nuestros productos y realiza tu primera compra
           </p>
           <Button className="bg-blue-600 hover:bg-blue-700" asChild>

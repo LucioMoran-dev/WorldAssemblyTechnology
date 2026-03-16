@@ -4,35 +4,35 @@ export function SidebarInfo() {
   return (
     <div className="space-y-6">
       {/* Contact Info */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 font-bold text-gray-900">
+      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <h3 className="mb-4 font-bold text-foreground">
           Información de Contacto
         </h3>
         <div className="space-y-3 text-sm">
           <div>
-            <p className="mb-1 text-gray-600">Teléfono</p>
-            <p className="font-medium text-gray-900">(00) 1234 5678</p>
+            <p className="mb-1 text-muted-foreground">Teléfono</p>
+            <p className="font-medium text-foreground">(00) 1234 5678</p>
           </div>
           <div>
-            <p className="mb-1 text-gray-600">Email</p>
-            <p className="font-medium text-gray-900">
+            <p className="mb-1 text-muted-foreground">Email</p>
+            <p className="font-medium text-foreground">
               reparaciones@techstore.com
             </p>
           </div>
           <div>
-            <p className="mb-1 text-gray-600">Horario</p>
-            <p className="font-medium text-gray-900">
+            <p className="mb-1 text-muted-foreground">Horario</p>
+            <p className="font-medium text-foreground">
               Lun-Jue: 9:00 AM - 5:30 PM
             </p>
-            <p className="font-medium text-gray-900">Vie: 9:00 AM - 6:00 PM</p>
-            <p className="font-medium text-gray-900">Sáb: 11:00 AM - 5:00 PM</p>
+            <p className="font-medium text-foreground">Vie: 9:00 AM - 6:00 PM</p>
+            <p className="font-medium text-foreground">Sáb: 11:00 AM - 5:00 PM</p>
           </div>
         </div>
       </div>
 
       {/* Services */}
       <div className="rounded-xl border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 font-bold text-gray-900">
+        <h3 className="mb-4 font-bold text-foreground">
           Servicios que Ofrecemos
         </h3>
         <ul className="space-y-2 text-sm">

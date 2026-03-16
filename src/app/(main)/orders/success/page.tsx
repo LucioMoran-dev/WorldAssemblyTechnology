@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { CheckCircle2, ShoppingBag, Home } from "lucide-react";
 import Link from "next/link";
@@ -30,15 +30,15 @@ function OrderSuccessContent() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 text-center shadow-lg">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
           <CheckCircle2 className="h-10 w-10 text-green-600" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+        <h1 className="mb-2 text-2xl font-bold text-foreground">
           ¡Pago exitoso!
         </h1>
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-muted-foreground">
           Tu compra fue procesada correctamente. Recibirás un email con los
           detalles de tu pedido.
         </p>
@@ -46,18 +46,18 @@ function OrderSuccessContent() {
         {(paymentId || externalReference) && (
           <div className="mb-6 rounded-md border border-green-200 bg-green-50 p-4 text-left text-sm">
             {paymentId && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">ID de pago:</span> {paymentId}
               </p>
             )}
             {externalReference && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">Referencia:</span>{" "}
                 {externalReference}
               </p>
             )}
             {status && (
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 <span className="font-medium">Estado:</span> {status}
               </p>
             )}
@@ -82,3 +82,4 @@ function OrderSuccessContent() {
     </div>
   );
 }
+

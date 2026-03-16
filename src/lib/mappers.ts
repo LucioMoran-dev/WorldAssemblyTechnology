@@ -9,20 +9,23 @@ import type { IProduct, ICartItem, IReviews } from "@/types";
  * Convierte Product del backend a ProductCardProps del frontend
  */
 export function mapProductToCardProps(product: IProduct) {
+  const categoryName =
+    product.category?.name ?? product.category?.category_name ?? "Sin categoría";
+
   return {
     id: product.id,
     name: product.name,
     description: product.description,
     brand: product.brand,
     model: product.model ?? "—",
-    category: product.category?.name,
-    basePrice: product.basePrice, // ✅ Propiedad correcta según ProductCardProps
+    category: categoryName,
+    basePrice: product.basePrice, // Propiedad correcta segun ProductCardProps
     originalPrice: undefined, // Calcular si hay descuento
     rating: product.averageRating || 0,
     reviews: product.reviewCount || 0,
     image: product.imgUrls[0],
     images: product.imgUrls,
-    imgUrls: product.imgUrls, // ✅ Agregado para compatibilidad
+    imgUrls: product.imgUrls, // Agregado para compatibilidad
     badge: product.featured ? "Destacado" : undefined,
     inStock: product.baseStock > 0,
   };
@@ -69,10 +72,11 @@ export function mapProductToDetailView(
   product: IProduct,
   reviews?: IReviews[]
 ) {
+  const categoryName = product.category?.name ?? product.category?.category_name;
   const averageRating = reviews ? calculateAverageRating(reviews) : 0;
   const reviewCount = reviews?.length || 0;
 
-  // Extraer características del objeto specifications
+  // Extraer caracteristicas del objeto specifications
   const features = product.specifications
     ? Object.entries(product.specifications)
         .filter(([key]) => key !== "ports")
@@ -83,7 +87,7 @@ export function mapProductToDetailView(
     id: product.id,
     name: product.name,
     price: product.basePrice as number,
-    originalPrice: undefined as number | undefined, // Backend podría agregar precio original para descuentos
+    originalPrice: undefined as number | undefined, // Backend podria agregar precio original para descuentos
     stock: product.baseStock,
     stockCount: product.baseStock,
     images: product.imgUrls,
@@ -98,7 +102,7 @@ export function mapProductToDetailView(
     sku: product.model || product.id.slice(0, 8).toUpperCase(),
     badge: product.featured ? "DESTACADO" : undefined,
     features,
-    category: product.category?.name || "Sin categoría",
+    category: categoryName || "Sin categoría",
     variants: product.variants,
     hasVariants: product.hasVariants,
   };

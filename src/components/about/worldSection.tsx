@@ -1,8 +1,8 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 export function WorldSection() {
   return (
-    <section className="bg-white py-16">
+    <section className="bg-card py-16">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid items-center gap-12 md:grid-cols-2">
           <div className="relative h-[400px]">
@@ -26,7 +26,7 @@ export function WorldSection() {
               </div>
               <h2 className="text-3xl font-bold">Shop.com</h2>
             </div>
-            <p className="leading-relaxed text-gray-600">
+            <p className="leading-relaxed text-muted-foreground">
               Shop.com es un proveedor de bienes y servicios de TI con sede en
               Melbourne, de propiedad australiana; operando desde 1991. Nuestra
               base de clientes abarca individuos, pequeñas empresas, escuelas y
@@ -40,3 +40,4 @@ export function WorldSection() {
     </section>
   );
 }
+

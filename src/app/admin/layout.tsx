@@ -22,7 +22,7 @@ export default function AdminLayout({
         <Breadcrumb area="admin" />
 
         {/* Main Content */}
-        <main className="flex-1 bg-white">
+        <main className="flex-1 bg-background">
           <div className="mx-auto max-w-7xl px-4 py-8">
             <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
               <AdminSidebar />

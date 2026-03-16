@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gray-50 px-6 py-20 text-center sm:px-8">
+    <main className="bg-muted/40 relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-20 text-center sm:px-8">
       {/* Fondo animado sutil */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -36,7 +36,7 @@ export default function NotFound() {
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="mb-2 text-5xl font-extrabold text-gray-900 sm:text-6xl md:text-7xl"
+        className="text-foreground mb-2 text-5xl font-extrabold sm:text-6xl md:text-7xl"
       >
         404
       </motion.h1>
@@ -45,7 +45,7 @@ export default function NotFound() {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.25, duration: 0.5 }}
-        className="mb-4 text-xl font-semibold text-gray-700 sm:text-2xl md:text-3xl"
+        className="text-muted-foreground mb-4 text-xl font-semibold sm:text-2xl md:text-3xl"
       >
         ¡Te perdiste en la Matrix!
       </motion.h2>
@@ -54,10 +54,10 @@ export default function NotFound() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.35, duration: 0.6 }}
-        className="mb-10 max-w-md text-sm text-gray-500 sm:text-base md:max-w-xl"
+        className="text-muted-foreground mb-10 max-w-md text-sm sm:text-base md:max-w-xl"
       >
         Parece que este circuito no existe en nuestro sistema. Pero no te
-        preocupes, nuestro equipo de robots ya está trabajando en ello 🧠🤖
+        preocupes, nuestro equipo de robots ya está trabajando en ello ðŸ§ ðŸ¤–
       </motion.p>
 
       {/* Botones */}

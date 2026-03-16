@@ -1,5 +1,3 @@
-import z from "zod";
-
 import type { ICart } from "./cart.types";
 import type { UserRole } from "./common.types";
 import type { IOrder } from "./order.types";
@@ -54,7 +52,7 @@ export interface IAuthResponse {
 }
 
 // DTOs
-export interface ISignupDto {
+export interface ISingUpDto {
   email: string;
   password: string;
   confirmPassword: string;
@@ -107,22 +105,29 @@ export interface IUpdateAddressDto {
 }
 
 export interface IChangeRoleDto {
-  role: UserRole;
+  roleId: string;
+}
+
+export interface IRole {
+  id: string;
+  name: string;
 }
 
 export interface IUserListParams {
   page?: number;
   limit?: number;
+  username?: string;
+  email?: string;
+}
+
+export interface IResetPassword {
+  token: string;
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 // Legacy compatibility
 export type SigninDto = ILoginDto;
 export type Address = IUserAddress;
 export type ChangePasswordDto = IUpdatePasswordDto;
-
-// auth types
-export const schemaForgot = z.object({
-  email: z.string().email("Ingresa un email valido"),
-});
-
-export type FormValues = z.infer<typeof schemaForgot>;

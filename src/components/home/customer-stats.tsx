@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 interface CustomerStat {
   value: string;
@@ -11,16 +11,16 @@ interface CustomerStatsProps {
 
 export function CustomerStats({ stats }: CustomerStatsProps) {
   return (
-    <section className="border-b border-gray-200 bg-white py-12">
+    <section className="border-b border-border bg-card py-12">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Left side - Stats */}
           <div className="space-y-6">
             <div className="space-y-2">
-              <p className="text-sm font-medium uppercase tracking-wide text-gray-600">
+              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
                 Desde 2021
               </p>
-              <h2 className="text-4xl font-bold text-gray-900">
+              <h2 className="text-4xl font-bold text-foreground">
                 Brindando lo Mejor para los Clientes
               </h2>
             </div>
@@ -30,14 +30,14 @@ export function CustomerStats({ stats }: CustomerStatsProps) {
                   <div className="mb-2 text-4xl font-bold text-blue-600">
                     {stat.value}
                   </div>
-                  <p className="text-sm text-gray-600">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right side - Image */}
-          <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
+          <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
             <Image
               src="/modern-office-showroom-with-computers.jpg"
               alt="Servicio al Cliente"
@@ -50,3 +50,4 @@ export function CustomerStats({ stats }: CustomerStatsProps) {
     </section>
   );
 }
+

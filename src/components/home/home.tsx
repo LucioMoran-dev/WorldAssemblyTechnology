@@ -19,7 +19,7 @@ import { Testimonial } from "./testimonial";
 
 export function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-background min-h-screen">
       <Header />
 
       <main>
@@ -34,6 +34,7 @@ export function Home() {
           categoryImage="/custom-pc-build-icon.jpg"
           categoryAlt="Custom Builds"
           categoryTitle="Custom Builds"
+          categoryQuery="Custom Builds"
           bgColor="white"
           limit={10}
         />
@@ -43,8 +44,9 @@ export function Home() {
           categoryImage="/msi-dragon-logo-red.jpg"
           categoryAlt="Laptops"
           categoryTitle="Laptops"
+          categoryQuery="Laptops"
           tabs={laptopTabs}
-          defaultTab="Laptos"
+          defaultTab="Laptops"
           bgColor="gray"
           limit={10}
         />
@@ -54,8 +56,9 @@ export function Home() {
           categoryImage="/desktop-tower.jpg"
           categoryAlt="Desktops"
           categoryTitle="Desktops"
+          categoryQuery="Desktop-pcs"
           tabs={desktopTabs}
-          defaultTab="Destoks"
+          defaultTab="Desktops"
           bgColor="white"
           limit={10}
         />
@@ -63,8 +66,9 @@ export function Home() {
         {/* Gaming Monitors Section */}
         <CategoryProductsSection
           categoryImage="/gaming-screen.webp"
-          categoryAlt="Gaming Monitors"
-          categoryTitle="Gaming Monitors"
+          categoryAlt="Monitors"
+          categoryTitle="Monitors"
+          categoryQuery="Monitors"
           bgColor="gray"
           limit={10}
         />
@@ -76,14 +80,15 @@ export function Home() {
         <CustomerStats stats={customerStats} />
 
         {/* Testimonial */}
-        {testimonials[0] && (
+        {testimonials.map((testimonial, index) => (
           <Testimonial
-            quote={testimonials[0].quote}
-            author={testimonials[0].author}
-            activeSlide={0}
+            key={index}
+            quote={testimonial.quote}
+            author={testimonial.author}
+            activeSlide={index}
             totalSlides={testimonials.length}
           />
-        )}
+        ))}
 
         {/* Features Grid */}
         <FeaturesGrid features={features} />

@@ -1,8 +1,8 @@
-import { Headphones, Tag, User } from "lucide-react";
+﻿import { Headphones, Tag, User } from "lucide-react";
 
 export function FeaturesSectionAbout() {
   return (
-    <section className="bg-white py-16">
+    <section className="bg-card py-16">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid gap-8 text-center md:grid-cols-3">
           <div className="flex flex-col items-center">
@@ -10,7 +10,7 @@ export function FeaturesSectionAbout() {
               <Headphones className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 text-xl font-bold">Soporte de Productos</h3>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Hasta 3 años de garantía en el sitio
               <br />
               disponible para tu tranquilidad.
@@ -21,7 +21,7 @@ export function FeaturesSectionAbout() {
               <User className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 text-xl font-bold">Cuenta Personal</h3>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Con grandes descuentos, envío gratis y<br />
               un especialista de soporte dedicado.
             </p>
@@ -31,7 +31,7 @@ export function FeaturesSectionAbout() {
               <Tag className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 text-xl font-bold">Ahorros Increíbles</h3>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Hasta 70% de descuento en productos nuevos,
               <br />
               puedes estar seguro del mejor precio.
@@ -42,3 +42,4 @@ export function FeaturesSectionAbout() {
     </section>
   );
 }
+

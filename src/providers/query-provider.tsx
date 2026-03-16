@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Toaster } from "sonner";
 
@@ -12,6 +13,7 @@ export default function QueryProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { resolvedTheme } = useTheme();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -32,7 +34,11 @@ export default function QueryProvider({
       <AuthInitializer />
 
       {/* Toaster para notificaciones */}
-      <Toaster position="top-right" richColors />
+      <Toaster
+        position="top-right"
+        richColors
+        theme={resolvedTheme === "dark" ? "dark" : "light"}
+      />
 
       {children}
 

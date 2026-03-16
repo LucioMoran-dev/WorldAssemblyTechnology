@@ -18,6 +18,7 @@ export enum VariantType {
 export interface ICategory {
   id: string;
   name: string;
+  category_name?: string;
   description?: string;
   products?: IProduct[];
 }
@@ -134,9 +135,26 @@ export interface IProductsSearchQuery {
   name?: string;
   basePrice?: number;
   brand?: string;
+  categoryId?: string;
+  color?: string;
+  minPrice?: number;
+  maxPrice?: number;
   featured?: boolean;
   page?: number;
   limit?: number;
+  // Variant filters (string LIKE en product_variants)
+  ram?: string;
+  storage?: string;
+  processor?: string;
+  vram?: string;
+  screen_size?: string;
+  resolution?: string;
+  refresh_rate?: string;
+  connectivity?: string;
+  condition?: string;
+  // Boolean filters
+  inStock?: boolean;
+  discounted?: boolean;
 }
 
 export interface IPaginatedProducts {

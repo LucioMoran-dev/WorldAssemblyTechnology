@@ -5,7 +5,7 @@ import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import { useAuth } from "@/hooks/use-auth";
-import { userService } from "@/services";
+import { roleService, userService } from "@/services";
 import type { IChangeRoleDto, IUser, IUserListParams } from "@/types";
 
 /**
@@ -87,5 +87,20 @@ export function useChangeUserRole() {
         : "Error al cambiar rol";
       toast.error(message);
     },
+  });
+}
+
+/**
+ * Hook para obtener todos los roles del sistema (ADMIN)
+ */
+export function useRoles() {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
+  return useQuery({
+    queryKey: ["roles"],
+    queryFn: () => roleService.getRoles(),
+    enabled: !isLoading && isAuthenticated,
+    staleTime: 10 * 60 * 1000,
   });
 }

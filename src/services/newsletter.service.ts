@@ -36,11 +36,19 @@ export const newsletterService = {
    */
   unsubscribe: async (
     token: string
-  ): Promise<{ message: string; email: string }> => {
-    const response = await apiClient.get<{ message: string; email: string }>(
-      "/newsletter/unsubscribe",
-      { params: { token } }
-    );
+  ): Promise<{
+    message: string;
+    email: string;
+    alreadyUnsubscribed: boolean;
+  }> => {
+    const response = await apiClient.get<{
+      message: string;
+      email: string;
+      alreadyUnsubscribed: boolean;
+    }>("/newsletter/unsubscribe", {
+      params: { token },
+    });
+
     return response.data;
   },
 
@@ -51,8 +59,7 @@ export const newsletterService = {
    * Requiere: ADMIN+
    */
   getStats: async (): Promise<INewsletterStats> => {
-    const response =
-      await apiClient.get<INewsletterStats>("/newsletter/stats");
+    const response = await apiClient.get<INewsletterStats>("/newsletter/stats");
     return response.data;
   },
 
@@ -88,10 +95,9 @@ export const newsletterService = {
    * Requiere: ADMIN+
    */
   getCampaigns: async (params?: ICampaignListParams): Promise<ICampaign[]> => {
-    const response = await apiClient.get<ICampaign[]>(
-      "/newsletter/campaigns",
-      { params }
-    );
+    const response = await apiClient.get<ICampaign[]>("/newsletter/campaigns", {
+      params,
+    });
     return response.data;
   },
 
@@ -148,9 +154,7 @@ export const newsletterService = {
    * POST /newsletter/campaigns/:id/send - Enviar campaña
    * Requiere: ADMIN+
    */
-  sendCampaign: async (
-    id: string
-  ): Promise<{ message: string }> => {
+  sendCampaign: async (id: string): Promise<{ message: string }> => {
     const response = await apiClient.post<{ message: string }>(
       `/newsletter/campaigns/${id}/send`
     );

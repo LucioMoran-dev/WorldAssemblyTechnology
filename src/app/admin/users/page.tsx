@@ -1,18 +1,31 @@
 "use client";
 
-import { Search, UserPlus, Edit, Trash2, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { UserPlus, Edit, Trash2, RotateCcw } from "lucide-react";
+import { useState, Suspense } from "react";
 
+import { Pagination } from "@/components/filters/pagination";
+import { SearchInput } from "@/components/filters/search-input";
+import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
+import { FiltersPanel } from "@/components/filters/filters-panel";
+import { ActionDialog } from "@/components/ui/action-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   useGetUsers,
   useDeleteUser,
   useRestoreUser,
   useChangeUserRole,
+  useRoles,
+  useFilters,
 } from "@/hooks";
 import { UserRole } from "@/types";
 
-// Helper para traducir roles
 const translateRole = (role: UserRole): string => {
   const translations = {
     [UserRole.CLIENT]: "Cliente",
@@ -22,192 +35,158 @@ const translateRole = (role: UserRole): string => {
   return translations[role] || role;
 };
 
-// Helper para formatear fecha
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  return date.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
 };
 
-export default function AdminUsersPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState<UserRole | "">("");
-  const [page, setPage] = useState(1);
+const roleOptions = [
+  { value: UserRole.CLIENT, label: "Cliente" },
+  { value: UserRole.ADMIN, label: "Administrador" },
+  { value: UserRole.SUPER_ADMIN, label: "Super Admin" },
+];
 
-  const { data: usersData, isLoading } = useGetUsers({ page, limit: 10 });
+function AdminUsersContent() {
+  const { filters, page, limit, setFilter, setPage, clearAllFilters, activeFilterCount } = useFilters({
+    defaults: { username: "", email: "", role: "" },
+    defaultLimit: 10,
+  });
+
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [restoreTarget, setRestoreTarget] = useState<{ id: string; name: string } | null>(null);
+  const [roleDialogUser, setRoleDialogUser] = useState<{ id: string; name: string; currentRole: UserRole; currentRoleId: string } | null>(null);
+  const [selectedRoleId, setSelectedRoleId] = useState<string>("");
+
+  // Server-side filters: username, email. Role is NOT supported by backend, so client-side.
+  const { data: usersData, isLoading } = useGetUsers({
+    page,
+    limit,
+    username: filters.username || undefined,
+    email: filters.email || undefined,
+  });
+
   const deleteUser = useDeleteUser();
   const restoreUser = useRestoreUser();
   const changeRole = useChangeUserRole();
+  const { data: roles = [] } = useRoles();
 
-  const handleDelete = async (id: string, name: string) => {
-    if (window.confirm(`¿Estás seguro de eliminar al usuario "${name}"?`)) {
-      await deleteUser.mutateAsync(id);
-    }
+  // Client-side role filter (backend doesn't support it)
+  const users = (usersData?.items ?? []).filter((user) =>
+    filters.role ? user.role === filters.role : true
+  );
+
+  const handleDelete = (id: string, name: string) => setDeleteTarget({ id, name });
+  const handleRestore = (id: string, name: string) => setRestoreTarget({ id, name });
+  const handleOpenChangeRole = (id: string, currentRole: UserRole, name: string) => {
+    const currentRoleObj = roles.find((r) => r.name === currentRole);
+    const currentRoleId = currentRoleObj?.id ?? "";
+    setSelectedRoleId(currentRoleId);
+    setRoleDialogUser({ id, currentRole, currentRoleId, name });
   };
 
-  const handleRestore = async (id: string, name: string) => {
-    if (window.confirm(`¿Deseas restaurar al usuario "${name}"?`)) {
-      await restoreUser.mutateAsync(id);
-    }
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteUser.mutateAsync(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
-  const handleChangeRole = async (
-    id: string,
-    currentRole: UserRole,
-    name: string
-  ) => {
-    const newRole = prompt(
-      `Cambiar rol de ${name}\nRol actual: ${translateRole(currentRole)}\n\nEscribe el nuevo rol:\n- customer (Cliente)\n- admin (Administrador)\n- super_admin (Super Admin)`,
-      currentRole
-    );
-
-    if (newRole && Object.values(UserRole).includes(newRole as UserRole)) {
-      await changeRole.mutateAsync({
-        id,
-        data: { role: newRole as UserRole },
-      });
-    } else if (newRole) {
-      alert("Rol inválido. Debe ser: customer, admin o super_admin");
-    }
+  const handleConfirmRestore = async () => {
+    if (!restoreTarget) return;
+    await restoreUser.mutateAsync(restoreTarget.id);
+    setRestoreTarget(null);
   };
 
-  const filteredUsers = usersData?.items.filter((user) => {
-    const matchesSearch = searchTerm
-      ? user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-      : true;
-    const matchesRole = roleFilter ? user.role === roleFilter : true;
-    return matchesSearch && matchesRole;
-  });
+  const handleConfirmRoleChange = async () => {
+    if (!roleDialogUser || !selectedRoleId) return;
+    if (selectedRoleId === roleDialogUser.currentRoleId) { setRoleDialogUser(null); return; }
+    await changeRole.mutateAsync({ id: roleDialogUser.id, data: { roleId: selectedRoleId } });
+    setRoleDialogUser(null);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Gestión de Usuarios
-        </h1>
+        <h1 className="text-3xl font-bold text-foreground">Gestión de Usuarios</h1>
         <Button className="flex items-center gap-2" disabled>
           <UserPlus className="h-4 w-4" />
           Agregar Usuario
         </Button>
       </div>
 
-      {/* Filtros */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
-        <div className="flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Buscar usuarios..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value as UserRole | "")}
-            className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          >
-            <option value="">Todos los Roles</option>
-            <option value={UserRole.CLIENT}>Cliente</option>
-            <option value={UserRole.ADMIN}>Administrador</option>
-            <option value={UserRole.SUPER_ADMIN}>Super Admin</option>
-          </select>
-        </div>
-      </div>
+      <FiltersPanel activeCount={activeFilterCount} onClearAll={clearAllFilters}>
+        <SearchInput
+          value={filters.username ?? ""}
+          onChange={(v) => setFilter("username", v)}
+          placeholder="Buscar por nombre..."
+          className="min-w-[200px] flex-1"
+        />
+        <SearchInput
+          value={filters.email ?? ""}
+          onChange={(v) => setFilter("email", v)}
+          placeholder="Buscar por email..."
+          className="min-w-[200px] flex-1"
+        />
+        <EnumSelectFilter
+          value={filters.role ?? ""}
+          onChange={(v) => setFilter("role", v)}
+          options={roleOptions}
+          placeholder="Todos los Roles"
+        />
+      </FiltersPanel>
 
-      {/* Tabla de Usuarios */}
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-gray-200 bg-gray-50">
+            <thead className="border-b border-border bg-muted/40">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Usuario
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Rol
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Fecha de Registro
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Estado
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Acciones
-                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Usuario</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Email</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Rol</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Fecha de Registro</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Estado</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 [...Array(5)].map((_, i) => (
-                  <tr key={i} className="border-b border-gray-100">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={6} className="px-6 py-4">
-                      <div className="h-12 animate-pulse rounded bg-gray-200" />
+                      <div className="h-12 animate-pulse rounded bg-muted" />
                     </td>
                   </tr>
                 ))
-              ) : filteredUsers && filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
+              ) : users.length > 0 ? (
+                users.map((user) => (
+                  <tr key={user.id} className="border-b border-border transition-colors hover:bg-muted/40">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-medium text-gray-900">
-                          {user.name}
-                        </span>
+                        <span className="font-medium text-foreground">{user.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {user.email}
-                    </td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground">{user.email}</td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          user.role === UserRole.SUPER_ADMIN
-                            ? "bg-red-100 text-red-700"
-                            : user.role === UserRole.ADMIN
-                              ? "bg-purple-100 text-purple-700"
-                              : "bg-blue-100 text-blue-700"
-                        }`}
-                      >
+                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${
+                        user.role === UserRole.SUPER_ADMIN ? "bg-red-100 text-red-700" :
+                        user.role === UserRole.ADMIN ? "bg-purple-100 text-purple-700" :
+                        "bg-blue-100 text-blue-700"
+                      }`}>
                         {translateRole(user.role)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {formatDate(user.createdAt)}
-                    </td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground">{formatDate(user.createdAt)}</td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          user.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
-                      >
+                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${user.isActive ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground"}`}>
                         {user.isActive ? "Activo" : "Inactivo"}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() =>
-                            handleChangeRole(user.id, user.role, user.name)
-                          }
+                          onClick={() => handleOpenChangeRole(user.id, user.role, user.name)}
                           disabled={changeRole.isPending}
                           className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50"
                           title="Cambiar rol"
@@ -239,44 +218,79 @@ export default function AdminUsersPage() {
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-12 text-center text-gray-600"
-                  >
-                    No se encontraron usuarios
-                  </td>
+                  <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">No se encontraron usuarios</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Paginación */}
-        <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
-          <p className="text-sm text-gray-600">
-            Mostrando {filteredUsers?.length || 0} de {usersData?.total || 0}{" "}
-            usuarios
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1 || isLoading}
-            >
-              Anterior
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage((p) => p + 1)}
-              disabled={!usersData || page >= usersData.pages || isLoading}
-            >
-              Siguiente
-            </Button>
-          </div>
-        </div>
+        <Pagination
+          page={page}
+          pages={usersData?.pages ?? 1}
+          total={usersData?.total ?? 0}
+          itemsShown={users.length}
+          onPageChange={setPage}
+          itemLabel="usuarios"
+          isLoading={isLoading}
+        />
       </div>
+
+      <ActionDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title="Eliminar usuario"
+        description={deleteTarget ? `Esta accion desactivara al usuario "${deleteTarget.name}".` : undefined}
+        confirmLabel="Eliminar"
+        variant="destructive"
+        isPending={deleteUser.isPending}
+        onConfirm={handleConfirmDelete}
+      />
+
+      <ActionDialog
+        open={Boolean(restoreTarget)}
+        onOpenChange={(open) => { if (!open) setRestoreTarget(null); }}
+        title="Restaurar usuario"
+        description={restoreTarget ? `Se restaurara el usuario "${restoreTarget.name}".` : undefined}
+        confirmLabel="Restaurar"
+        isPending={restoreUser.isPending}
+        onConfirm={handleConfirmRestore}
+      />
+
+      <ActionDialog
+        open={Boolean(roleDialogUser)}
+        onOpenChange={(open) => { if (!open) setRoleDialogUser(null); }}
+        title="Cambiar rol de usuario"
+        description={roleDialogUser ? `${roleDialogUser.name} - rol actual: ${translateRole(roleDialogUser.currentRole)}` : undefined}
+        confirmLabel="Guardar rol"
+        isPending={changeRole.isPending}
+        confirmDisabled={!roleDialogUser || !selectedRoleId || selectedRoleId === roleDialogUser.currentRoleId}
+        onConfirm={handleConfirmRoleChange}
+      >
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-muted-foreground">Nuevo rol</label>
+          <Select value={selectedRoleId} onValueChange={setSelectedRoleId} disabled={changeRole.isPending}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar rol" />
+            </SelectTrigger>
+            <SelectContent>
+              {roles.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {translateRole(role.name as UserRole)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </ActionDialog>
     </div>
+  );
+}
+
+export default function AdminUsersPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-muted-foreground">Cargando...</div>}>
+      <AdminUsersContent />
+    </Suspense>
   );
 }

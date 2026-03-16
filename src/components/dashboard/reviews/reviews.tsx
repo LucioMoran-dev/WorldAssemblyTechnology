@@ -1,9 +1,9 @@
-import MyReviews from "./my.reviews";
+﻿import MyReviews from "./my.reviews";
 
 function Reviews() {
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900">
+      <h1 className="text-3xl font-bold text-foreground">
         Mis Reseñas de Productos
       </h1>
       <MyReviews />
@@ -12,3 +12,4 @@ function Reviews() {
 }
 
 export default Reviews;
+
