@@ -1,13 +1,28 @@
 "use client";
 
 import { SlidersHorizontal, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
+import {
+  getVisibleSpecFilters,
+  RAM_OPTIONS,
+  STORAGE_OPTIONS,
+  PROCESSOR_OPTIONS,
+  VRAM_OPTIONS,
+  SCREEN_SIZE_OPTIONS,
+  RESOLUTION_OPTIONS,
+  REFRESH_RATE_OPTIONS,
+  CONNECTIVITY_OPTIONS,
+  CONDITION_OPTIONS,
+} from "@/seeds";
+
+import { BooleanToggleFilter } from "./boolean-toggle-filter";
 import { BrandFilter } from "./brand-filter";
 import { CategoryFilter } from "./category-filter";
 import { ColorFilter } from "./color-filter";
 import { FilterSection } from "./filter-section";
 import { PriceRangeCheckboxFilter } from "./price-range-checkbox-filter";
+import { SpecSelectFilter } from "./spec-select-filter";
 
 interface FiltersSidebarProps {
   filters: Record<string, string | undefined>;
@@ -19,6 +34,7 @@ interface FiltersSidebarProps {
   activeFilterCount: number;
   showCategories?: boolean;
   showBrands?: boolean;
+  categorySlug?: string;
 }
 
 function SidebarContent({
@@ -29,7 +45,13 @@ function SidebarContent({
   activeFilterCount,
   showCategories = true,
   showBrands = true,
+  categorySlug,
 }: FiltersSidebarProps) {
+  const visibleSpecs = useMemo(
+    () => new Set(getVisibleSpecFilters(categorySlug)),
+    [categorySlug]
+  );
+
   return (
     <div className="space-y-1">
       {/* Header */}
@@ -81,6 +103,119 @@ function SidebarContent({
               onChange={(v) => setFilter("brand", v)}
             />
           </div>
+        </FilterSection>
+      )}
+
+      {/* Disponibilidad */}
+      <FilterSection title="Disponibilidad">
+        <div className="space-y-3">
+          <BooleanToggleFilter
+            label="En Stock"
+            value={filters.inStock ?? ""}
+            onChange={(v) => setFilter("inStock", v)}
+          />
+          <BooleanToggleFilter
+            label="Con Descuento"
+            value={filters.discounted ?? ""}
+            onChange={(v) => setFilter("discounted", v)}
+          />
+          <BooleanToggleFilter
+            label="Destacados"
+            value={filters.featured ?? ""}
+            onChange={(v) => setFilter("featured", v)}
+          />
+        </div>
+      </FilterSection>
+
+      {/* ─── Filtros de especificaciones (condicionales por categoría) ─── */}
+
+      {visibleSpecs.has("processor") && (
+        <FilterSection title="Procesador" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.processor ?? ""}
+            onChange={(v) => setFilter("processor", v)}
+            options={PROCESSOR_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("ram") && (
+        <FilterSection title="RAM" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.ram ?? ""}
+            onChange={(v) => setFilter("ram", v)}
+            options={RAM_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("storage") && (
+        <FilterSection title="Almacenamiento" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.storage ?? ""}
+            onChange={(v) => setFilter("storage", v)}
+            options={STORAGE_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("vram") && (
+        <FilterSection title="VRAM" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.vram ?? ""}
+            onChange={(v) => setFilter("vram", v)}
+            options={VRAM_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("screen_size") && (
+        <FilterSection title="Tamaño de Pantalla" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.screen_size ?? ""}
+            onChange={(v) => setFilter("screen_size", v)}
+            options={SCREEN_SIZE_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("resolution") && (
+        <FilterSection title="Resolución" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.resolution ?? ""}
+            onChange={(v) => setFilter("resolution", v)}
+            options={RESOLUTION_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("refresh_rate") && (
+        <FilterSection title="Tasa de Refresco" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.refresh_rate ?? ""}
+            onChange={(v) => setFilter("refresh_rate", v)}
+            options={REFRESH_RATE_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("connectivity") && (
+        <FilterSection title="Conectividad" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.connectivity ?? ""}
+            onChange={(v) => setFilter("connectivity", v)}
+            options={CONNECTIVITY_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
+      {visibleSpecs.has("condition") && (
+        <FilterSection title="Condición" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.condition ?? ""}
+            onChange={(v) => setFilter("condition", v)}
+            options={CONDITION_OPTIONS}
+          />
         </FilterSection>
       )}
     </div>

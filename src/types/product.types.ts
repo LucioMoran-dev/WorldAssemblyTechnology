@@ -142,6 +142,19 @@ export interface IProductsSearchQuery {
   featured?: boolean;
   page?: number;
   limit?: number;
+  // Variant filters (string LIKE en product_variants)
+  ram?: string;
+  storage?: string;
+  processor?: string;
+  vram?: string;
+  screen_size?: string;
+  resolution?: string;
+  refresh_rate?: string;
+  connectivity?: string;
+  condition?: string;
+  // Boolean filters
+  inStock?: boolean;
+  discounted?: boolean;
 }
 
 export interface IPaginatedProducts {

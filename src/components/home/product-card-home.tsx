@@ -221,7 +221,7 @@ export function ProductCard({
         {/* Product Image */}
         <Link
           href={`/products/${id}`}
-          className="block rounded-t-xl bg-muted/40"
+          className="relative block rounded-t-xl bg-muted/40"
         >
           <div
             className={`relative aspect-square overflow-hidden transition-all duration-300 ${isHovered ? "p-3" : "p-4"}`}
@@ -237,22 +237,22 @@ export function ProductCard({
               key={currentImageIndex}
             />
           </div>
-        </Link>
 
-        {isHovered && imageArray.length > 1 && (
-          <div className="absolute bottom-[135px] left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
-            {imageArray.map((_, index) => (
-              <div
-                key={index}
-                className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                  index === currentImageIndex
-                    ? "w-4 bg-blue-600"
-                    : "bg-gray-300"
-                }`}
-              />
-            ))}
-          </div>
-        )}
+          {isHovered && imageArray.length > 1 && (
+            <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+              {imageArray.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex
+                      ? "w-4 bg-blue-600"
+                      : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </Link>
 
         {/* Product Info */}
         <div

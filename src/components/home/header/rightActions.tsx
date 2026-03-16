@@ -156,16 +156,16 @@ export const HeaderRightActions = memo(function HeaderRightActions({
 
   return (
     <>
-      <div className="flex h-16 items-center justify-between gap-2 sm:h-20 md:h-24">
+      <div className="flex h-16 items-center justify-between gap-1 sm:h-20 md:h-24">
         {logo}
         {navigation}
 
-        <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+        <div className="flex items-center gap-0.5 sm:gap-1 lg:gap-1.5">
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleSearch}
-            className="hover:bg-muted h-9 w-9"
+            className="h-9 w-9 hover:bg-muted"
           >
             {isSearchOpen ? (
               <X className="h-5 w-5" />
@@ -179,7 +179,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
             <Button
               variant="ghost"
               size="icon"
-              className="hover:bg-muted relative h-9 w-9"
+              className="relative h-9 w-9 hover:bg-muted"
               onClick={toggleMiniWishlist}
             >
               <Heart className="h-5 w-5" />
@@ -196,7 +196,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
             <Button
               variant="ghost"
               size="icon"
-              className="hover:bg-muted relative h-9 w-9"
+              className="relative h-9 w-9 hover:bg-muted"
               onClick={toggleMiniCart}
             >
               <ShoppingCart className="h-5 w-5" />
@@ -214,13 +214,13 @@ export const HeaderRightActions = memo(function HeaderRightActions({
               variant="ghost"
               size="icon"
               onClick={toggleAccountMenu}
-              className="hover:bg-muted h-9 w-9"
+              className="h-9 w-9 hover:bg-muted"
             >
               <User className="h-5 w-5" />
             </Button>
 
             {isAccountMenuOpen && (
-              <div className="animate-in fade-in zoom-in-95 slide-in-from-top-2 border-border bg-card absolute right-0 z-50 mt-2 w-56 rounded-lg border py-2 shadow-xl duration-200">
+              <div className="animate-in fade-in zoom-in-95 slide-in-from-top-2 absolute right-0 z-50 mt-2 w-60 rounded-2xl border border-border/70 bg-card p-2 shadow-2xl duration-200">
                 {isAuthenticated ? (
                   <>
                     <Link
@@ -283,7 +283,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 lg:hidden"
+            className="h-9 w-9 hover:bg-muted lg:hidden"
             onClick={toggleMobileMenu}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-categories-menu"
@@ -309,13 +309,13 @@ export const HeaderRightActions = memo(function HeaderRightActions({
       {isSearchOpen && (
         <div
           ref={searchContainerRef}
-          className="border-border relative border-t py-4"
+          className="border-border/60 relative border-t py-4"
         >
           <form onSubmit={handleSearchSubmit}>
             <div className="relative">
               <div className="absolute top-1/2 left-3 -translate-y-1/2">
                 {isLoadingLocal || isLoadingAi ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
+                  <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                 ) : (
                   <Search className="text-muted-foreground h-5 w-5" />
                 )}
@@ -325,7 +325,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar productos con IA..."
-                className="border-border h-12 pr-4 pl-10 focus:border-purple-500 focus:ring-purple-200"
+                className="h-12 rounded-xl border-border/70 bg-background/80 pr-4 pl-10 focus:border-blue-600 focus:ring-blue-200"
                 autoFocus
               />
             </div>
@@ -337,14 +337,14 @@ export const HeaderRightActions = memo(function HeaderRightActions({
             )}
 
             {isLoadingAi && !isLoadingLocal && (
-              <p className="flex items-center gap-2 text-sm text-purple-600">
+              <p className="flex items-center gap-2 text-sm text-blue-600">
                 <Sparkles className="h-4 w-4" />
                 Procesando con IA...
               </p>
             )}
 
             {aiResults.length > 0 && !isLoadingAi && (
-              <p className="flex items-center gap-2 text-sm text-purple-600">
+              <p className="flex items-center gap-2 text-sm text-blue-600">
                 <Sparkles className="h-4 w-4" />
                 Resultados con IA disponibles
               </p>
@@ -356,16 +356,16 @@ export const HeaderRightActions = memo(function HeaderRightActions({
           </div>
 
           {showResults && (localResults.length > 0 || aiResults.length > 0) && (
-            <div className="border-border bg-card absolute top-full right-0 left-0 z-50 mt-2 max-h-[50vh] overflow-y-auto rounded-xl border shadow-2xl">
+            <div className="border-border/70 bg-card/95 absolute top-full right-0 left-0 z-50 mt-2 max-h-[50vh] overflow-y-auto rounded-2xl border shadow-2xl backdrop-blur">
               {localResults.length > 0 && (
                 <>
-                  <div className="border-border bg-muted/40 sticky top-0 z-10 border-b px-4 py-2">
+                  <div className="border-border/60 bg-muted/40 sticky top-0 z-10 border-b px-4 py-2">
                     <p className="text-muted-foreground text-xs">
                       {localResults.length} resultado
                       {localResults.length !== 1 ? "s" : ""} encontrado
                       {localResults.length !== 1 ? "s" : ""}
                       {isLoadingAi && (
-                        <span className="ml-2 text-purple-600">
+                        <span className="ml-2 text-blue-600">
                           <Sparkles className="mr-1 inline h-3 w-3" />
                           Buscando con IA...
                         </span>
@@ -373,12 +373,12 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                     </p>
                   </div>
 
-                  <ul className="divide-y divide-gray-100">
+                  <ul className="divide-y divide-border/60">
                     {localResults.map((product) => (
                       <li key={product.id}>
                         <button
                           onClick={() => handleProductClick(product.id)}
-                          className="hover:bg-muted/40 flex w-full items-center gap-4 p-3 text-left transition-colors"
+                          className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-muted/40"
                         >
                           <div className="bg-muted relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg">
                             {product.image ? (
@@ -390,7 +390,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                                 sizes="40px"
                               />
                             ) : (
-                              <div className="flex h-full w-full items-center justify-center text-xs text-gray-300">
+                              <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                                 Sin img
                               </div>
                             )}
@@ -420,25 +420,25 @@ export const HeaderRightActions = memo(function HeaderRightActions({
 
               {aiResults.length > 0 && !isLoadingAi && (
                 <>
-                  <div className="sticky top-0 z-10 border-t border-purple-200 bg-purple-50 px-4 py-2">
-                    <p className="flex items-center gap-2 text-xs text-purple-600">
+                  <div className="sticky top-0 z-10 border-t border-border/60 bg-blue-50 px-4 py-2">
+                    <p className="flex items-center gap-2 text-xs text-blue-600">
                       <Sparkles className="h-3 w-3" />
                       {aiResults.length} recomendacion
                       {aiResults.length !== 1 ? "es" : ""} de IA
                     </p>
                     {aiMessage && (
-                      <p className="mt-1 text-xs text-purple-700 italic">
+                      <p className="mt-1 text-xs text-blue-600/80 italic">
                         {aiMessage}
                       </p>
                     )}
                   </div>
 
-                  <ul className="divide-y divide-purple-100 bg-purple-50/30">
+                  <ul className="divide-y divide-border/60 bg-blue-50/30">
                     {aiResults.map((product) => (
                       <li key={`ai-${product.id}`}>
                         <button
                           onClick={() => handleProductClick(product.id)}
-                          className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-purple-100"
+                          className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-blue-100"
                         >
                           <div className="bg-muted relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg">
                             {product.image ? (
@@ -450,7 +450,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                                 sizes="40px"
                               />
                             ) : (
-                              <div className="flex h-full w-full items-center justify-center text-xs text-gray-300">
+                              <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                                 Sin img
                               </div>
                             )}
@@ -466,7 +466,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                           </div>
 
                           <div className="flex-shrink-0 text-right">
-                            <p className="text-sm font-semibold text-purple-700">
+                            <p className="text-sm font-semibold text-blue-600">
                               {formatPrice(product.basePrice)}
                             </p>
                           </div>
@@ -485,13 +485,13 @@ export const HeaderRightActions = memo(function HeaderRightActions({
             localResults.length === 0 &&
             aiResults.length === 0 &&
             !searchError && (
-              <div className="border-border bg-card absolute top-full right-0 left-0 z-50 mt-2 rounded-xl border p-6 text-center shadow-xl">
-                <Search className="mx-auto mb-3 h-10 w-10 text-gray-300" />
+              <div className="border-border/70 bg-card/95 absolute top-full right-0 left-0 z-50 mt-2 rounded-2xl border p-6 text-center shadow-2xl">
+                <Search className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
                 <p className="text-foreground font-medium">
                   No se encontraron productos para &quot;{searchQuery}&quot;
                 </p>
                 {isLoadingAi && (
-                  <p className="mt-2 flex items-center justify-center gap-2 text-sm text-purple-600">
+                  <p className="mt-2 flex items-center justify-center gap-2 text-sm text-blue-600">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Buscando con IA...
                   </p>
@@ -510,3 +510,5 @@ export const HeaderRightActions = memo(function HeaderRightActions({
     </>
   );
 });
+
+

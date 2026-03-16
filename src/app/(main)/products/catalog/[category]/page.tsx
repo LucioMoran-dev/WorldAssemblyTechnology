@@ -27,7 +27,13 @@ const getAverageRating = (reviews?: IReviews[]): number => {
 
 function CatalogContent({ categorySlug }: { categorySlug: string }) {
   const { filters, page, limit, setFilter, setFilters, setPage, clearAllFilters, activeFilterCount } = useFilters({
-    defaults: { name: "", brand: "", color: "", minPrice: "", maxPrice: "", categoryId: "" },
+    defaults: {
+      name: "", brand: "", color: "", minPrice: "", maxPrice: "", categoryId: "",
+      ram: "", storage: "", processor: "", vram: "",
+      screen_size: "", resolution: "", refresh_rate: "",
+      connectivity: "", condition: "",
+      inStock: "", discounted: "", featured: "",
+    },
     defaultLimit: 24,
   });
 
@@ -48,6 +54,20 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
     color: filters.color || undefined,
     minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
     maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+    // Variant filters
+    ram: filters.ram || undefined,
+    storage: filters.storage || undefined,
+    processor: filters.processor || undefined,
+    vram: filters.vram || undefined,
+    screen_size: filters.screen_size || undefined,
+    resolution: filters.resolution || undefined,
+    refresh_rate: filters.refresh_rate || undefined,
+    connectivity: filters.connectivity || undefined,
+    condition: filters.condition || undefined,
+    // Boolean filters
+    inStock: filters.inStock === "true" ? true : undefined,
+    discounted: filters.discounted === "true" ? true : undefined,
+    featured: filters.featured === "true" ? true : undefined,
   });
 
   const products = productsData?.items ?? [];
@@ -78,6 +98,7 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
             clearAllFilters={clearAllFilters}
             activeFilterCount={activeFilterCount}
             showCategories={false}
+            categorySlug={categorySlug}
           />
 
           {/* Main Content */}

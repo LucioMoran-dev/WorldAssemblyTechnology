@@ -10,7 +10,7 @@ import { FiltersSidebar } from "@/components/filters/filters-sidebar";
 
 import { ProductCard } from "@/components/home/product-card-home";
 import { Button } from "@/components/ui/button";
-import { useProducts, useFilters } from "@/hooks";
+import { useProducts, useCategories, useFilters } from "@/hooks";
 import { mapProductToCardProps } from "@/lib/mappers";
 import { features } from "@/seeds";
 import type { IReviews } from "@/types";
@@ -27,11 +27,24 @@ const getAverageRating = (reviews?: IReviews[]): number => {
 
 function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
   const { filters, page, limit, setFilter, setFilters, setPage, clearAllFilters, activeFilterCount } = useFilters({
-    defaults: { name: "", categoryId: "", color: "", minPrice: "", maxPrice: "" },
+    defaults: {
+      name: "", categoryId: "", color: "", minPrice: "", maxPrice: "",
+      ram: "", storage: "", processor: "", vram: "",
+      screen_size: "", resolution: "", refresh_rate: "",
+      connectivity: "", condition: "",
+      inStock: "", discounted: "", featured: "",
+    },
     defaultLimit: 24,
   });
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  // Resolve selected categoryId to slug for conditional spec filters
+  const { data: categoriesData } = useCategories({ limit: 100 });
+  const selectedCategory = categoriesData?.items?.find((c) => c.id === filters.categoryId);
+  const resolvedCategorySlug = selectedCategory
+    ? (selectedCategory.category_name ?? selectedCategory.name ?? "").toLowerCase().replace(/\s+/g, "-")
+    : undefined;
 
   // Server-side products query: brand from URL + additional filters
   const { data: productsData, isLoading } = useProducts({
@@ -43,6 +56,20 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
     color: filters.color || undefined,
     minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
     maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+    // Variant filters
+    ram: filters.ram || undefined,
+    storage: filters.storage || undefined,
+    processor: filters.processor || undefined,
+    vram: filters.vram || undefined,
+    screen_size: filters.screen_size || undefined,
+    resolution: filters.resolution || undefined,
+    refresh_rate: filters.refresh_rate || undefined,
+    connectivity: filters.connectivity || undefined,
+    condition: filters.condition || undefined,
+    // Boolean filters
+    inStock: filters.inStock === "true" ? true : undefined,
+    discounted: filters.discounted === "true" ? true : undefined,
+    featured: filters.featured === "true" ? true : undefined,
   });
 
   const products = productsData?.items ?? [];
@@ -73,6 +100,7 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
             clearAllFilters={clearAllFilters}
             activeFilterCount={activeFilterCount}
             showBrands={false}
+            categorySlug={resolvedCategorySlug}
           />
 
           {/* Main Content */}

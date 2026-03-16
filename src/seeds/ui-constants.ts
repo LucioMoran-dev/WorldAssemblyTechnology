@@ -201,6 +201,116 @@ export const customerStats = [
   { value: "24/7", label: "Soporte Técnico" },
 ];
 
+// ─── Opciones de filtros de variantes para el catálogo ───
+
+export const RAM_OPTIONS = [
+  { value: "4GB", label: "4 GB" },
+  { value: "8GB", label: "8 GB" },
+  { value: "16GB", label: "16 GB" },
+  { value: "32GB", label: "32 GB" },
+  { value: "64GB", label: "64 GB" },
+];
+
+export const STORAGE_OPTIONS = [
+  { value: "128GB", label: "128 GB" },
+  { value: "256GB", label: "256 GB" },
+  { value: "512GB", label: "512 GB" },
+  { value: "1TB", label: "1 TB" },
+  { value: "2TB", label: "2 TB" },
+];
+
+export const PROCESSOR_OPTIONS = [
+  { value: "Intel Core i3", label: "Intel Core i3" },
+  { value: "Intel Core i5", label: "Intel Core i5" },
+  { value: "Intel Core i7", label: "Intel Core i7" },
+  { value: "Intel Core i9", label: "Intel Core i9" },
+  { value: "AMD Ryzen 3", label: "AMD Ryzen 3" },
+  { value: "AMD Ryzen 5", label: "AMD Ryzen 5" },
+  { value: "AMD Ryzen 7", label: "AMD Ryzen 7" },
+  { value: "AMD Ryzen 9", label: "AMD Ryzen 9" },
+  { value: "Apple M1", label: "Apple M1" },
+  { value: "Apple M2", label: "Apple M2" },
+  { value: "Apple M3", label: "Apple M3" },
+];
+
+export const VRAM_OPTIONS = [
+  { value: "4GB", label: "4 GB" },
+  { value: "6GB", label: "6 GB" },
+  { value: "8GB", label: "8 GB" },
+  { value: "12GB", label: "12 GB" },
+  { value: "16GB", label: "16 GB" },
+  { value: "24GB", label: "24 GB" },
+];
+
+export const SCREEN_SIZE_OPTIONS = [
+  { value: "13", label: '13"' },
+  { value: "14", label: '14"' },
+  { value: "15.6", label: '15.6"' },
+  { value: "17", label: '17"' },
+  { value: "24", label: '24"' },
+  { value: "27", label: '27"' },
+  { value: "32", label: '32"' },
+  { value: "34", label: '34"' },
+];
+
+export const RESOLUTION_OPTIONS = [
+  { value: "1920x1080", label: "Full HD (1080p)" },
+  { value: "2560x1440", label: "QHD (1440p)" },
+  { value: "3840x2160", label: "4K UHD" },
+  { value: "2560x1080", label: "UltraWide FHD" },
+  { value: "3440x1440", label: "UltraWide QHD" },
+];
+
+export const REFRESH_RATE_OPTIONS = [
+  { value: "60Hz", label: "60 Hz" },
+  { value: "75Hz", label: "75 Hz" },
+  { value: "120Hz", label: "120 Hz" },
+  { value: "144Hz", label: "144 Hz" },
+  { value: "165Hz", label: "165 Hz" },
+  { value: "240Hz", label: "240 Hz" },
+  { value: "360Hz", label: "360 Hz" },
+];
+
+export const CONNECTIVITY_OPTIONS = [
+  { value: "WiFi", label: "WiFi" },
+  { value: "Bluetooth", label: "Bluetooth" },
+  { value: "Ethernet", label: "Ethernet" },
+  { value: "USB-C", label: "USB-C" },
+  { value: "Thunderbolt", label: "Thunderbolt" },
+  { value: "HDMI", label: "HDMI" },
+  { value: "DisplayPort", label: "DisplayPort" },
+];
+
+export const CONDITION_OPTIONS = [
+  { value: "new", label: "Nuevo" },
+  { value: "refurbished", label: "Reacondicionado" },
+  { value: "open-box", label: "Caja Abierta" },
+  { value: "used", label: "Usado" },
+];
+
+// ─── Mapeo de filtros de specs por categoría ───
+
+export const CATEGORY_SPEC_FILTERS: Record<string, string[]> = {
+  laptops: ["processor", "ram", "storage", "vram", "screen_size", "resolution", "refresh_rate", "connectivity", "condition"],
+  "desktop-pcs": ["processor", "ram", "storage", "vram", "connectivity", "condition"],
+  monitors: ["screen_size", "resolution", "refresh_rate", "connectivity", "condition"],
+  networking: ["connectivity", "condition"],
+  printers: ["connectivity", "condition"],
+  "pc-parts": ["processor", "ram", "storage", "vram", "condition"],
+  "custom-builds": ["processor", "ram", "storage", "vram", "connectivity", "condition"],
+};
+
+export const ALL_SPEC_FILTER_KEYS = [
+  "processor", "ram", "storage", "vram",
+  "screen_size", "resolution", "refresh_rate",
+  "connectivity", "condition",
+];
+
+export function getVisibleSpecFilters(categorySlug?: string): string[] {
+  if (!categorySlug) return ALL_SPEC_FILTER_KEYS;
+  return CATEGORY_SPEC_FILTERS[categorySlug.toLowerCase()] ?? ALL_SPEC_FILTER_KEYS;
+}
+
 // iconos y valores para el formulario de reparación
 export const deviceTypes = [
   { icon: Laptop, name: "Laptop", value: "laptop" },

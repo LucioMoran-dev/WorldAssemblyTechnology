@@ -10,3 +10,5 @@ export { CategoryFilter } from "./category-filter";
 export { PriceRangeCheckboxFilter } from "./price-range-checkbox-filter";
 export { ColorFilter } from "./color-filter";
 export { BrandFilter } from "./brand-filter";
+export { SpecSelectFilter } from "./spec-select-filter";
+export { BooleanToggleFilter } from "./boolean-toggle-filter";
