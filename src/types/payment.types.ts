@@ -28,7 +28,7 @@ export interface IPayment {
   mercadoPagoId?: string;
   amount: number;
   status: PaymentStatus;
-  paymentMethod?: string;
+  paymentTypeId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,7 +37,7 @@ export interface IPaymentStatusResponse {
   id: string;
   status: string;
   statusDetail?: string;
-  paymentMethod?: string;
+  paymentTypeId?: string;
   transactionAmount?: number;
   dateApproved?: string;
 }

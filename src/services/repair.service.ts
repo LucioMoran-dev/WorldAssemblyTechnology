@@ -5,6 +5,7 @@ import type {
   IUpdateRepairStatusDto,
   IRepairListParams,
   IPaginatedResponse,
+  IRepairHistory,
 } from "@/types";
 
 /**
@@ -60,6 +61,17 @@ export const repairService = {
     const response = await apiClient.patch<IRepair>(
       `/repairs/${id}/status`,
       data
+    );
+    return response.data;
+  },
+
+  /**
+   * GET /repairs/:id/comments - Historial de comentarios (Admin)
+   * Requiere: ADMIN+
+   */
+  getComments: async (id: string): Promise<IRepairHistory> => {
+    const response = await apiClient.get<IRepairHistory>(
+      `/repairs/${id}/comments`
     );
     return response.data;
   },

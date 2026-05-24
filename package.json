@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "dev:clean": "npm run clean && next dev --turbopack",
+    "dev:clean": "pnpm clean && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "analyze": "ANALYZE=true npm run build",
+    "analyze": "cross-env ANALYZE=true pnpm build",
     "clean": "rimraf .next out .turbo"
   },
   "dependencies": {
@@ -101,6 +101,13 @@
   },
   "engines": {
     "node": ">=18.17.0",
-    "npm": ">=9.0.0"
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.33.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }

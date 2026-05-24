@@ -8,32 +8,19 @@ import { cartService } from "@/services";
 import type { IAddToCartDto, IUpdateCartItemDto, ICheckoutDto } from "@/types";
 import { cartLogger } from "@/utils/logger";
 
-// Importa los stores de Zustand
 import { useAuth } from "./use-auth";
 import { useCart } from "./use-cart";
 
-/**
- * Type guard para verificar si un error es de Axios
- */
 function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError).isAxiosError !== undefined;
 }
 
-/**
- * React Query hooks para el carrito
- */
-
-/**
- * Hook para obtener el carrito completo
- * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
- */
 export function useCartQuery() {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const isLoading = useAuth((state) => state.isLoading);
 
   const enabled = !isLoading && isAuthenticated;
 
-  // Debug log
   if (process.env.NODE_ENV === "development") {
     cartLogger.info("useCartQuery hook called", {
       isLoading,
@@ -52,27 +39,21 @@ export function useCartQuery() {
       useCart.getState().setLoading(false);
       return cart;
     },
-    enabled, // ✅ Esperar a que termine de inicializar
-    staleTime: 30 * 1000, // 30 segundos
+    enabled,
+    staleTime: 30 * 1000,
     retry: (failureCount, error: unknown) => {
-      // No reintentar si es 401 (no autenticado)
       if (isAxiosError(error) && error.response?.status === 401) return false;
       return failureCount < 2;
     },
   });
 }
 
-/**
- * Hook para el resumen del carrito (navbar)
- * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
- */
 export function useCartSummary() {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const isLoading = useAuth((state) => state.isLoading);
 
   const enabled = !isLoading && isAuthenticated;
 
-  // Debug log
   if (process.env.NODE_ENV === "development") {
     cartLogger.info("useCartSummary hook called", {
       isLoading,
@@ -87,9 +68,9 @@ export function useCartSummary() {
       cartLogger.info("useCartSummary: Fetching cart summary from API");
       return cartService.getSummary();
     },
-    enabled, // ✅ Esperar a que termine de inicializar
-    staleTime: 15 * 1000, // 15 segundos
-    refetchInterval: enabled ? 30 * 1000 : false, // Solo refetch si está habilitado
+    enabled,
+    staleTime: 15 * 1000,
+    refetchInterval: enabled ? 30 * 1000 : false,
     retry: (failureCount, error: unknown) => {
       if (isAxiosError(error) && error.response?.status === 401) return false;
       return failureCount < 2;
@@ -97,16 +78,12 @@ export function useCartSummary() {
   });
 }
 
-/**
- * Mutation para agregar producto al carrito
- */
 export function useAddToCart() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: IAddToCartDto) => cartService.addItem(data),
     onSuccess: async (cart) => {
-      // Crear copia normalizada para no mutar el objeto original
       const normalizedCart = {
         ...cart,
         itemCount:
@@ -120,7 +97,6 @@ export function useAddToCart() {
       toast.success("Producto agregado al carrito");
     },
     onError: (error: unknown) => {
-      // Obtener estado actual de autenticación (no usar closure stale)
       const isAuthenticated = useAuth.getState().isAuthenticated;
 
       const defaultMessage = isAuthenticated
@@ -137,9 +113,6 @@ export function useAddToCart() {
   });
 }
 
-/**
- * Mutation para actualizar cantidad de un item
- */
 export function useUpdateCartItem() {
   const queryClient = useQueryClient();
 
@@ -152,7 +125,6 @@ export function useUpdateCartItem() {
       data: IUpdateCartItemDto;
     }) => cartService.updateItemQuantity(itemId, data),
     onSuccess: async (cart) => {
-      // Normalizar el cart para asegurar que tenga itemCount
       if (cart && typeof cart.itemCount !== "number") {
         cart.itemCount =
           cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
@@ -172,26 +144,19 @@ export function useUpdateCartItem() {
   });
 }
 
-/**
- * Mutation para eliminar un item del carrito
- */
 export function useRemoveCartItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (itemId: string) => cartService.removeItem(itemId),
     onSuccess: async (response) => {
-      // Normalizar el cart para asegurar que tenga itemCount
       const cart = response.cart;
       if (cart && typeof cart.itemCount !== "number") {
         cart.itemCount =
           cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
       }
 
-      // Actualizar Zustand store
       useCart.getState().setCart(cart);
-
-      // Forzar refetch inmediato de las queries del carrito
       await queryClient.refetchQueries({ queryKey: ["cart"] });
 
       toast.success("Producto eliminado del carrito");
@@ -206,9 +171,6 @@ export function useRemoveCartItem() {
   });
 }
 
-/**
- * Mutation para vaciar el carrito
- */
 export function useClearCart() {
   const queryClient = useQueryClient();
 
@@ -229,18 +191,12 @@ export function useClearCart() {
   });
 }
 
-/**
- * Hook para validar stock antes de checkout
- */
 export function useValidateStock() {
   return useMutation({
     mutationFn: () => cartService.validateStock(),
   });
 }
 
-/**
- * Mutation para checkout
- */
 export function useCheckout() {
   const queryClient = useQueryClient();
 

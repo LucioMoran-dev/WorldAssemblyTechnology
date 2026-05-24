@@ -61,6 +61,17 @@ export function useRepair(id: string) {
 }
 
 /**
+ * Query para historial de comentarios de reparación (Admin)
+ */
+export function useRepairHistory(id: string) {
+  return useQuery({
+    queryKey: ["repairs", id, "comments"],
+    queryFn: () => repairService.getComments(id),
+    enabled: !!id,
+  });
+}
+
+/**
  * Mutation para actualizar estado de reparación (Admin)
  */
 export function useUpdateRepairStatus() {

@@ -65,6 +65,20 @@ export interface IRepairListParams {
   urgency?: RepairUrgency;
 }
 
+export interface IRepairComment {
+  id: string;
+  adminId: string;
+  adminName: string;
+  comment: string;
+  statusSnapshot: RepairStatus;
+  createdAt: string;
+}
+
+export interface IRepairHistory {
+  repair: IRepair;
+  comments: IRepairComment[];
+}
+
 export const repairSchema = z.object({
   fullName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   email: z.string().email("Email inválido"),

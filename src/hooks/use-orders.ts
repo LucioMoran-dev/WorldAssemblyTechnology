@@ -7,20 +7,10 @@ import { toast } from "sonner";
 import { orderService } from "@/services";
 import type { OrderListParams, IUpdateOrderStatusDto } from "@/types";
 
-/**
- * Type guard para verificar si un error es de Axios
- */
 function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError).isAxiosError !== undefined;
 }
 
-/**
- * React Query hooks para órdenes
- */
-
-/**
- * Hook para obtener mis órdenes
- */
 export function useMyOrders() {
   return useQuery({
     queryKey: ["orders", "my-orders"],
@@ -29,9 +19,6 @@ export function useMyOrders() {
   });
 }
 
-/**
- * Hook para obtener una orden por ID
- */
 export function useOrder(id: string) {
   return useQuery({
     queryKey: ["orders", id],
@@ -93,13 +80,8 @@ export function useCancelOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      orderId,
-      reason,
-    }: {
-      orderId: string;
-      reason?: string;
-    }) => orderService.cancelOrder(orderId, reason),
+    mutationFn: ({ orderId, reason }: { orderId: string; reason?: string }) =>
+      orderService.cancelOrder(orderId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast.success("Orden cancelada exitosamente");

@@ -1,6 +1,7 @@
 "use client";
 
-import { Wrench } from "lucide-react";
+import { Eye, Wrench } from "lucide-react";
+import Link from "next/link";
 import { useState, Suspense } from "react";
 
 import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
@@ -184,7 +185,14 @@ function AdminRepairsContent() {
                       {new Date(repair.createdAt).toLocaleString("es-AR")}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Link
+                          href={`/admin/repairs/${repair.id}`}
+                          className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-sm text-blue-600 transition-colors hover:bg-blue-50"
+                        >
+                          <Eye className="h-4 w-4" />
+                          Ver detalle
+                        </Link>
                         <Button
                           variant="outline"
                           size="sm"
