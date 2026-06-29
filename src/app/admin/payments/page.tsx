@@ -102,7 +102,7 @@ function AdminPaymentsContent() {
                         </a>
                       ) : "-"}
                     </td>
-                    <td className="px-4 py-3">{payment.paymentMethod || "-"}</td>
+                    <td className="px-4 py-3">{payment.paymentTypeId || "-"}</td>
                     <td className="px-4 py-3 font-semibold">{formatMoney(Number(payment.amount || 0))}</td>
                     <td className="px-4 py-3">
                       <span className={`rounded px-2 py-1 text-xs font-medium ${
