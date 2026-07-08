@@ -220,7 +220,7 @@ export default function AdminRepairDetailPage() {
             {comments.map((comment) => (
               <div key={comment.id} className="relative mb-6 last:mb-0">
                 {/* Dot indicator */}
-                <div className="absolute -left-[31px] top-1 h-4 w-4 rounded-full border-2 border-gray-300 bg-white" />
+                <div className="absolute -left-7.75 top-1 h-4 w-4 rounded-full border-2 border-gray-300 bg-white" />
 
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">

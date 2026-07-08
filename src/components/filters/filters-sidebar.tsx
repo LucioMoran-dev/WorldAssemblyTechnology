@@ -14,6 +14,7 @@ import {
   REFRESH_RATE_OPTIONS,
   CONNECTIVITY_OPTIONS,
   CONDITION_OPTIONS,
+  SWITCH_OPTIONS,
 } from "@/seeds";
 
 import { BooleanToggleFilter } from "./boolean-toggle-filter";
@@ -67,12 +68,12 @@ function SidebarContent({
         )}
       </div>
 
-      {/* Categoría */}
+      {/* Categoría — filtra por nombre (?category_name=), no por UUID */}
       {showCategories && (
         <FilterSection title="Categoría">
           <CategoryFilter
-            value={filters.categoryId ?? ""}
-            onChange={(v) => setFilter("categoryId", v)}
+            value={filters.category_name ?? ""}
+            onChange={(v) => setFilter("category_name", v)}
           />
         </FilterSection>
       )}
@@ -209,6 +210,16 @@ function SidebarContent({
         </FilterSection>
       )}
 
+      {visibleSpecs.has("switch") && (
+        <FilterSection title="Switch (teclados)" defaultOpen={false}>
+          <SpecSelectFilter
+            value={filters.switch ?? ""}
+            onChange={(v) => setFilter("switch", v)}
+            options={SWITCH_OPTIONS}
+          />
+        </FilterSection>
+      )}
+
       {visibleSpecs.has("condition") && (
         <FilterSection title="Condición" defaultOpen={false}>
           <SpecSelectFilter
@@ -228,7 +239,7 @@ export function FiltersSidebar(props: FiltersSidebarProps) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden flex-shrink-0 lg:block lg:w-64">
+      <aside className="hidden shrink-0 lg:block lg:w-64">
         <div className="rounded-lg border border-gray-200 bg-white p-4">
           <SidebarContent {...props} />
         </div>

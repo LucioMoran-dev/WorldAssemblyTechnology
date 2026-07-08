@@ -2,10 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useMemo } from "react";
 import { toast } from "sonner";
 
 import { wishlistService } from "@/services";
-import type { IAddToWishlistDto } from "@/types";
+import type { IAddToWishlistDto, ICheckWishlistResponse } from "@/types";
 import { getUserFacingMessage } from "@/utils";
 
 import { useAuth } from "./use-auth";
@@ -60,22 +61,35 @@ export function useWishlistSummary() {
 }
 
 /**
- * Hook para verificar si un producto está en wishlist
- * SOLO se ejecuta si el usuario está autenticado Y la inicialización terminó
+ * Hook para verificar si un producto está en wishlist.
+ *
+ * OJO: antes esto le pegaba a GET /wishlist/check/:id — UN request HTTP por
+ * cada card visible. Con 24 productos por página de catálogo eso disparaba
+ * 24 requests de golpe y el throttler del back (límite 60/min) devolvía
+ * 429 Too Many Requests. El fix es el patrón "derivar, no consultar":
+ * reutilizamos la query única de useWishlist() (1 request, cache de 5 min
+ * compartida entre TODAS las cards) y respondemos "¿está el producto X?"
+ * en memoria con un .some(). Las mutaciones de agregar/quitar ya invalidan
+ * la key ["wishlist"], así que el estado del corazón se refresca solo.
  */
-export function useCheckWishlist(productId: string) {
-  const isAuthenticated = useAuth((state) => state.isAuthenticated);
-  const isLoading = useAuth((state) => state.isLoading);
+export function useCheckWishlist(productId: string): {
+  data: ICheckWishlistResponse | undefined;
+  isLoading: boolean;
+} {
+  const { data: wishlist, isLoading } = useWishlist();
 
-  return useQuery({
-    queryKey: ["wishlist-check", productId, isAuthenticated, isLoading],
-    queryFn: () => wishlistService.checkProduct(productId),
-    enabled: !isLoading && !!productId && isAuthenticated, // ✅ Esperar a que termine de inicializar
-    retry: (failureCount, error: unknown) => {
-      if (isAxiosError(error) && error.response?.status === 401) return false;
-      return failureCount < 2;
-    },
-  });
+  // useMemo evita recalcular el .some() en cada render si ni la wishlist
+  // ni el productId cambiaron (con muchas cards montadas, suma).
+  const data = useMemo<ICheckWishlistResponse | undefined>(() => {
+    if (!wishlist) return undefined;
+    return {
+      isInWishlist:
+        wishlist.items?.some((item) => item.product?.id === productId) ??
+        false,
+    };
+  }, [wishlist, productId]);
+
+  return { data, isLoading };
 }
 
 /**

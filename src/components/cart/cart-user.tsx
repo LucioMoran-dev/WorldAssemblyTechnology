@@ -26,6 +26,8 @@ function CartUser() {
       image: item.product.imgUrls?.[0] || "",
       quantity: item.quantity,
       subtotal: item.subtotal,
+      // Snapshot de variantes elegidas (para mostrarlas bajo el nombre)
+      selectedVariants: item.selectedVariants,
     })) || [];
 
   // 2. Cálculos financieros

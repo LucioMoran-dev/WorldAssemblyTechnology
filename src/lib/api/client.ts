@@ -4,10 +4,6 @@ import axios from "axios";
 import { extractApiMessage } from "@/utils/handle-api-error";
 import { apiLogger } from "@/utils/logger";
 
-/**
- * Arma la "ruta" legible del request: MÉTODO /path?query
- * para saber exactamente qué endpoint falló.
- */
 function describeRoute(error: AxiosError): string {
   const method = error.config?.method?.toUpperCase() ?? "???";
   const url = error.config?.url ?? "unknown-url";
@@ -24,11 +20,6 @@ function describeRoute(error: AxiosError): string {
   return `${method} ${url}${query}`;
 }
 
-/**
- * Reenvía el error al server para que también salga por el terminal de `pnpm dev`.
- * Fire-and-forget, solo en desarrollo y desde el browser. Usa `fetch` nativo
- * (no `apiClient`) para no recursar el interceptor.
- */
 function reportToDevTerminal(payload: {
   route: string;
   status?: number | string;
@@ -86,8 +77,10 @@ function clearClientSession(): void {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("user");
 
-  document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-  document.cookie = "frontend_user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+  document.cookie =
+    "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+  document.cookie =
+    "frontend_user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
 }
 
 apiClient.interceptors.response.use(
@@ -97,14 +90,16 @@ apiClient.interceptors.response.use(
       const route = describeRoute(error);
 
       if (error.response) {
-        // El back respondió con un error HTTP → mostramos ruta + status + mensaje específico
         const { status, statusText } = error.response;
         const serverMessage =
           extractApiMessage(error.response.data) ?? error.message;
-        apiLogger.error(`${route} → ${status} ${statusText} | ${serverMessage}`, {
-          mensaje: serverMessage,
-          respuesta: error.response.data,
-        });
+        apiLogger.error(
+          `${route} → ${status} ${statusText} | ${serverMessage}`,
+          {
+            message: serverMessage,
+            response: error.response.data,
+          }
+        );
         reportToDevTerminal({
           route,
           status: `${status} ${statusText}`,
@@ -112,24 +107,22 @@ apiClient.interceptors.response.use(
           detail: error.response.data,
         });
       } else if (error.request) {
-        // No hubo respuesta: server caído, CORS, timeout, red
         apiLogger.error(
-          `${route} → SIN RESPUESTA del servidor (${error.code ?? "network error"})`,
-          { detalle: error.message }
+          `${route} → NO RESPONSE from server (${error.code ?? "network error"})`,
+          { detail: error.message }
         );
         reportToDevTerminal({
           route,
-          status: `SIN RESPUESTA (${error.code ?? "network error"})`,
+          status: `NO RESPONSE (${error.code ?? "network error"})`,
           message: error.message,
         });
       } else {
-        // Error armando el request antes de salir
-        apiLogger.error(`${route} → error al preparar el request`, {
-          detalle: error.message,
+        apiLogger.error(`${route} → request setup failed`, {
+          detail: error.message,
         });
         reportToDevTerminal({
           route,
-          message: `error al preparar el request: ${error.message}`,
+          message: `request setup failed: ${error.message}`,
         });
       }
     }

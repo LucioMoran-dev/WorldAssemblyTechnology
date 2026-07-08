@@ -33,6 +33,7 @@ import {
   REFRESH_RATE_OPTIONS,
   CONNECTIVITY_OPTIONS,
   CONDITION_OPTIONS,
+  SWITCH_OPTIONS,
 } from "@/seeds";
 import type { IProduct } from "@/types";
 
@@ -50,7 +51,7 @@ function AdminProductsContent() {
   } = useFilters({
     defaults: {
       name: "",
-      categoryId: "",
+      category_name: "",
       brand: "",
       minPrice: "",
       maxPrice: "",
@@ -68,6 +69,7 @@ function AdminProductsContent() {
       refresh_rate: "",
       connectivity: "",
       condition: "",
+      switch: "",
     },
     defaultLimit: 10,
   });
@@ -79,18 +81,19 @@ function AdminProductsContent() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<IProduct | null>(null);
 
-  // Load categories for the filter dropdown
+  // Categorías para el dropdown. El value es el NOMBRE: el back filtra por
+  // ?category_name= (el viejo categoryId da 400)
   const { data: categoriesData } = useCategories({ limit: 100 });
-  const categoryOptions = (categoriesData?.items ?? []).map((cat) => ({
-    value: cat.id,
-    label: cat.name || cat.category_name || cat.id,
-  }));
+  const categoryOptions = (categoriesData?.items ?? []).map((cat) => {
+    const name = cat.category_name || cat.name || cat.id;
+    return { value: name, label: name };
+  });
 
   const { data: productsData, isLoading } = useProducts({
     page,
     limit,
     name: filters.name || undefined,
-    categoryId: filters.categoryId || undefined,
+    category_name: filters.category_name || undefined,
     brand: filters.brand || undefined,
     minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
     maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
@@ -104,6 +107,7 @@ function AdminProductsContent() {
     refresh_rate: filters.refresh_rate || undefined,
     connectivity: filters.connectivity || undefined,
     condition: filters.condition || undefined,
+    switch: filters.switch || undefined,
     inStock: filters.inStock === "true" ? true : undefined,
     discounted: filters.discounted === "true" ? true : undefined,
     featured: filters.featured === "true" ? true : undefined,
@@ -170,8 +174,8 @@ function AdminProductsContent() {
           className="min-w-150px"
         />
         <EnumSelectFilter
-          value={filters.categoryId ?? ""}
-          onChange={(v) => setFilter("categoryId", v)}
+          value={filters.category_name ?? ""}
+          onChange={(v) => setFilter("category_name", v)}
           options={categoryOptions}
           placeholder="Todas las Categorias"
         />
@@ -311,6 +315,16 @@ function AdminProductsContent() {
                   options={CONDITION_OPTIONS}
                 />
               </div>
+              <div>
+                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                  Switch (teclados)
+                </p>
+                <SpecSelectFilter
+                  value={filters.switch ?? ""}
+                  onChange={(v) => setFilter("switch", v)}
+                  options={SWITCH_OPTIONS}
+                />
+              </div>
             </div>
           </FilterSection>
         </div>
@@ -405,10 +419,11 @@ function AdminProductsContent() {
                       ${product.basePrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4">
+                      {/* Stock efectivo: con variantes el stock real viene en totalStock */}
                       <span
-                        className={`text-sm font-medium ${product.baseStock === 0 ? "text-red-600" : product.baseStock < 10 ? "text-orange-600" : "text-green-600"}`}
+                        className={`text-sm font-medium ${(product.totalStock ?? product.baseStock) === 0 ? "text-red-600" : (product.totalStock ?? product.baseStock) < 10 ? "text-orange-600" : "text-green-600"}`}
                       >
-                        {product.baseStock} unidades
+                        {product.totalStock ?? product.baseStock} unidades
                       </span>
                     </td>
                     <td className="px-6 py-4">

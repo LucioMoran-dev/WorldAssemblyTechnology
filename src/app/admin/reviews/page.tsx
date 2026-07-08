@@ -88,7 +88,7 @@ function AdminReviewsContent() {
           value={filters.userName ?? ""}
           onChange={(v) => setFilter("userName", v)}
           placeholder="Buscar por usuario..."
-          className="flex-1 min-w-[200px]"
+          className="flex-1 min-w-50"
         />
         <EnumSelectFilter
           value={filters.rating ?? ""}

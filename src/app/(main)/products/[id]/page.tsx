@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ProductCard } from "@/components/home/product-card-home";
+import { VariantSelector } from "@/components/products/variant-selector";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,6 +33,8 @@ import {
   useCreateReview,
   useCanReview,
   useAuth,
+  useProductPrice,
+  useProductStock,
 } from "@/hooks";
 import { mapProductToCardProps, mapProductToDetailView } from "@/lib/mappers";
 import { Rating } from "@/types";
@@ -63,7 +66,41 @@ export default function ProductDetailPage() {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewMessage, setReviewMessage] = useState("");
 
-  // Compute real review distribution from reviewsData
+  const [selectedVariants, setSelectedVariants] = useState<
+    Record<string, string>
+  >({});
+
+  const hasVariants = Boolean(
+    productData?.hasVariants && productData.variants?.length
+  );
+
+  const variantTypes = useMemo(() => {
+    if (!hasVariants) return [];
+    return Array.from(new Set(productData!.variants!.map((v) => v.type)));
+  }, [hasVariants, productData]);
+
+  const isSelectionComplete =
+    !hasVariants || variantTypes.every((t) => Boolean(selectedVariants[t]));
+
+  const variantIds = useMemo(
+    () => variantTypes.map((t) => selectedVariants[t]).filter(Boolean) as string[],
+    [variantTypes, selectedVariants]
+  );
+
+  const { data: selectionPrice } = useProductPrice(
+    hasVariants && isSelectionComplete ? productId : "",
+    variantIds
+  );
+  const { data: selectionStock } = useProductStock(
+    hasVariants && isSelectionComplete ? productId : "",
+    variantIds
+  );
+
+  const handleSelectVariant = (type: string, variantId: string) => {
+    setSelectedVariants((prev) => ({ ...prev, [type]: variantId }));
+    setQuantity(1);
+  };
+
   const reviewDistribution = useMemo(() => {
     const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } as Record<number, number>;
     const reviews = Array.isArray(reviewsData) ? reviewsData : [];
@@ -80,13 +117,22 @@ export default function ProductDetailPage() {
 
   const isInWishlist = wishlistCheck?.isInWishlist ?? false;
 
+  const effectiveStock =
+    hasVariants && isSelectionComplete && selectionStock
+      ? selectionStock.availableStock
+      : product?.stockCount || 0;
+
+  const effectivePrice =
+    hasVariants && isSelectionComplete && selectionPrice
+      ? selectionPrice.finalPrice
+      : product?.price || 0;
+
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
 
   const increaseQuantity = () => {
-    const stockCount = product?.stockCount || 0;
-    if (quantity < stockCount) setQuantity(quantity + 1);
+    if (quantity < effectiveStock) setQuantity(quantity + 1);
   };
 
   const handleAddToCart = () => {
@@ -94,17 +140,16 @@ export default function ProductDetailPage() {
       toast.error("Producto no disponible");
       return;
     }
+    if (hasVariants && !isSelectionComplete) {
+      toast.error("Elegí una opción de cada tipo antes de agregar al carrito");
+      return;
+    }
 
-    addToCart.mutate(
-      { productId: productData.id, quantity },
-      {
-        onSuccess: () => {
-          toast.success(
-            `${quantity} ${quantity === 1 ? "producto agregado" : "productos agregados"} al carrito`
-          );
-        },
-      }
-    );
+    addToCart.mutate({
+      productId: productData.id,
+      quantity,
+      variantIds: hasVariants ? variantIds : undefined,
+    });
   };
 
   const handleBuyNow = () => {
@@ -112,9 +157,17 @@ export default function ProductDetailPage() {
       toast.error("Producto no disponible");
       return;
     }
+    if (hasVariants && !isSelectionComplete) {
+      toast.error("Elegí una opción de cada tipo antes de comprar");
+      return;
+    }
 
     addToCart.mutate(
-      { productId: productData.id, quantity },
+      {
+        productId: productData.id,
+        quantity,
+        variantIds: hasVariants ? variantIds : undefined,
+      },
       {
         onSuccess: () => {
           router.push("/cart");
@@ -205,9 +258,7 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
-        {/* Product Detail Section */}
         <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Image Gallery */}
           <div className="space-y-4">
             <div className="relative aspect-square rounded-lg border border-gray-200 bg-white p-8">
               {product.badge && (
@@ -286,17 +337,25 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              {product.inStock ? (
+              {effectiveStock > 0 ? (
                 <div className="mb-6 flex items-center gap-2 text-green-600">
                   <div className="h-2 w-2 rounded-full bg-green-600" />
                   <span className="font-medium">
-                    En Stock ({product.stockCount} disponibles)
+                    En Stock ({effectiveStock} disponibles
+                    {hasVariants && isSelectionComplete
+                      ? " de esta combinación"
+                      : ""}
+                    )
                   </span>
                 </div>
               ) : (
                 <div className="mb-6 flex items-center gap-2 text-red-600">
                   <div className="h-2 w-2 rounded-full bg-red-600" />
-                  <span className="font-medium">Agotado</span>
+                  <span className="font-medium">
+                    {hasVariants && isSelectionComplete
+                      ? "Combinación sin stock"
+                      : "Agotado"}
+                  </span>
                 </div>
               )}
             </div>
@@ -304,13 +363,19 @@ export default function ProductDetailPage() {
             {/* Price */}
             <div className="border-t border-b border-gray-200 py-6">
               <div className="flex items-center gap-4">
+                {/* Con variantes sin elegir, el precio del producto es un "desde" */}
+                {hasVariants && !isSelectionComplete && (
+                  <span className="text-lg font-medium text-gray-500">
+                    Desde
+                  </span>
+                )}
                 {product.originalPrice && (
                   <span className="text-2xl text-gray-400 line-through">
                     ${product.originalPrice.toFixed(2)}
                   </span>
                 )}
                 <span className="text-4xl font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
+                  ${effectivePrice.toFixed(2)}
                 </span>
                 {product.originalPrice && (
                   <Badge className="border-0 bg-red-100 text-red-700">
@@ -319,6 +384,17 @@ export default function ProductDetailPage() {
                 )}
               </div>
             </div>
+
+            {/* Selector de variantes (solo productos con variantes) */}
+            {hasVariants && productData?.variants && (
+              <div className="rounded-lg border border-gray-200 p-4">
+                <VariantSelector
+                  variants={productData.variants}
+                  selected={selectedVariants}
+                  onSelect={handleSelectVariant}
+                />
+              </div>
+            )}
 
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">
@@ -351,10 +427,23 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
+              {/* Aviso cuando falta completar la selección de variantes */}
+              {hasVariants && !isSelectionComplete && (
+                <p className="text-sm text-orange-600">
+                  Elegí una opción de cada tipo para ver el precio final y
+                  poder comprar.
+                </p>
+              )}
+
               <div className="flex gap-3">
                 <Button
                   onClick={handleAddToCart}
-                  disabled={addToCart.isPending || !productData}
+                  disabled={
+                    addToCart.isPending ||
+                    !productData ||
+                    (hasVariants && !isSelectionComplete) ||
+                    effectiveStock === 0
+                  }
                   className="h-12 flex-1 bg-blue-600 text-base text-white hover:bg-blue-700"
                 >
                   <ShoppingCart className="mr-2 h-5 w-5" />
@@ -381,7 +470,12 @@ export default function ProductDetailPage() {
                 variant="outline"
                 className="h-12 w-full border-gray-300 bg-transparent"
                 onClick={handleBuyNow}
-                disabled={addToCart.isPending || !productData}
+                disabled={
+                  addToCart.isPending ||
+                  !productData ||
+                  (hasVariants && !isSelectionComplete) ||
+                  effectiveStock === 0
+                }
               >
                 {addToCart.isPending ? "Procesando..." : "Comprar Ahora"}
               </Button>
@@ -398,7 +492,7 @@ export default function ProductDetailPage() {
                     key={index}
                     className="flex items-start gap-2 text-sm text-gray-700"
                   >
-                    <ChevronRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
+                    <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
                     <span>{feature}</span>
                   </li>
                 ))}

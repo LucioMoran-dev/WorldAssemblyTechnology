@@ -128,7 +128,7 @@ function AdminCategoriesContent() {
           value={filters.category ?? ""}
           onChange={(v) => setFilter("category", v)}
           placeholder="Buscar categorias..."
-          className="min-w-[200px] flex-1"
+          className="min-w-50 flex-1"
         />
       </FiltersPanel>
 

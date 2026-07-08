@@ -3,7 +3,6 @@ import type {
   IWishlist,
   IWishlistSummary,
   IAddToWishlistDto,
-  ICheckWishlistResponse,
   IWishlistItem,
 } from "@/types";
 
@@ -55,14 +54,7 @@ export const wishlistService = {
     await apiClient.delete("/wishlist/clear");
   },
 
-  /**
-   * GET /wishlist/check/:productId - Verificar si producto está en wishlist
-   * Requiere: CLIENT | Rate Limit: 60/min
-   */
-  checkProduct: async (productId: string): Promise<ICheckWishlistResponse> => {
-    const response = await apiClient.get<ICheckWishlistResponse>(
-      `/wishlist/check/${productId}`
-    );
-    return response.data;
-  },
+  // Nota: se eliminó checkProduct (GET /wishlist/check/:id). Hacer un request
+  // por producto disparaba el rate limit del back (429) con listas grandes;
+  // ahora useCheckWishlist deriva la respuesta de la wishlist completa cacheada.
 };

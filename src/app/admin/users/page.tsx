@@ -48,7 +48,7 @@ const roleOptions = [
 
 function AdminUsersContent() {
   const { filters, page, limit, setFilter, setPage, clearAllFilters, activeFilterCount } = useFilters({
-    defaults: { username: "", email: "", role: "" },
+    defaults: { name: "", username: "", email: "", role: "" },
     defaultLimit: 10,
   });
 
@@ -57,10 +57,12 @@ function AdminUsersContent() {
   const [roleDialogUser, setRoleDialogUser] = useState<{ id: string; name: string; currentRole: UserRole; currentRoleId: string } | null>(null);
   const [selectedRoleId, setSelectedRoleId] = useState<string>("");
 
-  // Server-side filters: username, email. Role is NOT supported by backend, so client-side.
+  // Filtros server-side: name, username y email (combinan con AND en el back).
+  // El rol NO lo soporta el back, se filtra client-side abajo.
   const { data: usersData, isLoading } = useGetUsers({
     page,
     limit,
+    name: filters.name || undefined,
     username: filters.username || undefined,
     email: filters.email || undefined,
   });
@@ -114,17 +116,24 @@ function AdminUsersContent() {
       </div>
 
       <FiltersPanel activeCount={activeFilterCount} onClearAll={clearAllFilters}>
+        {/* Los tres buscadores combinan con AND del lado del back */}
+        <SearchInput
+          value={filters.name ?? ""}
+          onChange={(v) => setFilter("name", v)}
+          placeholder="Buscar por nombre..."
+          className="min-w-50 flex-1"
+        />
         <SearchInput
           value={filters.username ?? ""}
           onChange={(v) => setFilter("username", v)}
-          placeholder="Buscar por nombre..."
-          className="min-w-[200px] flex-1"
+          placeholder="Buscar por usuario..."
+          className="min-w-50 flex-1"
         />
         <SearchInput
           value={filters.email ?? ""}
           onChange={(v) => setFilter("email", v)}
           placeholder="Buscar por email..."
-          className="min-w-[200px] flex-1"
+          className="min-w-50 flex-1"
         />
         <EnumSelectFilter
           value={filters.role ?? ""}

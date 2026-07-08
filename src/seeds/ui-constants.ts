@@ -288,6 +288,18 @@ export const CONDITION_OPTIONS = [
   { value: "used", label: "Usado" },
 ];
 
+// Switches de teclados mecánicos. El filtro del back hace match PARCIAL
+// case-insensitive, así que con la marca/familia alcanza (ej. "Cherry"
+// matchea "Cherry MX Red" y "Cherry MX Brown").
+export const SWITCH_OPTIONS = [
+  { value: "Cherry", label: "Cherry MX" },
+  { value: "Gateron", label: "Gateron" },
+  { value: "Akko", label: "Akko" },
+  { value: "Red", label: "Red (lineal)" },
+  { value: "Brown", label: "Brown (táctil)" },
+  { value: "Blue", label: "Blue (clicky)" },
+];
+
 // ─── Mapeo de filtros de specs por categoría ───
 
 export const CATEGORY_SPEC_FILTERS: Record<string, string[]> = {
@@ -298,18 +310,38 @@ export const CATEGORY_SPEC_FILTERS: Record<string, string[]> = {
   printers: ["connectivity", "condition"],
   "pc-parts": ["processor", "ram", "storage", "vram", "condition"],
   "custom-builds": ["processor", "ram", "storage", "vram", "connectivity", "condition"],
+  // El filtro de switch solo tiene sentido para teclados
+  keyboards: ["switch", "connectivity", "condition"],
 };
 
 export const ALL_SPEC_FILTER_KEYS = [
   "processor", "ram", "storage", "vram",
   "screen_size", "resolution", "refresh_rate",
-  "connectivity", "condition",
+  "connectivity", "condition", "switch",
 ];
 
 export function getVisibleSpecFilters(categorySlug?: string): string[] {
   if (!categorySlug) return ALL_SPEC_FILTER_KEYS;
   return CATEGORY_SPEC_FILTERS[categorySlug.toLowerCase()] ?? ALL_SPEC_FILTER_KEYS;
 }
+
+// Etiquetas en español para los tipos de variante de producto.
+// Se usa en el panel admin (form de producto) y en el selector público
+// de variantes. Las claves son los valores del enum VariantType del back.
+export const VARIANT_TYPE_LABELS: Record<string, string> = {
+  ram: "RAM",
+  storage: "Almacenamiento",
+  processor: "Procesador",
+  vram: "VRAM",
+  color: "Color",
+  connectivity: "Conectividad",
+  screen_size: "Tamaño de Pantalla",
+  resolution: "Resolución",
+  refresh_rate: "Frecuencia de Refresco",
+  warranty: "Garantía",
+  condition: "Condición",
+  switch: "Switch",
+};
 
 // iconos y valores para el formulario de reparación
 export const deviceTypes = [

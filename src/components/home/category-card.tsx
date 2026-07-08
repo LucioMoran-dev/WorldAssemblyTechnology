@@ -19,7 +19,7 @@ export function CategoryCard({
   href = "/products/catalog/products",
 }: CategoryCardProps) {
   return (
-    <div className="relative h-[280px] overflow-hidden rounded-lg">
+    <div className="relative h-70 overflow-hidden rounded-lg">
       <Image
         src={imageSrc}
         alt={imageAlt}

@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Heart, BarChart3, ShoppingCart } from "lucide-react";
+import { Heart, BarChart3, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,14 +9,13 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  useAddToCart,
   useCheckWishlist,
   useAddToWishlist,
   useRemoveFromWishlist,
   useAuth,
 } from "@/hooks";
 import type { IProductCardProps } from "@/types";
-import { productLogger, wishlistLogger } from "@/utils/logger";
+import { wishlistLogger } from "@/utils/logger";
 
 export function ProductCard({
   id,
@@ -37,7 +36,6 @@ export function ProductCard({
 }: IProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const addToCart = useAddToCart();
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
 
   // Wishlist hooks
@@ -62,38 +60,8 @@ export function ProductCard({
       ? Math.round(((originalPrice - basePrice) / originalPrice) * 100)
       : 0;
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Evita que el Link se active
-    e.stopPropagation(); // Evita que el evento suba al contenedor
-
-    if (!isAuthenticated) {
-      toast.error("Debes iniciar sesión para agregar el producto a el carrito");
-      return;
-    }
-
-    if (!inStock) {
-      toast.error("Producto fuera de stock");
-      return;
-    }
-    productLogger.debug("Agregando producto al carrito", { id });
-
-    addToCart.mutate(
-      {
-        productId: id, // Asegúrate de que este 'id' sea el string de Mongo/Postgres
-        quantity: 1,
-      },
-      {
-        onSuccess: () => {
-          productLogger.info("Producto añadido al carrito", { id });
-        },
-        onError: (error) => {
-          productLogger.info("Error al añadir al carrito", error);
-          productLogger.error("Error al añadir producto al carrito", error);
-        },
-      }
-    );
-  };
-
+  // El "agregar al carrito" rápido se quitó a propósito: los productos con
+  // variantes exigen elegirlas primero, así que la card lleva al detalle.
   const handleToggleWishlist = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -167,11 +135,11 @@ export function ProductCard({
       >
         {/* Discount Badge tiene prioridad sobre badge normal */}
         {hasDiscountBadge ? (
-          <Badge className="animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 bg-gradient-to-r from-red-500 to-pink-500 px-2 py-0.5 text-[11px] font-bold leading-none text-white shadow-md shadow-red-500/20 duration-200">
+          <Badge className="animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 bg-gradient-to-r from-red-500 to-pink-500 px-2 py-0.5 text-[11px] leading-none font-bold text-white shadow-md shadow-red-500/20 duration-200">
             -{discountPercent}%
           </Badge>
         ) : badge ? (
-          <Badge className="gradient-accent animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 px-2 py-0.5 text-[11px] font-bold leading-none text-white shadow-md duration-200">
+          <Badge className="gradient-accent animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 px-2 py-0.5 text-[11px] leading-none font-bold text-white shadow-md duration-200">
             {badge}
           </Badge>
         ) : null}
@@ -197,7 +165,7 @@ export function ProductCard({
           <Button
             size="icon"
             variant="secondary"
-            className={`border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95 ${
+            className={`bg-card/95 border shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95 ${
               isInWishlist
                 ? "border-red-200 text-red-500 shadow-red-500/20 hover:border-red-300 hover:bg-red-50"
                 : "border-border hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30"
@@ -212,7 +180,7 @@ export function ProductCard({
           <Button
             size="icon"
             variant="secondary"
-            className="border border-border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30 active:scale-95"
+            className="border-border bg-card/95 border shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30 active:scale-95"
           >
             <BarChart3 className="h-4 w-4" />
           </Button>
@@ -221,7 +189,7 @@ export function ProductCard({
         {/* Product Image */}
         <Link
           href={`/products/${id}`}
-          className="relative block rounded-t-xl bg-muted/40"
+          className="bg-muted/40 relative block rounded-t-xl"
         >
           <div
             className={`relative aspect-square overflow-hidden transition-all duration-300 ${isHovered ? "p-3" : "p-4"}`}
@@ -273,7 +241,9 @@ export function ProductCard({
                   </svg>
                 ))}
               </div>
-              <span className="text-xs text-muted-foreground">Reseñas ({reviews})</span>
+              <span className="text-muted-foreground text-xs">
+                Reseñas ({reviews})
+              </span>
             </div>
           )}
 
@@ -287,7 +257,9 @@ export function ProductCard({
               )}
               {brand && category && <span className="text-gray-300">•</span>}
               {category && (
-                <span className="font-medium text-muted-foreground">{category}</span>
+                <span className="text-muted-foreground font-medium">
+                  {category}
+                </span>
               )}
             </div>
           )}
@@ -295,7 +267,7 @@ export function ProductCard({
           {/* Product Name */}
           <Link href={`/products/${id}`}>
             <h3
-              className={`line-clamp-2 font-medium text-foreground transition-all hover:text-blue-600 ${
+              className={`text-foreground line-clamp-2 font-medium transition-all hover:text-blue-600 ${
                 isHovered
                   ? "mb-1 text-sm leading-snug"
                   : "mb-2 text-sm leading-tight"
@@ -308,7 +280,7 @@ export function ProductCard({
           {/* Description - Solo visible en hover */}
           {description && (
             <p
-              className={`text-xs leading-relaxed text-muted-foreground transition-all duration-300 ${
+              className={`text-muted-foreground text-xs leading-relaxed transition-all duration-300 ${
                 isHovered
                   ? "mb-1 line-clamp-2 opacity-100"
                   : "h-0 overflow-hidden opacity-0"
@@ -320,7 +292,7 @@ export function ProductCard({
 
           {/* Model - Solo visible en hover */}
           {model && isHovered && (
-            <div className="mb-1 text-xs text-muted-foreground">
+            <div className="text-muted-foreground mb-1 text-xs">
               <span className="font-medium">Modelo:</span> {model}
             </div>
           )}
@@ -333,7 +305,7 @@ export function ProductCard({
             className={`flex items-center gap-2 ${isHovered ? "mb-2" : "mb-0"}`}
           >
             {originalPrice && (
-              <span className="text-sm font-medium text-muted-foreground line-through">
+              <span className="text-muted-foreground text-sm font-medium line-through">
                 ${originalPrice.toFixed(2)}
               </span>
             )}
@@ -346,42 +318,17 @@ export function ProductCard({
             </span>
           </div>
 
-          {/* Add to Cart / Stock State */}
-          {inStock ? (
-            <Button
-              className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md transition-all duration-500 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 ${
-                isHovered
-                  ? "translate-y-0 scale-100 opacity-100"
-                  : "pointer-events-none translate-y-4 scale-95 !opacity-0"
-              }`}
-              size="sm"
-              onClick={handleAddToCart}
-              disabled={addToCart.isPending}
-            >
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              {addToCart.isPending ? (
-                <span className="flex items-center gap-2">
-                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Agregando...
-                </span>
-              ) : (
-                "Agregar al Carrito"
-              )}
-            </Button>
-          ) : (
-            <div
-              className={`flex h-9 w-full items-center justify-center rounded-md border border-border bg-muted text-sm font-semibold text-muted-foreground transition-all duration-500 ${
-                isHovered
-                  ? "translate-y-0 scale-100 opacity-100"
-                  : "pointer-events-none translate-y-4 scale-95 !opacity-0"
-              }`}
-            >
-              Sin stock
-            </div>
+          {/* CTA al detalle (solo en hover): ahí se eligen variantes y se compra */}
+          {isHovered && (
+            <Link href={`/products/${id}`} className="animate-in fade-in block duration-200">
+              <Button className="h-9 w-full bg-blue-600 text-sm text-white hover:bg-blue-700">
+                Ver detalles
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           )}
         </div>
       </div>
     </div>
   );
 }
-

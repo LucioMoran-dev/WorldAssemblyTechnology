@@ -79,13 +79,13 @@ function AdminOrdersContent() {
           value={filters.orderNumber ?? ""}
           onChange={(v) => setFilter("orderNumber", v)}
           placeholder="Buscar por nro de orden..."
-          className="min-w-[200px] flex-1"
+          className="min-w-50 flex-1"
         />
         <SearchInput
           value={filters.userEmail ?? ""}
           onChange={(v) => setFilter("userEmail", v)}
           placeholder="Buscar por email..."
-          className="min-w-[200px] flex-1"
+          className="min-w-50 flex-1"
         />
         <EnumSelectFilter
           value={filters.status ?? ""}

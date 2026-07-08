@@ -72,6 +72,17 @@ export interface IProduct {
   model?: string;
   basePrice: number;
   baseStock: number;
+  // Stock total calculado por el back: para productos con variantes suma el
+  // stock de las variantes (baseStock queda en 0). Usar SIEMPRE
+  // `totalStock ?? baseStock` para decidir disponibilidad.
+  totalStock?: number;
+  // Precios calculados por el back cuando hay descuentos activos
+  finalPrice?: number;
+  originalPrice?: number;
+  hasActiveDiscount?: boolean;
+  discountAmount?: number;
+  discountPercentage?: number | null;
+  discountEndDate?: string | null;
   imgUrls: string[];
   specifications?: IProductSpecifications;
   isActive: boolean;
@@ -145,14 +156,16 @@ export interface IProductsSearchQuery {
   name?: string;
   basePrice?: number;
   brand?: string;
-  categoryId?: string;
+  // Filtro de categoría por NOMBRE (match exacto, case-insensitive).
+  // El viejo `categoryId` ya no existe en el back: mandarlo da 400.
+  category_name?: string;
   color?: string;
   minPrice?: number;
   maxPrice?: number;
   featured?: boolean;
   page?: number;
   limit?: number;
-  // Variant filters (string LIKE en product_variants)
+  // Variant filters (match parcial case-insensitive sobre el nombre de la variante)
   ram?: string;
   storage?: string;
   processor?: string;
@@ -162,6 +175,11 @@ export interface IProductsSearchQuery {
   refresh_rate?: string;
   connectivity?: string;
   condition?: string;
+  switch?: string;
+  // Filtro genérico de variantes: se usan LOS DOS juntos (si va uno solo, el
+  // back lo ignora). Sirve para tipos sin filtro propio, ej. warranty.
+  variantType?: string;
+  variantValue?: string;
   // Boolean filters
   inStock?: boolean;
   discounted?: boolean;
@@ -217,36 +235,22 @@ export interface IHybridSearchResponse {
 // Legacy compatibility
 export type ProductFilters = IProductsSearchQuery;
 
-// Price Calculation Response (GET /products/:id/price)
+// Respuesta REAL de GET /products/:id/price?variants=...
+// (ver docs/frontend-variants-guide.md §3: NO devuelve tax/subtotal/desglose;
+// finalPrice = basePrice + Σ priceModifier, con descuento ya aplicado)
 export interface IPriceCalculation {
   productId: string;
-  basePrice: number;
-  variantModifiers: number;
-  subtotal: number;
-  tax: number;
-  total: number;
-  selectedVariants?: {
-    id: string;
-    type: string;
-    name: string;
-    priceModifier: number;
-  }[];
+  variantIds: string[];
+  finalPrice: number;
 }
 
-// Stock Information Response (GET /products/:id/stock)
+// Respuesta REAL de GET /products/:id/stock?variants=...
+// (ver docs/frontend-variants-guide.md §4: availableStock = min(stock de las
+// variantes elegidas); sin variants = stock total del producto)
 export interface IStockInfo {
   productId: string;
-  productName: string;
-  baseStock: number;
-  variantStock: number | null;
+  variantIds: string[];
   availableStock: number;
-  isAvailable: boolean;
-  selectedVariants?: {
-    id: string;
-    type: string;
-    name: string;
-    stock: number;
-  }[];
 }
 
 // UI Props (for components)

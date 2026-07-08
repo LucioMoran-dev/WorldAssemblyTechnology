@@ -116,6 +116,8 @@ export interface IRole {
 export interface IUserListParams {
   page?: number;
   limit?: number;
+  // Los tres filtros de texto (name/username/email) combinan con AND en el back
+  name?: string;
   username?: string;
   email?: string;
 }

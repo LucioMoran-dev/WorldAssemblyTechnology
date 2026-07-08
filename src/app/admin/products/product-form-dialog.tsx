@@ -22,6 +22,7 @@ import {
   useDeleteVariant,
   useUploadProductImage,
 } from "@/hooks";
+import { VARIANT_TYPE_LABELS } from "@/seeds";
 import type {
   ICategory,
   ICreateProductDto,
@@ -87,21 +88,6 @@ const EMPTY_DRAFT_VARIANT: Omit<DraftVariant, "_key"> = {
   stock: "0",
   isAvailable: true,
   sortOrder: "0",
-};
-
-const VARIANT_TYPE_LABELS: Record<VariantType, string> = {
-  [VariantType.RAM]: "RAM",
-  [VariantType.STORAGE]: "Almacenamiento",
-  [VariantType.PROCESSOR]: "Procesador",
-  [VariantType.VRAM]: "VRAM",
-  [VariantType.COLOR]: "Color",
-  [VariantType.CONNECTIVITY]: "Conectividad",
-  [VariantType.SCREEN_SIZE]: "Tamaño de Pantalla",
-  [VariantType.RESOLUTION]: "Resolución",
-  [VariantType.REFRESH_RATE]: "Frecuencia de Refresco",
-  [VariantType.WARRANTY]: "Garantía",
-  [VariantType.CONDITION]: "Condición",
-  [VariantType.SWITCH]: "Switch",
 };
 
 function initializeFromProduct(p: IProduct): ProductFormState {
