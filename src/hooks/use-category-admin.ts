@@ -1,11 +1,11 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import { categoryService } from "@/services";
 import type { IUpdateCategoryDto } from "@/types";
+import { getUserFacingMessage } from "@/utils";
 
 /**
  * Hook para actualizar categoría (ADMIN)
@@ -21,11 +21,7 @@ export function useUpdateCategory() {
       toast.success("Categoría actualizada correctamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar categoría"
-        : "Error al actualizar categoría";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar categoría"));
     },
   });
 }
@@ -43,11 +39,7 @@ export function useDeleteCategory() {
       toast.success("Categoría eliminada correctamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar categoría"
-        : "Error al eliminar categoría";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar categoría"));
     },
   });
 }

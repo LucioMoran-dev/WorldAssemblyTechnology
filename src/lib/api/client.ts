@@ -1,7 +1,52 @@
 ﻿import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 
+import { extractApiMessage } from "@/utils/handle-api-error";
 import { apiLogger } from "@/utils/logger";
+
+/**
+ * Arma la "ruta" legible del request: MÉTODO /path?query
+ * para saber exactamente qué endpoint falló.
+ */
+function describeRoute(error: AxiosError): string {
+  const method = error.config?.method?.toUpperCase() ?? "???";
+  const url = error.config?.url ?? "unknown-url";
+  const params = error.config?.params as Record<string, unknown> | undefined;
+  const query =
+    params && Object.keys(params).length
+      ? "?" +
+        new URLSearchParams(
+          Object.entries(params)
+            .filter(([, v]) => v !== undefined && v !== null && v !== "")
+            .map(([k, v]) => [k, String(v)])
+        ).toString()
+      : "";
+  return `${method} ${url}${query}`;
+}
+
+/**
+ * Reenvía el error al server para que también salga por el terminal de `pnpm dev`.
+ * Fire-and-forget, solo en desarrollo y desde el browser. Usa `fetch` nativo
+ * (no `apiClient`) para no recursar el interceptor.
+ */
+function reportToDevTerminal(payload: {
+  route: string;
+  status?: number | string;
+  message?: string;
+  detail?: unknown;
+}): void {
+  if (process.env.NODE_ENV !== "development") return;
+  if (typeof window === "undefined") return;
+
+  fetch("/api/dev-log", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {
+    // logging de dev: si falla, no importa
+  });
+}
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -49,20 +94,44 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (process.env.NODE_ENV === "development") {
-      apiLogger.error("API Error Details", {
-        type: error.response
-          ? "HTTP Error"
-          : error.request
-            ? "Network Error"
-            : "Request Setup Error",
-        status: error.response?.status || "N/A",
-        statusText: error.response?.statusText || "N/A",
-        message: error.message || "Unknown error",
-        url: error.config?.url || "N/A",
-        method: error.config?.method?.toUpperCase() || "N/A",
-        data: error.response?.data || "No response data",
-        code: error.code || "N/A",
-      });
+      const route = describeRoute(error);
+
+      if (error.response) {
+        // El back respondió con un error HTTP → mostramos ruta + status + mensaje específico
+        const { status, statusText } = error.response;
+        const serverMessage =
+          extractApiMessage(error.response.data) ?? error.message;
+        apiLogger.error(`${route} → ${status} ${statusText} | ${serverMessage}`, {
+          mensaje: serverMessage,
+          respuesta: error.response.data,
+        });
+        reportToDevTerminal({
+          route,
+          status: `${status} ${statusText}`,
+          message: serverMessage,
+          detail: error.response.data,
+        });
+      } else if (error.request) {
+        // No hubo respuesta: server caído, CORS, timeout, red
+        apiLogger.error(
+          `${route} → SIN RESPUESTA del servidor (${error.code ?? "network error"})`,
+          { detalle: error.message }
+        );
+        reportToDevTerminal({
+          route,
+          status: `SIN RESPUESTA (${error.code ?? "network error"})`,
+          message: error.message,
+        });
+      } else {
+        // Error armando el request antes de salir
+        apiLogger.error(`${route} → error al preparar el request`, {
+          detalle: error.message,
+        });
+        reportToDevTerminal({
+          route,
+          message: `error al preparar el request: ${error.message}`,
+        });
+      }
     }
 
     if (error.response?.status === 401 && typeof window !== "undefined") {

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { wishlistService } from "@/services";
 import type { IAddToWishlistDto } from "@/types";
+import { getUserFacingMessage } from "@/utils";
 
 import { useAuth } from "./use-auth";
 
@@ -92,11 +93,7 @@ export function useAddToWishlist() {
       toast.success("Producto agregado a favoritos");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al agregar a favoritos"
-        : "Error al agregar a favoritos";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al agregar a favoritos"));
     },
   });
 }
@@ -116,11 +113,7 @@ export function useRemoveFromWishlist() {
       toast.success("Producto eliminado de favoritos");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar de favoritos"
-        : "Error al eliminar de favoritos";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar de favoritos"));
     },
   });
 }
@@ -140,11 +133,7 @@ export function useClearWishlist() {
       toast.success("Lista de favoritos vaciada");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al vaciar favoritos"
-        : "Error al vaciar favoritos";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al vaciar favoritos"));
     },
   });
 }

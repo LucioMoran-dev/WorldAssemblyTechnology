@@ -11,7 +11,6 @@ import type { IProductCardProps } from "@/types";
 import { ProductCard } from "./product-card-home";
 
 import "swiper/css";
-import "swiper/css/navigation";
 
 interface ProductCarouselProps {
   products: IProductCardProps[];

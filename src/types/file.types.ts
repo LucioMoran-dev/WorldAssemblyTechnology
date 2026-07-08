@@ -3,8 +3,8 @@
  */
 
 export interface IUploadImageResponse {
-  secure_url: string;
-  message: string;
+  id: string;
+  url: string;
 }
 
 export interface IUploadProgress {

@@ -1,17 +1,41 @@
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
-import type { IApiError } from "@/types";
+/**
+ * Shape de error que devuelve el back:
+ * - Nuevo filtro global: el mensaje viene en `data.error.message`.
+ * - Formato viejo (compat): el mensaje viene en `data.message`.
+ * `message` puede ser string o string[] (validación de DTO).
+ */
+type ApiErrorBody = {
+  message?: string | string[];
+  error?: string | { message?: string | string[] };
+};
+
+/**
+ * Extrae el mensaje legible del body de error, contemplando el shape nuevo
+ * (`data.error.message`, anidado) y el viejo (`data.message`), y aplanando arrays.
+ */
+export function extractApiMessage(data: unknown): string | undefined {
+  const body = data as ApiErrorBody | undefined;
+  if (!body) return undefined;
+
+  const nested =
+    typeof body.error === "object" && body.error !== null
+      ? body.error.message
+      : undefined;
+  const raw = nested ?? body.message;
+
+  if (Array.isArray(raw)) return raw.join(", ");
+  if (typeof raw === "string") return raw;
+  return undefined;
+}
 
 export function handleApiError(error: unknown): string {
   if (error instanceof AxiosError) {
-    const apiError = error.response?.data as IApiError | undefined;
+    const message = extractApiMessage(error.response?.data);
 
-    if (apiError?.message) {
-      const message = Array.isArray(apiError.message)
-        ? apiError.message.join(", ")
-        : apiError.message;
-
+    if (message) {
       toast.error(message);
       return message;
     }
@@ -61,24 +85,25 @@ export function handleApiError(error: unknown): string {
   return fallbackMessage;
 }
 
-export function getErrorMessage(error: unknown): string {
+/**
+ * Mensaje para mostrar en la VISTA (toast).
+ *
+ * - Errores 4xx (accionables por el usuario, ej. validación / nombre duplicado)
+ *   → se muestra el mensaje del back si lo hay.
+ * - 5xx, red o cualquier otro caso técnico → se muestra el `fallback` genérico.
+ *
+ * El error exacto/técnico se ve aparte en la consola y en el terminal de dev
+ * (interceptor de `src/lib/api/client.ts`), no en la vista.
+ */
+export function getUserFacingMessage(error: unknown, fallback: string): string {
   if (error instanceof AxiosError) {
-    const apiError = error.response?.data as IApiError | undefined;
-
-    if (apiError?.message) {
-      return Array.isArray(apiError.message)
-        ? apiError.message.join(", ")
-        : apiError.message;
+    const status = error.response?.status;
+    const serverMessage = extractApiMessage(error.response?.data);
+    if (serverMessage && status && status >= 400 && status < 500) {
+      return serverMessage;
     }
-
-    return error.message;
   }
-
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return "Error desconocido";
+  return fallback;
 }
 
 export function isUnauthorizedError(error: unknown): boolean {

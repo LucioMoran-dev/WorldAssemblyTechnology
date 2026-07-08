@@ -6,12 +6,18 @@ import type { IReviews } from "./review.types";
 
 // Variant Type Enum
 export enum VariantType {
-  RAM = "RAM",
-  STORAGE = "STORAGE",
-  PROCESSOR = "PROCESSOR",
-  COLOR = "COLOR",
-  WARRANTY = "WARRANTY",
-  SIZE = "SIZE",
+  RAM = "ram",
+  STORAGE = "storage",
+  PROCESSOR = "processor",
+  VRAM = "vram",
+  COLOR = "color",
+  CONNECTIVITY = "connectivity",
+  SCREEN_SIZE = "screen_size",
+  RESOLUTION = "resolution",
+  REFRESH_RATE = "refresh_rate",
+  WARRANTY = "warranty",
+  CONDITION = "condition",
+  SWITCH = "switch",
 }
 
 // Category
@@ -73,7 +79,10 @@ export interface IProduct {
   featured: boolean;
   createdAt: string;
   updatedAt: string;
-  category: ICategory;
+  // El back devuelve el nombre de la categoría como string de nivel superior.
+  // El objeto `category` anidado solo viene en algunos endpoints (no en la lista).
+  category_name?: string;
+  category?: ICategory;
   variants?: IProductVariant[];
   files?: IProductFile[];
   reviews?: IReviews[];
@@ -108,6 +117,7 @@ export interface IUpdateProductDto {
   imgUrls?: string[];
   featured?: boolean;
   specifications?: IProductSpecifications;
+  isActive?: boolean;
 }
 
 export interface ICreateVariantDto {
@@ -155,6 +165,7 @@ export interface IProductsSearchQuery {
   // Boolean filters
   inStock?: boolean;
   discounted?: boolean;
+  isActive?: boolean;
 }
 
 export interface IPaginatedProducts {

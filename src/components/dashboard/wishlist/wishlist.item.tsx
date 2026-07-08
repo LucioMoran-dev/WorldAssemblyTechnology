@@ -80,7 +80,9 @@ function WishlistItem() {
                     ) : null}
                     <div className="mb-2">
                       <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-                        {product.category.name}
+                        {product.category_name ||
+                          product.category?.category_name ||
+                          product.category?.name}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

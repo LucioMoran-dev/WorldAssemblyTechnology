@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { discountService, cartService } from "@/services";
@@ -12,10 +11,7 @@ import type {
   IUpdatePromoCodeDto,
   IDiscountListParams,
 } from "@/types";
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { getUserFacingMessage } from "@/utils";
 
 // ===== PREVIEW DESCUENTOS (CARRITO) =====
 
@@ -27,11 +23,7 @@ export function usePreviewDiscounts() {
     mutationFn: (promoCode?: string) =>
       cartService.previewDiscounts(promoCode),
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al calcular descuentos"
-        : "Error al calcular descuentos";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al calcular descuentos"));
     },
   });
 }
@@ -67,11 +59,7 @@ export function useCreateProductDiscount() {
       toast.success("Descuento creado exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear descuento"
-        : "Error al crear descuento";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear descuento"));
     },
   });
 }
@@ -88,11 +76,7 @@ export function useUpdateProductDiscount() {
       toast.success("Descuento actualizado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar descuento"
-        : "Error al actualizar descuento";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar descuento"));
     },
   });
 }
@@ -108,11 +92,7 @@ export function useDeleteProductDiscount() {
       toast.success("Descuento desactivado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al desactivar descuento"
-        : "Error al desactivar descuento";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al desactivar descuento"));
     },
   });
 }
@@ -147,11 +127,7 @@ export function useCreatePromoCode() {
       toast.success("Código promocional creado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear código"
-        : "Error al crear código";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear código"));
     },
   });
 }
@@ -167,11 +143,7 @@ export function useUpdatePromoCode() {
       toast.success("Código promocional actualizado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar código"
-        : "Error al actualizar código";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar código"));
     },
   });
 }
@@ -186,11 +158,7 @@ export function useDeletePromoCode() {
       toast.success("Código promocional desactivado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al desactivar código"
-        : "Error al desactivar código";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al desactivar código"));
     },
   });
 }

@@ -117,7 +117,7 @@ function ShippingForm() {
 
       const values = getValues();
       saveShippingAddressAndContinue(values);
-    } catch (error) {
+    } catch {
       toast.error("No se pudo guardar la direccion de envio");
     } finally {
       setIsSubmitting(false);

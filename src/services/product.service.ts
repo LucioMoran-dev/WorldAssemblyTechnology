@@ -187,7 +187,41 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   create: async (data: ICreateProductDto): Promise<IProduct> => {
-    const response = await apiClient.post<IProduct>("/products", data);
+    const { categoryName, ...rest } = data;
+    const response = await apiClient.post<IProduct>("/products", {
+      ...rest,
+      category_name: categoryName,
+    });
+    return response.data;
+  },
+
+  /**
+   * POST /products/with-images - Crear producto + imágenes en un solo request (atómico)
+   * Requiere: ADMIN | Content-Type: multipart/form-data
+   *
+   * - `data`: el CreateProductDto serializado como JSON (sin imgUrls: se ignoran).
+   * - `images`: 0..N archivos bajo el mismo field `images` (máx 8, 5MB c/u).
+   * Devuelve el producto completo con `imgUrls` ya poblado.
+   */
+  createWithImages: async (
+    data: ICreateProductDto,
+    images: File[]
+  ): Promise<IProduct> => {
+    // imgUrls se ignora del lado del back (se arma desde los archivos subidos)
+    const { categoryName, imgUrls: _ignoredImgUrls, ...rest } = data;
+
+    const formData = new FormData();
+    formData.append(
+      "data",
+      JSON.stringify({ ...rest, category_name: categoryName })
+    );
+    images.forEach((file) => formData.append("images", file));
+
+    const response = await apiClient.post<IProduct>(
+      "/products/with-images",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
     return response.data;
   },
 
@@ -196,7 +230,11 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   update: async (id: string, data: IUpdateProductDto): Promise<IProduct> => {
-    const response = await apiClient.put<IProduct>(`/products/${id}`, data);
+    const { categoryName, ...rest } = data;
+    const payload = categoryName !== undefined
+      ? { ...rest, category_name: categoryName }
+      : rest;
+    const response = await apiClient.put<IProduct>(`/products/${id}`, payload);
     return response.data;
   },
 

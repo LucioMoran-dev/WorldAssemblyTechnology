@@ -1,18 +1,11 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { categoryService, type CategorySearchParams } from "@/services";
 import type { ICreateCategoryDto } from "@/types";
-
-/**
- * Type guard para verificar si un error es de Axios
- */
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { getUserFacingMessage } from "@/utils";
 
 /**
  * Hook para obtener categorías con filtros opcionales y paginación
@@ -73,11 +66,7 @@ export function useCreateCategory() {
       toast.success("Categoría creada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear categoría"
-        : "Error al crear categoría";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear categoría"));
     },
   });
 }
@@ -99,11 +88,7 @@ export function useSeedCategories() {
       toast.success("Categorías precargadas exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al precargar categorías"
-        : "Error al precargar categorías";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al precargar categorías"));
     },
   });
 }

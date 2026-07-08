@@ -76,7 +76,11 @@ export const categoryService = {
    * const newCategory = await categoryService.create({ categoryName: "Tablets" });
    */
   create: async (data: ICreateCategoryDto): Promise<ICategory> => {
-    const response = await apiClient.post<ICategory>("/categories", data);
+    // El back usa `category_name` (no `name`), igual que en productos.
+    const response = await apiClient.post<ICategory>("/categories", {
+      category_name: data.name,
+      description: data.description,
+    });
     return response.data;
   },
 
@@ -106,7 +110,14 @@ export const categoryService = {
    * const category = await categoryService.update("550e8400-e29b-41d4-a716-446655440000", { name: "Laptops Gaming" });
    */
   update: async (id: string, data: IUpdateCategoryDto): Promise<ICategory> => {
-    const response = await apiClient.put<ICategory>(`/categories/${id}`, data);
+    // El back usa `category_name` (no `name`), igual que en productos.
+    const payload: Record<string, unknown> = {};
+    if (data.name !== undefined) payload.category_name = data.name;
+    if (data.description !== undefined) payload.description = data.description;
+    const response = await apiClient.put<ICategory>(
+      `/categories/${id}`,
+      payload
+    );
     return response.data;
   },
 

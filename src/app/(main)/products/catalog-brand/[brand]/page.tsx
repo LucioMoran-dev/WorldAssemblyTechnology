@@ -5,9 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { use, useState, Suspense } from "react";
 
-import { Pagination } from "@/components/filters/pagination";
 import { FiltersSidebar } from "@/components/filters/filters-sidebar";
-
+import { Pagination } from "@/components/filters/pagination";
 import { ProductCard } from "@/components/home/product-card-home";
 import { Button } from "@/components/ui/button";
 import { useProducts, useCategories, useFilters } from "@/hooks";

@@ -1,15 +1,11 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { orderService } from "@/services";
 import type { OrderListParams, IUpdateOrderStatusDto } from "@/types";
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { getUserFacingMessage } from "@/utils";
 
 export function useMyOrders() {
   return useQuery({
@@ -64,11 +60,7 @@ export function useUpdateOrderStatus() {
       toast.success("Estado de orden actualizado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar orden"
-        : "Error al actualizar orden";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar orden"));
     },
   });
 }
@@ -87,11 +79,7 @@ export function useCancelOrder() {
       toast.success("Orden cancelada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al cancelar orden"
-        : "Error al cancelar orden";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al cancelar orden"));
     },
   });
 }

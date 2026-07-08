@@ -3,9 +3,9 @@
 import { CreditCard, RefreshCw } from "lucide-react";
 import { Suspense } from "react";
 
-import { Pagination } from "@/components/filters/pagination";
 import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
 import { FiltersPanel } from "@/components/filters/filters-panel";
+import { Pagination } from "@/components/filters/pagination";
 import { Button } from "@/components/ui/button";
 import { useAllPayments, useFilters } from "@/hooks";
 import { PaymentStatus } from "@/types";

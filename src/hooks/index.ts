@@ -9,6 +9,7 @@ export * from './use-user';
 // Products
 export * from './use-products';
 export * from './use-hybrid-search';
+export * from './use-files';
 
 // Cart
 export * from './use-cart';

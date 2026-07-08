@@ -4,11 +4,11 @@ import { Eye } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
+import { DateRangeFilter } from "@/components/filters/date-range-filter";
+import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
+import { FiltersPanel } from "@/components/filters/filters-panel";
 import { Pagination } from "@/components/filters/pagination";
 import { SearchInput } from "@/components/filters/search-input";
-import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
-import { DateRangeFilter } from "@/components/filters/date-range-filter";
-import { FiltersPanel } from "@/components/filters/filters-panel";
 import { useAllOrders, useFilters } from "@/hooks";
 import { OrderStatus } from "@/types";
 

@@ -1,18 +1,11 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { reviewService, type ReviewsQueryParams } from "@/services";
 import type { ICreateReviewDto } from "@/types";
-
-/**
- * Type guard para verificar si un error es de Axios
- */
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { getUserFacingMessage } from "@/utils";
 
 /**
  * React Query hooks para reviews
@@ -97,11 +90,7 @@ export function useCreateReview() {
       toast.success("Review creada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear review"
-        : "Error al crear review";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear review"));
     },
   });
 }
@@ -120,11 +109,7 @@ export function useToggleReviewVisibility() {
       toast.success(`Review marcada como ${status}`);
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al cambiar visibilidad"
-        : "Error al cambiar visibilidad";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al cambiar visibilidad"));
     },
   });
 }
@@ -142,11 +127,7 @@ export function useDeleteReview() {
       toast.success("Review eliminada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar review"
-        : "Error al eliminar review";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar review"));
     },
   });
 }

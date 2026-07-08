@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { cartService } from "@/services";
 import type { IAddToCartDto, IUpdateCartItemDto, ICheckoutDto } from "@/types";
+import { getUserFacingMessage } from "@/utils";
 import { cartLogger } from "@/utils/logger";
 
 import { useAuth } from "./use-auth";
@@ -103,12 +104,7 @@ export function useAddToCart() {
         ? "Error al agregar producto"
         : "Tiene que iniciar sesión para agregar productos al carrito";
 
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          defaultMessage
-        : defaultMessage;
-
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, defaultMessage));
     },
   });
 }
@@ -135,11 +131,7 @@ export function useUpdateCartItem() {
       toast.success("Carrito actualizado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar carrito"
-        : "Error al actualizar carrito";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar carrito"));
     },
   });
 }
@@ -162,11 +154,7 @@ export function useRemoveCartItem() {
       toast.success("Producto eliminado del carrito");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar producto"
-        : "Error al eliminar producto";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar producto"));
     },
   });
 }
@@ -182,11 +170,7 @@ export function useClearCart() {
       toast.success("Carrito vaciado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al vaciar carrito"
-        : "Error al vaciar carrito";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al vaciar carrito"));
     },
   });
 }
@@ -209,11 +193,7 @@ export function useCheckout() {
       toast.success("Orden creada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear orden"
-        : "Error al crear orden";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear orden"));
     },
   });
 }

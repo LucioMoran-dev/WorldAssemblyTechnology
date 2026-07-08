@@ -4,10 +4,10 @@ import { Eye, EyeOff, Trash2, Star } from "lucide-react";
 import Link from "next/link";
 import { useState, Suspense } from "react";
 
-import { Pagination } from "@/components/filters/pagination";
-import { SearchInput } from "@/components/filters/search-input";
 import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
 import { FiltersPanel } from "@/components/filters/filters-panel";
+import { Pagination } from "@/components/filters/pagination";
+import { SearchInput } from "@/components/filters/search-input";
 import { ActionDialog } from "@/components/ui/action-dialog";
 import {
   useAllReviews,
