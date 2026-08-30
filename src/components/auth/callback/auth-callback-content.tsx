@@ -94,12 +94,12 @@ export function AuthCallbackContent() {
   }, [searchParams, login, router]);
 
   return (
-    <div className="bg-muted/40 flex min-h-screen items-center justify-center">
-      <div className="bg-card w-full max-w-md rounded-lg p-8 text-center shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-muted/40">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 text-center shadow-lg">
         {status === "loading" && (
           <>
             <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-blue-600" />
-            <h2 className="text-foreground mb-2 text-xl font-semibold">
+            <h2 className="mb-2 text-xl font-semibold text-foreground">
               Completando inicio de sesion...
             </h2>
             <p className="text-muted-foreground">Espera un momento</p>
@@ -109,7 +109,7 @@ export function AuthCallbackContent() {
         {status === "success" && (
           <>
             <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-600" />
-            <h2 className="text-foreground mb-2 text-xl font-semibold">
+            <h2 className="mb-2 text-xl font-semibold text-foreground">
               Inicio de sesion exitoso
             </h2>
             <p className="text-muted-foreground">Redirigiendo...</p>
@@ -119,10 +119,10 @@ export function AuthCallbackContent() {
         {status === "error" && (
           <>
             <XCircle className="mx-auto mb-4 h-12 w-12 text-red-600" />
-            <h2 className="text-foreground mb-2 text-xl font-semibold">
+            <h2 className="mb-2 text-xl font-semibold text-foreground">
               Error de autenticacion
             </h2>
-            <p className="text-muted-foreground mb-6 text-sm">{errorMessage}</p>
+            <p className="mb-6 text-sm text-muted-foreground">{errorMessage}</p>
             <div className="flex justify-center gap-3">
               <Button asChild variant="outline" className="bg-transparent">
                 <Link href="/auth/signin">Iniciar sesion</Link>

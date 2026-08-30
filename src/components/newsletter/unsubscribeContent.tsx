@@ -34,7 +34,7 @@ export function UnsubscribeContent() {
   if (!token) {
     return (
       <main className="mx-auto flex min-h-[70vh] w-full max-w-2xl items-center justify-center px-4 py-10">
-        <div className="bg-card w-full rounded-xl border border-red-200 p-8 text-center shadow-sm">
+        <div className="w-full rounded-xl border border-red-200 bg-card p-8 text-center shadow-sm">
           <XCircle className="mx-auto mb-3 h-10 w-10 text-red-600" />
 
           <h1 className="mb-2 text-2xl font-bold">Token inválido</h1>
@@ -49,10 +49,10 @@ export function UnsubscribeContent() {
 
   return (
     <main className="mx-auto flex min-h-[70vh] w-full max-w-2xl items-center justify-center px-4 py-10">
-      <div className="border-border bg-card w-full rounded-xl border p-8 text-center shadow-sm">
+      <div className="w-full rounded-xl border border-border bg-card p-8 text-center shadow-sm">
         {isPending ? (
           <>
-            <div className="border-border mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-4 border-t-blue-600" />
+            <div className="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-4 border-border border-t-blue-600" />
 
             <h1 className="mb-2 text-2xl font-bold">Procesando solicitud</h1>
 

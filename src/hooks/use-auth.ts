@@ -127,7 +127,12 @@ export const useAuth = create<AuthStore>((set) => ({
       localStorage.removeItem("user");
       clearClientCookie("token");
       clearClientCookie("frontend_user_role");
-      set({ token: null, user: null, isAuthenticated: false, isLoading: false });
+      set({
+        token: null,
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+      });
     }
   },
 }));

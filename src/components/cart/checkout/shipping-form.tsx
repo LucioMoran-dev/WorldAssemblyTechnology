@@ -72,7 +72,10 @@ function ShippingForm() {
   });
 
   const saveShippingAddressAndContinue = (address: ICheckoutAddressDto) => {
-    sessionStorage.setItem(CHECKOUT_SHIPPING_STORAGE_KEY, JSON.stringify(address));
+    sessionStorage.setItem(
+      CHECKOUT_SHIPPING_STORAGE_KEY,
+      JSON.stringify(address)
+    );
     router.push("/cart/review-payment");
   };
 
@@ -127,9 +130,13 @@ function ShippingForm() {
   return (
     <div className="lg:col-span-2">
       <div className="rounded-lg bg-card p-6 shadow-sm">
-        <h2 className="mb-2 text-xl font-bold text-foreground">Direccion de envio</h2>
+        <h2 className="mb-2 text-xl font-bold text-foreground">
+          Direccion de envio
+        </h2>
         {authUser?.email && (
-          <p className="mb-6 text-sm text-muted-foreground">Sesion: {authUser.email}</p>
+          <p className="mb-6 text-sm text-muted-foreground">
+            Sesion: {authUser.email}
+          </p>
         )}
 
         {isLoading || mode === null ? (
@@ -172,7 +179,9 @@ function ShippingForm() {
                           name="saved-address"
                           value={address.id}
                           checked={selectedAddressId === address.id}
-                          onChange={(event) => setSelectedAddressId(event.target.value)}
+                          onChange={(event) =>
+                            setSelectedAddressId(event.target.value)
+                          }
                           className="mt-1"
                         />
                         <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
@@ -181,11 +190,16 @@ function ShippingForm() {
                             {address.label}
                             {address.isDefault ? " (Predeterminada)" : ""}
                           </p>
-                          <p className="text-muted-foreground">{address.street}</p>
                           <p className="text-muted-foreground">
-                            {address.city}, {address.province} {address.postalCode}
+                            {address.street}
                           </p>
-                          <p className="text-muted-foreground">{address.country}</p>
+                          <p className="text-muted-foreground">
+                            {address.city}, {address.province}{" "}
+                            {address.postalCode}
+                          </p>
+                          <p className="text-muted-foreground">
+                            {address.country}
+                          </p>
                         </div>
                       </label>
                     ))}
@@ -199,41 +213,71 @@ function ShippingForm() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <Label htmlFor="label">Etiqueta</Label>
-                    <Input id="label" placeholder="Casa" {...register("label")} />
+                    <Input
+                      id="label"
+                      placeholder="Casa"
+                      {...register("label")}
+                    />
                     {errors.label && (
-                      <p className="mt-1 text-xs text-red-600">{errors.label.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.label.message}
+                      </p>
                     )}
                   </div>
                   <div>
                     <Label htmlFor="country">Pais</Label>
-                    <Input id="country" placeholder="Argentina" {...register("country")} />
+                    <Input
+                      id="country"
+                      placeholder="Argentina"
+                      {...register("country")}
+                    />
                     {errors.country && (
-                      <p className="mt-1 text-xs text-red-600">{errors.country.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.country.message}
+                      </p>
                     )}
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="street">Direccion</Label>
-                  <Input id="street" placeholder="Calle 123" {...register("street")} />
+                  <Input
+                    id="street"
+                    placeholder="Calle 123"
+                    {...register("street")}
+                  />
                   {errors.street && (
-                    <p className="mt-1 text-xs text-red-600">{errors.street.message}</p>
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.street.message}
+                    </p>
                   )}
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
                   <div>
                     <Label htmlFor="city">Ciudad</Label>
-                    <Input id="city" placeholder="Buenos Aires" {...register("city")} />
+                    <Input
+                      id="city"
+                      placeholder="Buenos Aires"
+                      {...register("city")}
+                    />
                     {errors.city && (
-                      <p className="mt-1 text-xs text-red-600">{errors.city.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.city.message}
+                      </p>
                     )}
                   </div>
                   <div>
                     <Label htmlFor="province">Provincia</Label>
-                    <Input id="province" placeholder="CABA" {...register("province")} />
+                    <Input
+                      id="province"
+                      placeholder="CABA"
+                      {...register("province")}
+                    />
                     {errors.province && (
-                      <p className="mt-1 text-xs text-red-600">{errors.province.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.province.message}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -269,4 +313,3 @@ function ShippingForm() {
 }
 
 export default ShippingForm;
-

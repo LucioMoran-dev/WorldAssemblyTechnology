@@ -29,9 +29,7 @@ export function Testimonial({
           <blockquote className="mb-6 text-lg leading-relaxed text-muted-foreground">
             {quote}
           </blockquote>
-          <cite className="text-sm font-semibold text-blue-600">
-            {author}
-          </cite>
+          <cite className="text-sm font-semibold text-blue-600">{author}</cite>
           <div className="mt-4 flex justify-center gap-2">
             {Array.from({ length: totalSlides }).map((_, index) => (
               <div
@@ -54,4 +52,3 @@ export function Testimonial({
     </section>
   );
 }
-

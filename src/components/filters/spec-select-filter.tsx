@@ -8,7 +8,11 @@ interface SpecSelectFilterProps {
   options: { value: string; label: string }[];
 }
 
-export function SpecSelectFilter({ value, onChange, options }: SpecSelectFilterProps) {
+export function SpecSelectFilter({
+  value,
+  onChange,
+  options,
+}: SpecSelectFilterProps) {
   return (
     <div className="max-h-48 space-y-2.5 overflow-y-auto pr-1">
       {options.map((option) => {

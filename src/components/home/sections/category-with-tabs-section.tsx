@@ -75,7 +75,7 @@ export function CategoryWithTabsSection({
             <div className="lg:w-60 lg:flex-shrink-0">
               <div className="h-64 animate-pulse rounded bg-muted" />
             </div>
-            <div className="flex-1 min-w-0 space-y-4">
+            <div className="min-w-0 flex-1 space-y-4">
               <div className="flex gap-2 overflow-x-auto border-b border-border pb-3">
                 {tabs.map((_, i) => (
                   <div
@@ -106,10 +106,16 @@ export function CategoryWithTabsSection({
   );
 
   return (
-    <section className={`border-b border-border ${bgClass} py-12`} style={{ overflowX: "clip", overflowY: "visible" }}>
+    <section
+      className={`border-b border-border ${bgClass} py-12`}
+      style={{ overflowX: "clip", overflowY: "visible" }}
+    >
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-          <div className="lg:w-60 lg:flex-shrink-0" style={{ position: "relative", zIndex: 30 }}>
+          <div
+            className="lg:w-60 lg:flex-shrink-0"
+            style={{ position: "relative", zIndex: 30 }}
+          >
             <CategoryCard
               imageSrc={categoryImage}
               imageAlt={categoryAlt}
@@ -117,7 +123,7 @@ export function CategoryWithTabsSection({
               href={`/products/catalog/${categorySlug}`}
             />
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Tabs */}
             <div className="mb-6 flex gap-4 overflow-x-auto border-b border-border">
               {tabs.map((tab) => (
@@ -146,4 +152,3 @@ export function CategoryWithTabsSection({
     </section>
   );
 }
-

@@ -14,9 +14,7 @@ export function useSendContactMessage() {
   return useMutation({
     mutationFn: (data: IContactDto) => contactService.sendMessage(data),
     onSuccess: () => {
-      toast.success(
-        "¡Mensaje enviado exitosamente! Te contactaremos pronto."
-      );
+      toast.success("¡Mensaje enviado exitosamente! Te contactaremos pronto.");
     },
     onError: (error: unknown) => {
       toast.error(

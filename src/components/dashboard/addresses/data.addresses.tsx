@@ -117,7 +117,7 @@ function DataAddresses() {
     return (
       <div className="grid gap-6 md:grid-cols-2">
         {[...Array(2)].map((_, index) => (
-          <div key={index} className="bg-muted h-48 animate-pulse rounded-lg" />
+          <div key={index} className="h-48 animate-pulse rounded-lg bg-muted" />
         ))}
       </div>
     );
@@ -126,7 +126,7 @@ function DataAddresses() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-foreground text-lg font-semibold">
+        <h2 className="text-lg font-semibold text-foreground">
           Direcciones guardadas
         </h2>
         <Button onClick={() => setShowCreateForm((current) => !current)}>
@@ -136,40 +136,40 @@ function DataAddresses() {
       </div>
 
       {showCreateForm ? (
-        <div className="border-border bg-card rounded-lg border p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <div className="grid gap-3 md:grid-cols-2">
             <input
-              className="border-border rounded border px-3 py-2"
+              className="rounded border border-border px-3 py-2"
               placeholder="Etiqueta"
               value={label}
               onChange={(event) => setLabel(event.target.value)}
             />
             <input
-              className="border-border rounded border px-3 py-2"
+              className="rounded border border-border px-3 py-2"
               placeholder="Pais"
               value={country}
               onChange={(event) => setCountry(event.target.value)}
             />
             <input
-              className="border-border rounded border px-3 py-2 md:col-span-2"
+              className="rounded border border-border px-3 py-2 md:col-span-2"
               placeholder="Direccion"
               value={street}
               onChange={(event) => setStreet(event.target.value)}
             />
             <input
-              className="border-border rounded border px-3 py-2"
+              className="rounded border border-border px-3 py-2"
               placeholder="Ciudad"
               value={city}
               onChange={(event) => setCity(event.target.value)}
             />
             <input
-              className="border-border rounded border px-3 py-2"
+              className="rounded border border-border px-3 py-2"
               placeholder="Provincia"
               value={province}
               onChange={(event) => setProvince(event.target.value)}
             />
             <input
-              className="border-border rounded border px-3 py-2"
+              className="rounded border border-border px-3 py-2"
               placeholder="Codigo postal"
               value={postalCode}
               onChange={(event) => setPostalCode(event.target.value)}
@@ -190,7 +190,7 @@ function DataAddresses() {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className="border-border relative rounded-lg border p-6"
+              className="relative rounded-lg border border-border p-6"
             >
               {address.isDefault ? (
                 <span className="absolute top-4 right-4 rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
@@ -199,24 +199,24 @@ function DataAddresses() {
               ) : null}
 
               <div className="mb-4 flex items-start gap-3">
-                <MapPin className="text-muted-foreground mt-1 h-5 w-5" />
+                <MapPin className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
-                  <h3 className="text-foreground mb-1 font-semibold">
+                  <h3 className="mb-1 font-semibold text-foreground">
                     {address.label}
                   </h3>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     {address.street}
                   </p>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     {address.city}, {address.province} {address.postalCode}
                   </p>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     {address.country}
                   </p>
                 </div>
               </div>
 
-              <div className="border-border flex flex-wrap gap-2 border-t pt-4">
+              <div className="flex flex-wrap gap-2 border-t border-border pt-4">
                 <Button
                   variant="outline"
                   size="sm"
@@ -263,12 +263,12 @@ function DataAddresses() {
           ))}
         </div>
       ) : (
-        <div className="border-border rounded-lg border p-12 text-center">
+        <div className="rounded-lg border border-border p-12 text-center">
           <MapPin className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="text-foreground mb-2 text-lg font-semibold">
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
             No hay direcciones guardadas
           </h3>
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6 text-muted-foreground">
             Agrega tu primera direccion para facilitar tus compras.
           </p>
           <Button
@@ -294,7 +294,7 @@ function DataAddresses() {
         onConfirm={handleConfirmEdit}
       >
         <div className="space-y-2">
-          <label className="text-muted-foreground text-sm font-medium">
+          <label className="text-sm font-medium text-muted-foreground">
             Direccion
           </label>
           <input
@@ -310,7 +310,7 @@ function DataAddresses() {
                   : prev
               )
             }
-            className="border-border focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+            className="w-full rounded-lg border border-border px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
             placeholder="Calle y numero"
           />
         </div>

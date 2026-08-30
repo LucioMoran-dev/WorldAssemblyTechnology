@@ -104,7 +104,7 @@ function AdminCategoriesContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-foreground text-3xl font-bold">
+        <h1 className="text-3xl font-bold text-foreground">
           Gestión de Categorias
         </h1>
         <Button
@@ -135,7 +135,7 @@ function AdminCategoriesContent() {
       {isLoading ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-muted h-48 animate-pulse rounded-lg" />
+            <div key={i} className="h-48 animate-pulse rounded-lg bg-muted" />
           ))}
         </div>
       ) : categories.length > 0 ? (
@@ -144,7 +144,7 @@ function AdminCategoriesContent() {
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="border-border bg-card rounded-lg border p-6 transition-all hover:shadow-lg"
+                className="rounded-lg border border-border bg-card p-6 transition-all hover:shadow-lg"
               >
                 <div className="mb-4 flex items-start justify-between">
                   <div className="rounded-lg bg-blue-50 p-3">
@@ -180,15 +180,15 @@ function AdminCategoriesContent() {
                     </button>
                   </div>
                 </div>
-                <h3 className="text-foreground mb-2 text-lg font-bold">
+                <h3 className="mb-2 text-lg font-bold text-foreground">
                   {category.category_name || category.name || "Sin nombre"}
                 </h3>
-                <p className="text-muted-foreground mb-4 text-sm">
+                <p className="mb-4 text-sm text-muted-foreground">
                   {category.description || "Sin descripcion"}
                 </p>
-                <div className="border-border border-t pt-4">
-                  <p className="text-muted-foreground text-sm">
-                    <span className="text-foreground font-semibold">
+                <div className="border-t border-border pt-4">
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold text-foreground">
                       {category.products?.length || 0}
                     </span>{" "}
                     productos
@@ -209,12 +209,12 @@ function AdminCategoriesContent() {
           />
         </>
       ) : (
-        <div className="border-border bg-card rounded-lg border p-12 text-center">
+        <div className="rounded-lg border border-border bg-card p-12 text-center">
           <FolderTree className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="text-foreground mb-2 text-lg font-semibold">
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
             No hay categorias
           </h3>
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6 text-muted-foreground">
             Crea tu primera categoria para organizar tus productos
           </p>
         </div>
@@ -242,7 +242,7 @@ function AdminCategoriesContent() {
             className="space-y-4"
           >
             <div>
-              <label className="text-muted-foreground mb-2 block text-sm font-medium">
+              <label className="mb-2 block text-sm font-medium text-muted-foreground">
                 Nombre *
               </label>
               <input
@@ -251,13 +251,13 @@ function AdminCategoriesContent() {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="border-border focus:ring-ring w-full rounded-lg border px-4 py-2 focus:ring-2 focus:outline-none"
+                className="w-full rounded-lg border border-border px-4 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
                 placeholder="Ej: Laptops"
                 required
               />
             </div>
             <div>
-              <label className="text-muted-foreground mb-2 block text-sm font-medium">
+              <label className="mb-2 block text-sm font-medium text-muted-foreground">
                 Descripcion
               </label>
               <textarea
@@ -266,7 +266,7 @@ function AdminCategoriesContent() {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                className="border-border focus:ring-ring w-full rounded-lg border px-4 py-2 focus:ring-2 focus:outline-none"
+                className="w-full rounded-lg border border-border px-4 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
                 placeholder="Descripcion de la categoria..."
               />
             </div>
@@ -314,7 +314,7 @@ function AdminCategoriesContent() {
 export default function AdminCategoriesPage() {
   return (
     <Suspense
-      fallback={<div className="text-muted-foreground p-6">Cargando...</div>}
+      fallback={<div className="p-6 text-muted-foreground">Cargando...</div>}
     >
       <AdminCategoriesContent />
     </Suspense>

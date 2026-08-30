@@ -64,7 +64,7 @@ export function CategoryProductsSection({
             <div className="lg:w-60 lg:flex-shrink-0">
               <div className="h-64 animate-pulse rounded bg-muted" />
             </div>
-            <div className="flex-1 min-w-0 py-8">
+            <div className="min-w-0 flex-1 py-8">
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {[...Array(5)].map((_, i) => (
                   <div
@@ -85,10 +85,16 @@ export function CategoryProductsSection({
   );
 
   return (
-    <section className={`border-b border-border ${bgClass} py-12`} style={{ overflowX: "clip", overflowY: "visible" }}>
+    <section
+      className={`border-b border-border ${bgClass} py-12`}
+      style={{ overflowX: "clip", overflowY: "visible" }}
+    >
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-          <div className="lg:w-60 lg:flex-shrink-0" style={{ position: "relative", zIndex: 30 }}>
+          <div
+            className="lg:w-60 lg:flex-shrink-0"
+            style={{ position: "relative", zIndex: 30 }}
+          >
             <CategoryCard
               imageSrc={categoryImage}
               imageAlt={categoryAlt}
@@ -96,7 +102,7 @@ export function CategoryProductsSection({
               href={`/products/catalog/${categorySlug}`}
             />
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <ProductCarousel
               products={mappedProducts}
               sectionId={`category-${categoryTitle.toLowerCase().replace(/\s+/g, "-")}`}
@@ -107,4 +113,3 @@ export function CategoryProductsSection({
     </section>
   );
 }
-

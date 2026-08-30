@@ -48,7 +48,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
   return (
     <>
       <div
-        className="fixed inset-0 z-40 animate-in fade-in bg-black/30 duration-200"
+        className="fixed inset-0 z-40 animate-in bg-black/30 duration-200 fade-in"
         onClick={onClose}
         aria-hidden
       />
@@ -57,7 +57,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="mini-cart-title"
-        className="animate-in fade-in zoom-in-95 fixed top-16 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-card shadow-2xl duration-200"
+        className="fixed top-16 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] animate-in rounded-lg border border-border bg-card shadow-2xl duration-200 zoom-in-95 fade-in"
       >
         <div className="border-b border-border p-4">
           <h3 id="mini-cart-title" className="text-center text-lg font-bold">
@@ -139,7 +139,9 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
           </div>
 
           <div className="mb-4 flex items-center justify-between border-b border-border pt-1 pb-3">
-            <span className="text-sm font-medium text-muted-foreground">Subtotal:</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              Subtotal:
+            </span>
             <span className="text-lg font-bold text-blue-600">
               ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </span>
@@ -160,4 +162,3 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
     </>
   );
 }
-

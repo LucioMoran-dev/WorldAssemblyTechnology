@@ -39,7 +39,8 @@ function OrderSummarySidebar({
   const itemCount = cart?.itemCount || items.length;
   const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
 
-  const subtotalWithDiscount = discountPreview?.subtotalWithDiscount ?? subtotal;
+  const subtotalWithDiscount =
+    discountPreview?.subtotalWithDiscount ?? subtotal;
   const totalDiscount = discountPreview?.totalDiscount ?? 0;
   const shipping = discountPreview?.shipping ?? 0;
   const tax = discountPreview?.tax ?? 0;
@@ -62,15 +63,21 @@ function OrderSummarySidebar({
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-border pb-4 text-sm">
               <span className="font-medium">
-                {itemCount} {itemCount === 1 ? "articulo" : "articulos"} en el carrito
+                {itemCount} {itemCount === 1 ? "articulo" : "articulos"} en el
+                carrito
               </span>
             </div>
 
             {items.length === 0 ? (
-              <p className="py-4 text-center text-sm text-muted-foreground">Tu carrito esta vacio</p>
+              <p className="py-4 text-center text-sm text-muted-foreground">
+                Tu carrito esta vacio
+              </p>
             ) : (
               items.map((item) => (
-                <div key={item.id} className="flex gap-3 border-b border-border pb-4">
+                <div
+                  key={item.id}
+                  className="flex gap-3 border-b border-border pb-4"
+                >
                   <Image
                     src={item.product.imgUrls[0] || "/placeholder.svg"}
                     alt={item.product.name}
@@ -79,10 +86,16 @@ function OrderSummarySidebar({
                     className="rounded bg-muted/40 object-contain"
                   />
                   <div className="flex-1">
-                    <p className="mb-1 line-clamp-2 text-sm text-foreground">{item.product.name}</p>
+                    <p className="mb-1 line-clamp-2 text-sm text-foreground">
+                      {item.product.name}
+                    </p>
                     <CartItemVariants variants={item.selectedVariants} />
-                    <p className="text-xs text-muted-foreground">Cant: {item.quantity}</p>
-                    <p className="mt-1 text-sm font-semibold">{formatMoney(item.subtotal)}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Cant: {item.quantity}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {formatMoney(item.subtotal)}
+                    </p>
                   </div>
                 </div>
               ))
@@ -121,13 +134,17 @@ function OrderSummarySidebar({
               {totalDiscount > 0 && (
                 <div className="flex justify-between text-sm text-green-700">
                   <span>Descuento</span>
-                  <span className="font-semibold">-{formatMoney(totalDiscount)}</span>
+                  <span className="font-semibold">
+                    -{formatMoney(totalDiscount)}
+                  </span>
                 </div>
               )}
 
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal final</span>
-                <span className="font-semibold">{formatMoney(subtotalWithDiscount)}</span>
+                <span className="font-semibold">
+                  {formatMoney(subtotalWithDiscount)}
+                </span>
               </div>
 
               <div className="flex justify-between text-sm">
@@ -163,4 +180,3 @@ function OrderSummarySidebar({
 }
 
 export default OrderSummarySidebar;
-

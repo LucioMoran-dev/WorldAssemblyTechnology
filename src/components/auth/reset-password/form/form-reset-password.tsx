@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams , useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -52,11 +52,11 @@ export function ResetPasswordContent() {
   if (!token) {
     return (
       <main className="mx-auto flex min-h-[70vh] w-full max-w-lg items-center px-4 py-10">
-        <div className="bg-card w-full rounded-xl border border-red-200 p-8 shadow-sm">
+        <div className="w-full rounded-xl border border-red-200 bg-card p-8 shadow-sm">
           <h1 className="mb-2 text-2xl font-bold text-red-700">
             Token inválido
           </h1>
-          <p className="text-muted-foreground mb-6 text-sm">
+          <p className="mb-6 text-sm text-muted-foreground">
             El enlace de recuperación no es válido o ya venció.
           </p>
           <Button asChild className="w-full">
@@ -69,11 +69,11 @@ export function ResetPasswordContent() {
 
   return (
     <main className="mx-auto flex min-h-[70vh] w-full max-w-lg items-center px-4 py-10">
-      <div className="border-border bg-card w-full rounded-xl border p-8 shadow-sm">
-        <h1 className="text-foreground mb-2 text-2xl font-bold">
+      <div className="w-full rounded-xl border border-border bg-card p-8 shadow-sm">
+        <h1 className="mb-2 text-2xl font-bold text-foreground">
           Restablecer contraseña
         </h1>
-        <p className="text-muted-foreground mb-6 text-sm">
+        <p className="mb-6 text-sm text-muted-foreground">
           Ingresa tu nueva contraseña para continuar.
         </p>
 
@@ -90,7 +90,7 @@ export function ResetPasswordContent() {
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
               >
                 {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -114,7 +114,7 @@ export function ResetPasswordContent() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>

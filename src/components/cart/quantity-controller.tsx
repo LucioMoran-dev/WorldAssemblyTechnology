@@ -34,4 +34,3 @@ function QuantityController({
 }
 
 export default QuantityController;
-

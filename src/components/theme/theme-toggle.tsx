@@ -28,15 +28,18 @@ export function ThemeToggle() {
     >
       <Sun
         className={`h-5 w-5 transition-all duration-200 ${
-          isDark ? "scale-0 rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100"
+          isDark
+            ? "scale-0 rotate-90 opacity-0"
+            : "scale-100 rotate-0 opacity-100"
         }`}
       />
       <Moon
         className={`absolute h-5 w-5 transition-all duration-200 ${
-          isDark ? "scale-100 rotate-0 opacity-100" : "scale-0 -rotate-90 opacity-0"
+          isDark
+            ? "scale-100 rotate-0 opacity-100"
+            : "scale-0 -rotate-90 opacity-0"
         }`}
       />
     </Button>
   );
 }
-

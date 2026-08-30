@@ -21,7 +21,9 @@ export function Breadcrumb({ area }: { area: BreadcrumbArea }) {
             <div key={crumb.href} className="flex items-center gap-2">
               {index > 0 && <ChevronRight className="h-4 w-4" />}
               {index === breadcrumbs.length - 1 ? (
-                <span className="font-medium text-foreground">{crumb.name}</span>
+                <span className="font-medium text-foreground">
+                  {crumb.name}
+                </span>
               ) : (
                 <Link href={crumb.href} className="hover:text-blue-600">
                   {crumb.name}
@@ -34,4 +36,3 @@ export function Breadcrumb({ area }: { area: BreadcrumbArea }) {
     </div>
   );
 }
-

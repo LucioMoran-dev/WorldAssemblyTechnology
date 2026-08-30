@@ -36,4 +36,3 @@ export function HeroSectionRepair() {
     </section>
   );
 }
-

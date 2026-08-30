@@ -10,20 +10,20 @@ function AccountInformation() {
   return (
     <>
       <section>
-        <h2 className="text-foreground mb-6 text-xl font-bold">
+        <h2 className="mb-6 text-xl font-bold text-foreground">
           Informacion de tu cuenta
         </h2>
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Información de Contacto */}
-          <div className="border-border rounded-lg border p-6">
-            <h3 className="text-foreground mb-4 font-semibold">
+          <div className="rounded-lg border border-border p-6">
+            <h3 className="mb-4 font-semibold text-foreground">
               Informacion de Contacto
             </h3>
-            <p className="text-muted-foreground mb-1">
+            <p className="mb-1 text-muted-foreground">
               {user?.name || "Usuario"}
             </p>
-            <p className="text-muted-foreground mb-4">
+            <p className="mb-4 text-muted-foreground">
               {user?.email || "correo@ejemplo.com"}
             </p>
             <div className="flex gap-4 text-sm">
@@ -43,9 +43,9 @@ function AccountInformation() {
           </div>
 
           {/* Boletines */}
-          <div className="border-border rounded-lg border p-6">
-            <h3 className="text-foreground mb-4 font-semibold">Boletines</h3>
-            <p className="text-muted-foreground mb-4">
+          <div className="rounded-lg border border-border p-6">
+            <h3 className="mb-4 font-semibold text-foreground">Boletines</h3>
+            <p className="mb-4 text-muted-foreground">
               Quieres suscribirte a nuetro boletin?
             </p>
             <Link

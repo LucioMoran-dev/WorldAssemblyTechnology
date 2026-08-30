@@ -34,4 +34,3 @@ export function FeaturesGrid({ features }: FeaturesGridProps) {
     </section>
   );
 }
-

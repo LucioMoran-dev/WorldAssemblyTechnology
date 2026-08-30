@@ -47,14 +47,8 @@ const urgencyColors: Record<RepairUrgency, string> = {
 
 const validTransitions: Record<RepairStatus, RepairStatus[]> = {
   [RepairStatus.PENDING]: [RepairStatus.REVIEWING, RepairStatus.CANCELLED],
-  [RepairStatus.REVIEWING]: [
-    RepairStatus.IN_PROGRESS,
-    RepairStatus.CANCELLED,
-  ],
-  [RepairStatus.IN_PROGRESS]: [
-    RepairStatus.COMPLETED,
-    RepairStatus.CANCELLED,
-  ],
+  [RepairStatus.REVIEWING]: [RepairStatus.IN_PROGRESS, RepairStatus.CANCELLED],
+  [RepairStatus.IN_PROGRESS]: [RepairStatus.COMPLETED, RepairStatus.CANCELLED],
   [RepairStatus.COMPLETED]: [],
   [RepairStatus.CANCELLED]: [],
 };
@@ -100,7 +94,7 @@ export default function AdminRepairDetailPage() {
       <div className="space-y-4">
         <Link
           href="/admin/repairs"
-          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
           Volver a reparaciones
@@ -122,12 +116,12 @@ export default function AdminRepairDetailPage() {
         <div className="space-y-1">
           <Link
             href="/admin/repairs"
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a reparaciones
           </Link>
-          <h1 className="text-foreground text-2xl font-bold">
+          <h1 className="text-2xl font-bold text-foreground">
             Reparacion #{repair.id.slice(0, 8)}
           </h1>
         </div>
@@ -139,61 +133,61 @@ export default function AdminRepairDetailPage() {
       </div>
 
       {/* Informacion del cliente */}
-      <div className="border-border bg-card rounded-lg border p-6">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <User className="text-muted-foreground h-5 w-5" />
-          <h2 className="text-foreground text-lg font-semibold">
+          <User className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">
             Informacion del cliente
           </h2>
         </div>
         <div className="grid gap-4 text-sm md:grid-cols-3">
           <div>
             <p className="text-muted-foreground">Nombre</p>
-            <p className="text-foreground font-medium">{repair.fullName}</p>
+            <p className="font-medium text-foreground">{repair.fullName}</p>
           </div>
           <div>
             <p className="text-muted-foreground">Email</p>
-            <p className="text-foreground font-medium">{repair.email}</p>
+            <p className="font-medium text-foreground">{repair.email}</p>
           </div>
           <div>
             <p className="text-muted-foreground">Telefono</p>
-            <p className="text-foreground font-medium">{repair.phone}</p>
+            <p className="font-medium text-foreground">{repair.phone}</p>
           </div>
         </div>
       </div>
 
       {/* Informacion del equipo */}
-      <div className="border-border bg-card rounded-lg border p-6">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <Monitor className="text-muted-foreground h-5 w-5" />
-          <h2 className="text-foreground text-lg font-semibold">
+          <Monitor className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">
             Informacion del equipo
           </h2>
         </div>
         <div className="grid gap-4 text-sm md:grid-cols-3">
           <div>
             <p className="text-muted-foreground">Tipo de dispositivo</p>
-            <p className="text-foreground font-medium">{repair.deviceType}</p>
+            <p className="font-medium text-foreground">{repair.deviceType}</p>
           </div>
           <div>
             <p className="text-muted-foreground">Marca</p>
-            <p className="text-foreground font-medium">{repair.brand}</p>
+            <p className="font-medium text-foreground">{repair.brand}</p>
           </div>
           <div>
             <p className="text-muted-foreground">Modelo</p>
-            <p className="text-foreground font-medium">{repair.model}</p>
+            <p className="font-medium text-foreground">{repair.model}</p>
           </div>
         </div>
         <div className="mt-4">
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Descripcion del problema
           </p>
-          <p className="text-foreground mt-1 text-sm">
+          <p className="mt-1 text-sm text-foreground">
             {repair.issueDescription}
           </p>
         </div>
         <div className="mt-4 flex items-center gap-3">
-          <span className="text-muted-foreground text-sm">Urgencia:</span>
+          <span className="text-sm text-muted-foreground">Urgencia:</span>
           <span
             className={`rounded-full px-2 py-1 text-xs font-medium ${urgencyColors[repair.urgency]}`}
           >
@@ -203,24 +197,22 @@ export default function AdminRepairDetailPage() {
       </div>
 
       {/* Timeline de comentarios */}
-      <div className="border-border bg-card rounded-lg border p-6">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <MessageSquare className="text-muted-foreground h-5 w-5" />
-          <h2 className="text-foreground text-lg font-semibold">
+          <MessageSquare className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">
             Historial de seguimiento
           </h2>
         </div>
 
         {comments.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            Sin comentarios aun.
-          </p>
+          <p className="text-sm text-muted-foreground">Sin comentarios aun.</p>
         ) : (
           <div className="relative ml-3 border-l-2 border-gray-200 pl-6">
             {comments.map((comment) => (
               <div key={comment.id} className="relative mb-6 last:mb-0">
                 {/* Dot indicator */}
-                <div className="absolute -left-7.75 top-1 h-4 w-4 rounded-full border-2 border-gray-300 bg-white" />
+                <div className="absolute top-1 -left-7.75 h-4 w-4 rounded-full border-2 border-gray-300 bg-white" />
 
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -229,12 +221,12 @@ export default function AdminRepairDetailPage() {
                     >
                       {statusLabels[comment.statusSnapshot]}
                     </span>
-                    <span className="text-muted-foreground text-xs">
+                    <span className="text-xs text-muted-foreground">
                       {new Date(comment.createdAt).toLocaleString("es-AR")}
                     </span>
                   </div>
-                  <p className="text-foreground text-sm">{comment.comment}</p>
-                  <p className="text-muted-foreground text-xs">
+                  <p className="text-sm text-foreground">{comment.comment}</p>
+                  <p className="text-xs text-muted-foreground">
                     por {comment.adminName}
                   </p>
                 </div>
@@ -245,16 +237,16 @@ export default function AdminRepairDetailPage() {
       </div>
 
       {/* Cambiar estado */}
-      <div className="border-border bg-card rounded-lg border p-6">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <Clock className="text-muted-foreground h-5 w-5" />
-          <h2 className="text-foreground text-lg font-semibold">
+          <Clock className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">
             Cambiar estado
           </h2>
         </div>
 
         {allowedTransitions.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Esta reparacion se encuentra en un estado final y no puede ser
             modificada.
           </p>
@@ -276,7 +268,7 @@ export default function AdminRepairDetailPage() {
       </div>
 
       {/* Fechas */}
-      <div className="text-muted-foreground flex flex-wrap gap-6 text-xs">
+      <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
         <span>
           Creada: {new Date(repair.createdAt).toLocaleString("es-AR")}
         </span>
@@ -308,7 +300,7 @@ export default function AdminRepairDetailPage() {
         }
       >
         <div className="space-y-2">
-          <label className="text-muted-foreground text-sm font-medium">
+          <label className="text-sm font-medium text-muted-foreground">
             Notas internas (opcional)
           </label>
           <textarea
@@ -320,7 +312,7 @@ export default function AdminRepairDetailPage() {
               )
             }
             placeholder="Agregar comentario interno..."
-            className="border-border focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
+            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
             maxLength={1000}
           />
         </div>

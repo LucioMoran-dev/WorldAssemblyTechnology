@@ -30,4 +30,3 @@ function CartItemsList({
 }
 
 export default CartItemsList;
-

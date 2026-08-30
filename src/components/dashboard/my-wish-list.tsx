@@ -12,9 +12,9 @@ function MyWishList() {
 
   return (
     <>
-      <section className="border-border rounded-lg border p-6">
+      <section className="rounded-lg border border-border p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-foreground text-xl font-bold">
+          <h2 className="text-xl font-bold text-foreground">
             Mi Lista de Deseos
           </h2>
           {wishlistItems && wishlistItems.length > 0 && (
@@ -27,19 +27,19 @@ function MyWishList() {
           )}
         </div>
         {isLoading ? (
-          <div className="bg-muted h-16 animate-pulse rounded" />
+          <div className="h-16 animate-pulse rounded bg-muted" />
         ) : wishlistItems && wishlistItems.length > 0 ? (
           <div className="space-y-3">
             {wishlistItems.slice(0, 3).map((item) => (
               <div
                 key={item.id}
-                className="border-border flex items-center gap-4 rounded-lg border p-3"
+                className="flex items-center gap-4 rounded-lg border border-border p-3"
               >
                 <div className="flex-1">
-                  <p className="text-foreground font-medium">
+                  <p className="font-medium text-foreground">
                     {item.product.name}
                   </p>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     ${item.product.basePrice}
                   </p>
                 </div>

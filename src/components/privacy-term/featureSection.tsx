@@ -1,10 +1,10 @@
 export function FeatureSectionPrivacy() {
   return (
-    <div className="bg-muted/30 mt-16 py-16">
+    <div className="mt-16 bg-muted/30 py-16">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid gap-8 text-center md:grid-cols-3">
           <div className="space-y-4">
-            <div className="bg-primary mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary">
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -19,15 +19,15 @@ export function FeatureSectionPrivacy() {
                 />
               </svg>
             </div>
-            <h3 className="text-foreground font-bold">Soporte de Productos</h3>
-            <p className="text-muted-foreground text-sm">
+            <h3 className="font-bold text-foreground">Soporte de Productos</h3>
+            <p className="text-sm text-muted-foreground">
               Hasta 3 años de garantía en el sitio disponible para tu
               tranquilidad.
             </p>
           </div>
 
           <div className="space-y-4">
-            <div className="bg-primary mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary">
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -42,15 +42,15 @@ export function FeatureSectionPrivacy() {
                 />
               </svg>
             </div>
-            <h3 className="text-foreground font-bold">Cuenta Personal</h3>
-            <p className="text-muted-foreground text-sm">
+            <h3 className="font-bold text-foreground">Cuenta Personal</h3>
+            <p className="text-sm text-muted-foreground">
               Con grandes descuentos, envío gratuito y un especialista de
               soporte dedicado.
             </p>
           </div>
 
           <div className="space-y-4">
-            <div className="bg-primary mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary">
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -65,8 +65,8 @@ export function FeatureSectionPrivacy() {
                 />
               </svg>
             </div>
-            <h3 className="text-foreground font-bold">Ahorros Increíbles</h3>
-            <p className="text-muted-foreground text-sm">
+            <h3 className="font-bold text-foreground">Ahorros Increíbles</h3>
+            <p className="text-sm text-muted-foreground">
               Hasta 70% de descuento en nuevos productos, puedes estar seguro
               del mejor precio.
             </p>

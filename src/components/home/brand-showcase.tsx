@@ -5,7 +5,7 @@ import { brands } from "@/seeds";
 
 export function BrandShowcase() {
   return (
-    <div className="border-border border-y bg-card py-8">
+    <div className="border-y border-border bg-card py-8">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-2 items-center gap-8 md:grid-cols-4 lg:grid-cols-7">
           {brands.map((brand) => (
@@ -29,4 +29,3 @@ export function BrandShowcase() {
     </div>
   );
 }
-

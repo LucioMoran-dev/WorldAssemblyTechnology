@@ -1,6 +1,12 @@
 ﻿"use client";
 
-import { AlertTriangle, Check, ChevronLeft, CreditCard, Edit2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  ChevronLeft,
+  CreditCard,
+  Edit2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -35,14 +41,12 @@ export default function ReviewPaymentPage() {
   const previewDiscounts = usePreviewDiscounts();
   const validatePromoCode = useValidatePromoCode();
 
-  const [shippingAddress, setShippingAddress] = useState<ICheckoutAddressDto | null>(
-    null
-  );
+  const [shippingAddress, setShippingAddress] =
+    useState<ICheckoutAddressDto | null>(null);
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
-  const [discountPreview, setDiscountPreview] = useState<ICartDiscountPreview | null>(
-    null
-  );
+  const [discountPreview, setDiscountPreview] =
+    useState<ICartDiscountPreview | null>(null);
 
   useEffect(() => {
     const rawAddress = sessionStorage.getItem(CHECKOUT_SHIPPING_STORAGE_KEY);
@@ -62,7 +66,8 @@ export default function ReviewPaymentPage() {
     validateStock.isPending || checkout.isPending || createPreference.isPending;
 
   const totals = useMemo(() => {
-    const subtotal = cart?.items?.reduce((sum, item) => sum + item.subtotal, 0) ?? 0;
+    const subtotal =
+      cart?.items?.reduce((sum, item) => sum + item.subtotal, 0) ?? 0;
     if (discountPreview) {
       return {
         subtotal,
@@ -188,7 +193,9 @@ export default function ReviewPaymentPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
                 2
               </div>
-              <span className="font-semibold text-blue-600">Revision y pago</span>
+              <span className="font-semibold text-blue-600">
+                Revision y pago
+              </span>
             </div>
           </div>
         </div>
@@ -212,18 +219,25 @@ export default function ReviewPaymentPage() {
               {shippingAddress ? (
                 <div className="grid gap-4 rounded-lg bg-muted/40 p-4 md:grid-cols-2">
                   <div>
-                    <p className="mb-1 text-sm text-muted-foreground">Etiqueta</p>
+                    <p className="mb-1 text-sm text-muted-foreground">
+                      Etiqueta
+                    </p>
                     <p className="font-medium">{shippingAddress.label}</p>
                   </div>
                   <div>
                     <p className="mb-1 text-sm text-muted-foreground">Pais</p>
-                    <p className="font-medium">{shippingAddress.country || "Argentina"}</p>
+                    <p className="font-medium">
+                      {shippingAddress.country || "Argentina"}
+                    </p>
                   </div>
                   <div className="md:col-span-2">
-                    <p className="mb-1 text-sm text-muted-foreground">Direccion</p>
+                    <p className="mb-1 text-sm text-muted-foreground">
+                      Direccion
+                    </p>
                     <p className="font-medium">{shippingAddress.street}</p>
                     <p className="font-medium">
-                      {shippingAddress.city}, {shippingAddress.province} {shippingAddress.postalCode}
+                      {shippingAddress.city}, {shippingAddress.province}{" "}
+                      {shippingAddress.postalCode}
                     </p>
                   </div>
                 </div>
@@ -232,8 +246,12 @@ export default function ReviewPaymentPage() {
                   <div className="flex items-start gap-2">
                     <AlertTriangle className="mt-0.5 h-4 w-4" />
                     <div>
-                      <p className="font-semibold">No hay direccion de envio seleccionada</p>
-                      <p>Debes completar el paso de envio antes de continuar.</p>
+                      <p className="font-semibold">
+                        No hay direccion de envio seleccionada
+                      </p>
+                      <p>
+                        Debes completar el paso de envio antes de continuar.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -243,7 +261,8 @@ export default function ReviewPaymentPage() {
             <div className="rounded-lg bg-card p-6 shadow-sm">
               <h2 className="mb-3 text-xl font-bold">Pago con MercadoPago</h2>
               <p className="text-sm text-muted-foreground">
-                Al confirmar tu pedido te redirigimos a MercadoPago para completar el pago de forma segura.
+                Al confirmar tu pedido te redirigimos a MercadoPago para
+                completar el pago de forma segura.
               </p>
 
               <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
@@ -258,7 +277,9 @@ export default function ReviewPaymentPage() {
               <Button
                 onClick={handlePlaceOrder}
                 className="mt-6 h-14 w-full bg-blue-600 text-lg font-semibold text-white hover:bg-blue-700"
-                disabled={isPlacingOrder || !shippingAddress || !cart?.items.length}
+                disabled={
+                  isPlacingOrder || !shippingAddress || !cart?.items.length
+                }
               >
                 {isPlacingOrder ? "Procesando..." : "Confirmar pedido y pagar"}
               </Button>
@@ -269,7 +290,9 @@ export default function ReviewPaymentPage() {
             promoCode={promoCodeInput}
             onPromoCodeChange={setPromoCodeInput}
             onApplyPromo={handleApplyPromo}
-            isApplyingPromo={validatePromoCode.isPending || previewDiscounts.isPending}
+            isApplyingPromo={
+              validatePromoCode.isPending || previewDiscounts.isPending
+            }
             discountPreview={discountPreview}
           />
         </div>
@@ -277,4 +300,3 @@ export default function ReviewPaymentPage() {
     </div>
   );
 }
-

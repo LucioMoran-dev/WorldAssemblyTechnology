@@ -18,9 +18,9 @@
           Un servicio excelente. Espero comprar en su sitio en el futuro y lo
           recomendaría ampliamente.
         </blockquote>
-        <p className="text-foreground font-semibold">— Tama Brown</p>
+        <p className="font-semibold text-foreground">— Tama Brown</p>
         <div className="mt-4 flex justify-center gap-2">
-          <div className="bg-primary h-2 w-2 rounded-full" />
+          <div className="h-2 w-2 rounded-full bg-primary" />
           <div className="h-2 w-2 rounded-full bg-gray-300" />
           <div className="h-2 w-2 rounded-full bg-gray-300" />
           <div className="h-2 w-2 rounded-full bg-gray-300" />
@@ -29,4 +29,3 @@
     </section>
   );
 }
-

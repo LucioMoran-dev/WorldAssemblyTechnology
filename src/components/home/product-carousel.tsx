@@ -100,4 +100,3 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
     </div>
   );
 }
-

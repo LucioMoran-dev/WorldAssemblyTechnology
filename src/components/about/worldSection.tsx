@@ -15,7 +15,7 @@ export function WorldSection() {
           </div>
           <div>
             <div className="mb-6 flex items-center gap-3">
-              <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
                 <svg
                   className="h-6 w-6 text-white"
                   viewBox="0 0 24 24"
@@ -40,4 +40,3 @@ export function WorldSection() {
     </section>
   );
 }
-

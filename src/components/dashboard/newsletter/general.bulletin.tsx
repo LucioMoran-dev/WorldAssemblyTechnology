@@ -7,7 +7,7 @@ function GeneralBulletin() {
         <Mail className="h-6 w-6 text-blue-600" />
       </div>
       <div>
-        <h2 className="text-foreground mb-2 text-xl font-bold">
+        <h2 className="mb-2 text-xl font-bold text-foreground">
           Boletin General
         </h2>
         <p className="text-muted-foreground">

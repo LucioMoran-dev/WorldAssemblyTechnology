@@ -78,9 +78,7 @@ export const discountService = {
    * DELETE /discounts/products/:id - Desactivar descuento
    * Requiere: ADMIN+
    */
-  deleteProductDiscount: async (
-    id: string
-  ): Promise<{ message: string }> => {
+  deleteProductDiscount: async (id: string): Promise<{ message: string }> => {
     const response = await apiClient.delete<{ message: string }>(
       `/discounts/products/${id}`
     );

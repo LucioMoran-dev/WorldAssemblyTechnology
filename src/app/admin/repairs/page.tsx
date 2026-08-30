@@ -83,7 +83,7 @@ function AdminRepairsContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-foreground text-3xl font-bold">
+        <h1 className="text-3xl font-bold text-foreground">
           Gestión de reparaciones
         </h1>
       </div>
@@ -106,11 +106,11 @@ function AdminRepairsContent() {
         />
       </FiltersPanel>
 
-      <div className="border-border bg-card overflow-hidden rounded-lg border">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-border bg-muted/40 border-b">
-              <tr className="text-muted-foreground text-left">
+            <thead className="border-b border-border bg-muted/40">
+              <tr className="text-left text-muted-foreground">
                 <th className="px-4 py-3">Cliente</th>
                 <th className="px-4 py-3">Equipo</th>
                 <th className="px-4 py-3">Urgencia</th>
@@ -122,9 +122,9 @@ function AdminRepairsContent() {
             <tbody>
               {isLoading ? (
                 [...Array(5)].map((_, i) => (
-                  <tr key={i} className="border-border border-b">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={6} className="px-4 py-4">
-                      <div className="bg-muted h-12 animate-pulse rounded" />
+                      <div className="h-12 animate-pulse rounded bg-muted" />
                     </td>
                   </tr>
                 ))
@@ -132,33 +132,33 @@ function AdminRepairsContent() {
                 <tr>
                   <td
                     colSpan={6}
-                    className="text-muted-foreground px-4 py-8 text-center"
+                    className="px-4 py-8 text-center text-muted-foreground"
                   >
                     No hay solicitudes en este filtro.
                   </td>
                 </tr>
               ) : (
                 repairs.map((repair) => (
-                  <tr key={repair.id} className="border-border border-b">
+                  <tr key={repair.id} className="border-b border-border">
                     <td className="px-4 py-3">
-                      <p className="text-foreground font-medium">
+                      <p className="font-medium text-foreground">
                         {repair.fullName}
                       </p>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-xs text-muted-foreground">
                         {repair.email}
                       </p>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-xs text-muted-foreground">
                         {repair.phone}
                       </p>
                     </td>
                     <td className="px-4 py-3">
-                      <p className="text-foreground font-medium">
+                      <p className="font-medium text-foreground">
                         {repair.deviceType}
                       </p>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-xs text-muted-foreground">
                         {repair.brand} - {repair.model}
                       </p>
-                      <p className="text-muted-foreground line-clamp-2 text-xs">
+                      <p className="line-clamp-2 text-xs text-muted-foreground">
                         {repair.issueDescription}
                       </p>
                     </td>
@@ -177,11 +177,11 @@ function AdminRepairsContent() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="bg-muted text-muted-foreground rounded px-2 py-1 text-xs font-medium">
+                      <span className="rounded bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                         {statusLabels[repair.status] ?? repair.status}
                       </span>
                     </td>
-                    <td className="text-muted-foreground px-4 py-3 text-xs">
+                    <td className="px-4 py-3 text-xs text-muted-foreground">
                       {new Date(repair.createdAt).toLocaleString("es-AR")}
                     </td>
                     <td className="px-4 py-3">
@@ -275,7 +275,7 @@ function AdminRepairsContent() {
         onConfirm={handleConfirmStatusChange}
       >
         <div className="space-y-2">
-          <label className="text-muted-foreground text-sm font-medium">
+          <label className="text-sm font-medium text-muted-foreground">
             Notas internas (opcional)
           </label>
           <textarea
@@ -287,7 +287,7 @@ function AdminRepairsContent() {
               )
             }
             placeholder="Agregar comentario interno..."
-            className="border-border focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
+            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
           />
         </div>
       </ActionDialog>
@@ -298,7 +298,7 @@ function AdminRepairsContent() {
 export default function AdminRepairsPage() {
   return (
     <Suspense
-      fallback={<div className="text-muted-foreground p-6">Cargando...</div>}
+      fallback={<div className="p-6 text-muted-foreground">Cargando...</div>}
     >
       <AdminRepairsContent />
     </Suspense>

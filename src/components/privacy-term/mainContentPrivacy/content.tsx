@@ -1,13 +1,13 @@
 export function Content() {
   return (
     <div className="space-y-8">
-      <h1 className="text-foreground text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-foreground">
         Términos y Condiciones de la Tienda
       </h1>
 
       {/* Intro */}
-      <div className="text-muted-foreground text-sm">
-        <p className="text-foreground mb-4 font-semibold">
+      <div className="text-sm text-muted-foreground">
+        <p className="mb-4 font-semibold text-foreground">
           TÉRMINOS Y CONDICIONES GENERALES PARA LA VENTA DE PRODUCTOS Y
           SERVICIOS
         </p>
@@ -15,14 +15,14 @@ export function Content() {
 
       {/* Definitions */}
       <section id="definitions" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">
+        <h2 className="text-xl font-bold text-foreground">
           Definiciones e Interpretación
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           En los siguientes Términos y Condiciones de venta, a menos que el
           contexto requiera lo contrario:
         </p>
-        <ul className="text-muted-foreground list-none space-y-2 text-sm">
+        <ul className="list-none space-y-2 text-sm text-muted-foreground">
           <li>(a) &quot;Shop&quot; significa ABN 11 222 333 444.</li>
           <li>
             (b) &quot;Cliente&quot; significa la persona o corporación que
@@ -54,8 +54,8 @@ export function Content() {
 
       {/* General */}
       <section id="general" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">General</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-xl font-bold text-foreground">General</h2>
+        <p className="text-sm text-muted-foreground">
           Al ordenar los Productos y/o aceptar la entrega de los Productos de
           Shop, el Cliente acepta que está obligado por estos Términos y
           Condiciones de venta. Los pedidos de los Clientes, incluidos los
@@ -73,8 +73,8 @@ export function Content() {
 
       {/* Quotations */}
       <section id="quotations" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">Cotizaciones</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-xl font-bold text-foreground">Cotizaciones</h2>
+        <p className="text-sm text-muted-foreground">
           Cualquier cotización de Shop al Cliente estará abierta para su
           aceptación por parte del Cliente dentro del período indicado en la
           cotización o, cuando no se indique ningún período, el período de
@@ -86,8 +86,8 @@ export function Content() {
 
       {/* Prices */}
       <section id="prices" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">Precios / Tasas</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-xl font-bold text-foreground">Precios / Tasas</h2>
+        <p className="text-sm text-muted-foreground">
           Los precios cobrados por los Productos y pagaderos a Shop serán los
           precios vigentes aplicables en el momento de la realización del pedido
           siempre que los Productos sean aceptados para su entrega dentro de un
@@ -103,34 +103,34 @@ export function Content() {
           y le será pagado por el Cliente en el momento del pago de los
           Productos.
         </p>
-        <h3 className="text-foreground mt-4 text-lg font-semibold">
+        <h3 className="mt-4 text-lg font-semibold text-foreground">
           Términos de Pago
         </h3>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Los pagos con tarjeta de crédito pueden atraer un recargo, y Shop
           informará al Cliente si este es el caso antes de procesar la
           transacción.
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           A menos que se acuerde lo contrario por escrito por Shop, donde Shop
           no ha firmado por escrito para proporcionar crédito comercial al
           Cliente, el precio de compra total de los Productos suministrados será
           pagado por completo antes de la entrega en efectivo antes de la
           entrega.
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Cuando Shop ha acordado una disposición de crédito comercial con el
           Cliente, el Cliente debe realizar los pagos de acuerdo con los
           términos de pago proporcionados por Shop.
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Donde Shop ha aceptado la disposición de un acuerdo de crédito
           comercial con el Cliente pero no ha proporcionado aviso de los
           términos de pago al Cliente, el precio de compra total de los
           Productos suministrados será pagado dentro de los siete días de la
           fecha de la declaración.
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           El pago con tarjeta de crédito en una factura o nivel de transacción
           solo puede ser ofrecido al Cliente como un método de pago
           independiente o en conjunto con la autorización de tarjeta de crédito
@@ -140,10 +140,10 @@ export function Content() {
 
       {/* Credit Accounts */}
       <section id="credit-accounts" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">
+        <h2 className="text-xl font-bold text-foreground">
           Cuentas de Crédito
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Cualquier acuerdo de crédito comercial que se proporcione al Cliente
           por Shop continuará hasta que se termine a discreción de Shop. En el
           caso de una terminación del acuerdo de crédito comercial del Cliente,
@@ -154,10 +154,10 @@ export function Content() {
 
       {/* Change of Ownership */}
       <section id="change-ownership" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">
+        <h2 className="text-xl font-bold text-foreground">
           Cambio de Propiedad
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           El comercio de productos vendidos por Shop se basará en la información
           proporcionada y las representaciones realizadas por el Cliente en el
           caso de que haya un cambio en la propiedad del Cliente, ya sea real o
@@ -173,7 +173,7 @@ export function Content() {
           comprado el negocio del Cliente o cualquier interés en el negocio del
           Cliente y cualquier interés que pueda tener un vínculo con el Cliente.
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Donde un Cliente ha sido autorizado por Shop para realizar pagos a
           través de la tarjeta de crédito de débito directo, el Cliente debe
           proporcionar un aviso por escrito a Shop antes de cualquier cambio de
@@ -186,10 +186,10 @@ export function Content() {
 
       {/* Information on Products */}
       <section id="information" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">
+        <h2 className="text-xl font-bold text-foreground">
           Información sobre los Productos Suministrados
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Todas las especificaciones descriptivas, ilustraciones, dibujos,
           datos, dimensiones y pesos proporcionados por Shop o contenidos de
           otra manera en catálogos u otra literatura son aproximaciones únicas y
@@ -203,8 +203,8 @@ export function Content() {
 
       {/* Delivery */}
       <section id="delivery" className="space-y-4">
-        <h2 className="text-foreground text-xl font-bold">Entrega</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-xl font-bold text-foreground">Entrega</h2>
+        <p className="text-sm text-muted-foreground">
           Los medios de entrega de los Productos al Cliente serán a discreción
           de Shop. Shop se reserva el derecho de entregar los Productos en
           entregas parciales. En caso de que Shop incurra en costos adicionales
@@ -214,7 +214,7 @@ export function Content() {
           incluir el costo del flete aéreo cuando no sea el método de entrega
           normal durante el horario comercial normal.
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Shop no será responsable de ninguna pérdida o daño resultante de
           cualquier entrega tardía de los Productos y la entrega tardía no dará
           derecho al Cliente a reembolsar o repudiar el pedido del Cliente por

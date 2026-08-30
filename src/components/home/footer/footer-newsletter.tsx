@@ -27,8 +27,12 @@ export const FooterNewsletter = memo(function FooterNewsletter() {
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid items-center gap-8 md:grid-cols-2">
           <div>
-            <h3 className="mb-2 text-2xl font-bold text-white">Suscribete al newsletter</h3>
-            <p className="text-muted-foreground">Recibe novedades, promos y lanzamientos.</p>
+            <h3 className="mb-2 text-2xl font-bold text-white">
+              Suscribete al newsletter
+            </h3>
+            <p className="text-muted-foreground">
+              Recibe novedades, promos y lanzamientos.
+            </p>
           </div>
           <div className="flex gap-2">
             <Input
@@ -52,4 +56,3 @@ export const FooterNewsletter = memo(function FooterNewsletter() {
     </div>
   );
 });
-

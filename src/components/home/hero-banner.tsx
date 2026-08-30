@@ -215,16 +215,18 @@ export function HeroBanner() {
                       <Button
                         asChild
                         size="lg"
-                        className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 font-semibold text-white shadow-[0_10px_24px_rgba(37,99,235,0.38)] transition-all duration-300 hover:-translate-y-0.5 hover:from-blue-500 hover:to-blue-600 hover:shadow-[0_16px_28px_rgba(37,99,235,0.45)] active:translate-y-0 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-300"
+                        className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 font-semibold text-white shadow-[0_10px_24px_rgba(37,99,235,0.38)] transition-all duration-300 hover:-translate-y-0.5 hover:from-blue-500 hover:to-blue-600 hover:shadow-[0_16px_28px_rgba(37,99,235,0.45)] focus-visible:ring-2 focus-visible:ring-blue-300 active:translate-y-0 active:scale-[0.98]"
                       >
-                        <Link href={slide.primaryCtaHref}>{slide.primaryCtaLabel}</Link>
+                        <Link href={slide.primaryCtaHref}>
+                          {slide.primaryCtaLabel}
+                        </Link>
                       </Button>
 
                       <Button
                         asChild
                         size="lg"
                         variant="outline"
-                        className="border-2 border-white/80 bg-card/5 px-8 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-card hover:text-foreground active:translate-y-0 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white"
+                        className="border-2 border-white/80 bg-card/5 px-8 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-white active:translate-y-0 active:scale-[0.98]"
                       >
                         <Link href={slide.secondaryCtaHref}>
                           {slide.secondaryCtaLabel}
@@ -232,7 +234,9 @@ export function HeroBanner() {
                       </Button>
                     </div>
 
-                    <p className="text-xs text-muted-foreground">{slide.footnote}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {slide.footnote}
+                    </p>
                   </div>
 
                   <div className="relative h-full">
@@ -258,9 +262,15 @@ export function HeroBanner() {
                         className="absolute top-4 right-4 rounded-xl border border-white/20 bg-card/90 p-3 shadow-xl backdrop-blur-sm transition-transform duration-300"
                         style={{ transform: chipTranslate }}
                       >
-                        <div className="text-xs font-bold text-blue-600">{slide.chipTitle}</div>
-                        <div className="text-lg font-bold text-foreground">{slide.chipValue}</div>
-                        <div className="text-xs text-muted-foreground">{slide.chipSubtitle}</div>
+                        <div className="text-xs font-bold text-blue-600">
+                          {slide.chipTitle}
+                        </div>
+                        <div className="text-lg font-bold text-foreground">
+                          {slide.chipValue}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {slide.chipSubtitle}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -297,4 +307,3 @@ export function HeroBanner() {
     </div>
   );
 }
-

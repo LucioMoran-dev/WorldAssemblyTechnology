@@ -35,17 +35,17 @@ function Billing() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-foreground text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-foreground">
         Facturacion y pagos
       </h1>
 
       {payments.length === 0 ? (
-        <div className="border-border rounded-lg border p-12 text-center">
+        <div className="rounded-lg border border-border p-12 text-center">
           <CreditCard className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="text-foreground mb-2 text-lg font-semibold">
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
             No tienes pagos registrados
           </h3>
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6 text-muted-foreground">
             Tus pagos se mostraran aqui cuando completes una compra.
           </p>
           <Button asChild>
@@ -53,11 +53,11 @@ function Billing() {
           </Button>
         </div>
       ) : (
-        <div className="border-border bg-card overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-lg border border-border bg-card">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-border bg-muted/40 border-b">
-                <tr className="text-muted-foreground text-left">
+              <thead className="border-b border-border bg-muted/40">
+                <tr className="text-left text-muted-foreground">
                   <th className="px-4 py-3">Fecha</th>
                   <th className="px-4 py-3">Orden</th>
                   <th className="px-4 py-3">Metodo</th>
@@ -67,8 +67,8 @@ function Billing() {
               </thead>
               <tbody>
                 {payments.map((payment) => (
-                  <tr key={payment.id} className="border-border border-b">
-                    <td className="text-muted-foreground px-4 py-3">
+                  <tr key={payment.id} className="border-b border-border">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {new Date(payment.createdAt).toLocaleString("es-AR")}
                     </td>
                     <td className="px-4 py-3">

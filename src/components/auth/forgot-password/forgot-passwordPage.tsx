@@ -28,11 +28,11 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="mx-auto flex min-h-[70vh] w-full max-w-lg items-center px-4 py-10">
-      <div className="border-border bg-card w-full rounded-xl border p-8 shadow-sm">
-        <h1 className="text-foreground mb-2 text-2xl font-bold">
+      <div className="w-full rounded-xl border border-border bg-card p-8 shadow-sm">
+        <h1 className="mb-2 text-2xl font-bold text-foreground">
           Recuperar contraseña
         </h1>
-        <p className="text-muted-foreground mb-6 text-sm">
+        <p className="mb-6 text-sm text-muted-foreground">
           Ingresa tu email y te enviaremos instrucciones para restablecer tu
           contraseña.
         </p>
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
           </Button>
         </form>
 
-        <p className="text-muted-foreground mt-5 text-center text-sm">
+        <p className="mt-5 text-center text-sm text-muted-foreground">
           <Link href="/auth/signin" className="text-blue-600 hover:underline">
             Volver a iniciar sesión
           </Link>

@@ -30,4 +30,3 @@ function ProgressSteps() {
 }
 
 export default ProgressSteps;
-

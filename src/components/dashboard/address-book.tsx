@@ -13,7 +13,7 @@ function AddressBook() {
     <>
       <section>
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-foreground text-xl font-bold">
+          <h2 className="text-xl font-bold text-foreground">
             Libreta de Direcciones
           </h2>
           <Link
@@ -26,14 +26,14 @@ function AddressBook() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Dirección de Facturación Predeterminada */}
-          <div className="border-border rounded-lg border p-6">
-            <h3 className="text-foreground mb-4 font-semibold">
+          <div className="rounded-lg border border-border p-6">
+            <h3 className="mb-4 font-semibold text-foreground">
               Direcciones de Facturacion Predeterminada
             </h3>
             {isLoading ? (
-              <div className="bg-muted mb-4 h-20 animate-pulse rounded" />
+              <div className="mb-4 h-20 animate-pulse rounded bg-muted" />
             ) : defaultAddress ? (
-              <div className="text-muted-foreground mb-4">
+              <div className="mb-4 text-muted-foreground">
                 <p className="font-medium">{defaultAddress.label}</p>
                 <p className="text-sm">{defaultAddress.street}</p>
                 <p className="text-sm">
@@ -44,7 +44,7 @@ function AddressBook() {
                 </p>
               </div>
             ) : (
-              <p className="text-muted-foreground mb-4">
+              <p className="mb-4 text-muted-foreground">
                 No has establecido una direccion de facturacion predeterminada.
               </p>
             )}
@@ -57,14 +57,14 @@ function AddressBook() {
           </div>
 
           {/* Dirección de Envío Predeterminada */}
-          <div className="border-border rounded-lg border p-6">
-            <h3 className="text-foreground mb-4 font-semibold">
+          <div className="rounded-lg border border-border p-6">
+            <h3 className="mb-4 font-semibold text-foreground">
               Direcciones de Envio Predeterminada
             </h3>
             {isLoading ? (
-              <div className="bg-muted mb-4 h-20 animate-pulse rounded" />
+              <div className="mb-4 h-20 animate-pulse rounded bg-muted" />
             ) : defaultAddress ? (
-              <div className="text-muted-foreground mb-4">
+              <div className="mb-4 text-muted-foreground">
                 <p className="font-medium">{defaultAddress.label}</p>
                 <p className="text-sm">{defaultAddress.street}</p>
                 <p className="text-sm">
@@ -75,7 +75,7 @@ function AddressBook() {
                 </p>
               </div>
             ) : (
-              <p className="text-muted-foreground mb-4">
+              <p className="mb-4 text-muted-foreground">
                 No has establecido una direccion de envio predeterminada.
               </p>
             )}

@@ -71,7 +71,9 @@ export function ActionDialog({
             )}
             <span>{title}</span>
           </DialogTitle>
-          {description ? <DialogDescription>{description}</DialogDescription> : null}
+          {description ? (
+            <DialogDescription>{description}</DialogDescription>
+          ) : null}
         </DialogHeader>
 
         {children ? <div className="space-y-3">{children}</div> : null}

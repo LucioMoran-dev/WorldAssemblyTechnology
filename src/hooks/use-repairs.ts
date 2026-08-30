@@ -75,13 +75,8 @@ export function useUpdateRepairStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: IUpdateRepairStatusDto;
-    }) => repairService.updateStatus(id, data),
+    mutationFn: ({ id, data }: { id: string; data: IUpdateRepairStatusDto }) =>
+      repairService.updateStatus(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repairs"] });
       toast.success("Estado de reparación actualizado");

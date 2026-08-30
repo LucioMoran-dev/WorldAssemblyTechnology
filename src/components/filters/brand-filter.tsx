@@ -11,7 +11,11 @@ interface BrandFilterProps {
   showAllButton?: boolean;
 }
 
-export function BrandFilter({ value, onChange, showAllButton = true }: BrandFilterProps) {
+export function BrandFilter({
+  value,
+  onChange,
+  showAllButton = true,
+}: BrandFilterProps) {
   const normalizedValue = value.toLowerCase();
 
   return (

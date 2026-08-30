@@ -6,7 +6,7 @@ export function FeaturesSectionAbout() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid gap-8 text-center md:grid-cols-3">
           <div className="flex flex-col items-center">
-            <div className="bg-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
               <Headphones className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 text-xl font-bold">Soporte de Productos</h3>
@@ -17,7 +17,7 @@ export function FeaturesSectionAbout() {
             </p>
           </div>
           <div className="flex flex-col items-center">
-            <div className="bg-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
               <User className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 text-xl font-bold">Cuenta Personal</h3>
@@ -27,7 +27,7 @@ export function FeaturesSectionAbout() {
             </p>
           </div>
           <div className="flex flex-col items-center">
-            <div className="bg-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
               <Tag className="h-8 w-8 text-white" />
             </div>
             <h3 className="mb-2 text-xl font-bold">Ahorros Increíbles</h3>
@@ -42,4 +42,3 @@ export function FeaturesSectionAbout() {
     </section>
   );
 }
-

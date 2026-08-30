@@ -58,4 +58,3 @@ function CartItem({ item, quantity, onUpdateQuantity }: CartItemProps) {
 }
 
 export default CartItem;
-

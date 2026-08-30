@@ -1,10 +1,10 @@
 ﻿function NewsletterBenefits() {
   return (
-    <div className="bg-muted/40 mb-6 rounded-lg p-6">
-      <h3 className="text-foreground mb-3 font-semibold">
+    <div className="mb-6 rounded-lg bg-muted/40 p-6">
+      <h3 className="mb-3 font-semibold text-foreground">
         Beneficios de suscribirte:
       </h3>
-      <ul className="text-muted-foreground space-y-2 text-sm">
+      <ul className="space-y-2 text-sm text-muted-foreground">
         <li className="flex items-start gap-2">
           <span>Acceso anticipado a nuevos productos y lanzamientos</span>
         </li>

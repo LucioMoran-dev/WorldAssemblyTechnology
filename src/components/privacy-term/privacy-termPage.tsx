@@ -4,7 +4,7 @@ import { MainContent } from "@/components/privacy-term/mainContentPrivacy/mainCo
 export default function PrivacyPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="bg-background flex-1">
+      <main className="flex-1 bg-background">
         {/* Main Content */}
         <MainContent />
 

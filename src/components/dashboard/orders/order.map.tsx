@@ -37,7 +37,7 @@ function OrderMap() {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-muted h-48 animate-pulse rounded-lg" />
+          <div key={i} className="h-48 animate-pulse rounded-lg bg-muted" />
         ))}
       </div>
     );
@@ -48,15 +48,15 @@ function OrderMap() {
       {orders && orders.length > 0 ? (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="border-border rounded-lg border p-6">
+            <div key={order.id} className="rounded-lg border border-border p-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <Package className="text-muted-foreground h-8 w-8" />
+                  <Package className="h-8 w-8 text-muted-foreground" />
                   <div>
-                    <h3 className="text-foreground font-bold">
+                    <h3 className="font-bold text-foreground">
                       Pedido #{order.id.slice(0, 8)}
                     </h3>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-sm text-muted-foreground">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
@@ -68,24 +68,24 @@ function OrderMap() {
                 </span>
               </div>
 
-              <div className="border-border mb-4 grid gap-4 border-y py-4 md:grid-cols-3">
+              <div className="mb-4 grid gap-4 border-y border-border py-4 md:grid-cols-3">
                 <div>
-                  <p className="text-muted-foreground text-sm">Total</p>
-                  <p className="text-foreground font-semibold">
+                  <p className="text-sm text-muted-foreground">Total</p>
+                  <p className="font-semibold text-foreground">
                     ${order.orderDetail.total.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground text-sm">Articulos</p>
-                  <p className="text-foreground font-semibold">
+                  <p className="text-sm text-muted-foreground">Articulos</p>
+                  <p className="font-semibold text-foreground">
                     {order.orderDetail.items.length} productos
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     Numero de Orden
                   </p>
-                  <p className="text-foreground font-semibold">
+                  <p className="font-semibold text-foreground">
                     #{order.id.slice(0, 8)}
                   </p>
                 </div>
@@ -107,12 +107,12 @@ function OrderMap() {
           ))}
         </div>
       ) : (
-        <div className="border-border rounded-lg border p-12 text-center">
+        <div className="rounded-lg border border-border p-12 text-center">
           <Package className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="text-foreground mb-2 text-lg font-semibold">
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
             No tienes pedidos aun
           </h3>
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6 text-muted-foreground">
             Comienza a explorar nuestros productos y realiza tu primera compra
           </p>
           <Button className="bg-blue-600 hover:bg-blue-700" asChild>

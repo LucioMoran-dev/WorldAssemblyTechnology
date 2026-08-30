@@ -21,7 +21,9 @@ export function FeaturesSection() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600">
               <Clock className="h-8 w-8 text-white" />
             </div>
-            <h3 className="mb-2 font-bold text-foreground">Reparación Rápida</h3>
+            <h3 className="mb-2 font-bold text-foreground">
+              Reparación Rápida
+            </h3>
             <p className="text-sm text-muted-foreground">
               La mayoría de reparaciones se completan en 2-3 días hábiles.
             </p>
@@ -30,7 +32,9 @@ export function FeaturesSection() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600">
               <Shield className="h-8 w-8 text-white" />
             </div>
-            <h3 className="mb-2 font-bold text-foreground">Garantía Extendida</h3>
+            <h3 className="mb-2 font-bold text-foreground">
+              Garantía Extendida
+            </h3>
             <p className="text-sm text-muted-foreground">
               90 días de garantía en todas las reparaciones realizadas.
             </p>
@@ -40,4 +44,3 @@ export function FeaturesSection() {
     </section>
   );
 }
-

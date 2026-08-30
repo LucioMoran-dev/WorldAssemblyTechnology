@@ -22,8 +22,12 @@ export function PriceRangeFilter({
   const timeoutMinRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timeoutMaxRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => { setLocalMin(minPrice); }, [minPrice]);
-  useEffect(() => { setLocalMax(maxPrice); }, [maxPrice]);
+  useEffect(() => {
+    setLocalMin(minPrice);
+  }, [minPrice]);
+  useEffect(() => {
+    setLocalMax(maxPrice);
+  }, [maxPrice]);
 
   const handleMinChange = (val: string) => {
     setLocalMin(val);

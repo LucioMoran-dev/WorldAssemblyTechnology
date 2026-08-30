@@ -12,4 +12,4 @@
  * DEBEN venir de la API del backend.
  */
 
-export * from './ui-constants';
+export * from "./ui-constants";

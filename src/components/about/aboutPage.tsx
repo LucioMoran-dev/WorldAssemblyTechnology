@@ -8,7 +8,7 @@ import { WorldSection } from "@/components/about/worldSection";
 
 export default function AboutPage() {
   return (
-    <div className="bg-background min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Page Title */}
       <div className="mx-auto max-w-7xl px-4 py-8">
         <h1 className="text-4xl font-bold">Nosotros</h1>

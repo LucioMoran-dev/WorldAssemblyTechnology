@@ -53,7 +53,7 @@ export function MiniWishlist({ isOpen, onClose }: MiniWishlistProps) {
   return (
     <>
       <div
-        className="animate-in fade-in fixed inset-0 z-40 bg-black/30 duration-200"
+        className="fixed inset-0 z-40 animate-in bg-black/30 duration-200 fade-in"
         onClick={onClose}
         aria-hidden
       />
@@ -62,16 +62,16 @@ export function MiniWishlist({ isOpen, onClose }: MiniWishlistProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="mini-wishlist-title"
-        className="animate-in fade-in zoom-in-95 border-border bg-card fixed top-16 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] rounded-lg border shadow-2xl duration-200"
+        className="fixed top-16 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] animate-in rounded-lg border border-border bg-card shadow-2xl duration-200 zoom-in-95 fade-in"
       >
-        <div className="border-border border-b p-4">
+        <div className="border-b border-border p-4">
           <div className="flex items-center justify-center gap-2">
             <Heart className="h-5 w-5 fill-red-500 text-red-500" />
             <h3 id="mini-wishlist-title" className="text-lg font-bold">
               Mi Lista de Deseos
             </h3>
           </div>
-          <p className="text-muted-foreground text-center text-sm">
+          <p className="text-center text-sm text-muted-foreground">
             {itemCount} {itemCount === 1 ? "articulo" : "articulos"} guardados
           </p>
         </div>
@@ -89,33 +89,33 @@ export function MiniWishlist({ isOpen, onClose }: MiniWishlistProps) {
           <div className="mb-4 max-h-[300px] space-y-2 overflow-y-auto pr-1">
             {isLoading ? (
               <div className="space-y-2 py-4">
-                <div className="bg-muted h-12 w-full animate-pulse rounded" />
-                <div className="bg-muted h-12 w-full animate-pulse rounded" />
+                <div className="h-12 w-full animate-pulse rounded bg-muted" />
+                <div className="h-12 w-full animate-pulse rounded bg-muted" />
               </div>
             ) : items.length === 0 ? (
-              <p className="text-muted-foreground py-8 text-center text-sm">
+              <p className="py-8 text-center text-sm text-muted-foreground">
                 Tu lista de deseos esta vacia
               </p>
             ) : (
               items.map((item) => (
                 <div
                   key={item.id}
-                  className="border-border hover:bg-muted/40 flex items-center gap-3 rounded border p-2 transition-colors"
+                  className="flex items-center gap-3 rounded border border-border p-2 transition-colors hover:bg-muted/40"
                 >
                   <div className="relative h-12 w-12 flex-shrink-0">
                     <Image
                       src={item.product.imgUrls?.[0] || "/placeholder.svg"}
                       alt={item.product.name}
                       fill
-                      className="bg-muted/40 rounded object-contain"
+                      className="rounded bg-muted/40 object-contain"
                     />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <p className="text-foreground line-clamp-1 text-xs font-semibold">
+                    <p className="line-clamp-1 text-xs font-semibold text-foreground">
                       {item.product.name}
                     </p>
-                    <p className="text-muted-foreground text-[10px]">
+                    <p className="text-[10px] text-muted-foreground">
                       ${item.product.basePrice.toLocaleString()}
                     </p>
                   </div>
@@ -127,7 +127,7 @@ export function MiniWishlist({ isOpen, onClose }: MiniWishlistProps) {
                       className="group rounded p-1 hover:bg-blue-50"
                       title="Ver producto"
                     >
-                      <ArrowRight className="text-muted-foreground h-3.5 w-3.5 group-hover:text-blue-500" />
+                      <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-blue-500" />
                     </Link>
                     <button
                       onClick={() => handleRemove(item.product.id)}
@@ -135,7 +135,7 @@ export function MiniWishlist({ isOpen, onClose }: MiniWishlistProps) {
                       className="group rounded p-1 hover:bg-red-50"
                       title="Eliminar de favoritos"
                     >
-                      <X className="text-muted-foreground h-3.5 w-3.5 group-hover:text-red-500" />
+                      <X className="h-3.5 w-3.5 text-muted-foreground group-hover:text-red-500" />
                     </button>
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export function MiniWishlist({ isOpen, onClose }: MiniWishlistProps) {
                 onClick={handleClearAll}
                 disabled={clearWishlistMutation.isPending}
                 variant="outline"
-                className="border-border text-muted-foreground hover:bg-muted/40 h-10 w-full text-sm hover:text-red-500"
+                className="h-10 w-full border-border text-sm text-muted-foreground hover:bg-muted/40 hover:text-red-500"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Vaciar Lista de Deseos

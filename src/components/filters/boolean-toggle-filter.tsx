@@ -8,7 +8,11 @@ interface BooleanToggleFilterProps {
   onChange: (value: string) => void;
 }
 
-export function BooleanToggleFilter({ label, value, onChange }: BooleanToggleFilterProps) {
+export function BooleanToggleFilter({
+  label,
+  value,
+  onChange,
+}: BooleanToggleFilterProps) {
   const isChecked = value === "true";
 
   return (

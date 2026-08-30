@@ -17,7 +17,7 @@ export function CustomerStats({ stats }: CustomerStatsProps) {
           {/* Left side - Stats */}
           <div className="space-y-6">
             <div className="space-y-2">
-              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
                 Desde 2021
               </p>
               <h2 className="text-4xl font-bold text-foreground">
@@ -50,4 +50,3 @@ export function CustomerStats({ stats }: CustomerStatsProps) {
     </section>
   );
 }
-
