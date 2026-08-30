@@ -9,36 +9,17 @@ import { getUserFacingMessage } from "@/utils";
 
 /**
  * Hook para obtener categorías con filtros opcionales y paginación
- *
- * @param params - Parámetros de búsqueda opcionales
- * @param params.page - Número de página
- * @param params.limit - Items por página
- * @param params.category - Nombre de categoría para filtrar
- *
- * @example
- * // Buscar categoría "laptops"
- * const { data } = useCategories({ category: "laptops" });
- * const products = data?.items[0]?.products ?? [];
- *
- * @example
- * // Listar todas con paginación
- * const { data } = useCategories({ page: 1, limit: 20 });
  */
 export function useCategories(params?: CategorySearchParams) {
   return useQuery({
     queryKey: ["categories", params],
     queryFn: () => categoryService.getAll(params),
-    staleTime: 5 * 60 * 1000, // 5 minutos
+    staleTime: 5 * 60 * 1000,
   });
 }
 
 /**
  * Hook para obtener una categoría por ID con sus productos
- *
- * @param id - UUID de la categoría
- *
- * @example
- * const { data: category } = useCategory("550e8400-e29b-41d4-a716-446655440000");
  */
 export function useCategory(id: string) {
   return useQuery({
@@ -51,10 +32,6 @@ export function useCategory(id: string) {
 
 /**
  * Mutation para crear categoría (Admin)
- *
- * @example
- * const { mutate } = useCreateCategory();
- * mutate({ categoryName: "Tablets" });
  */
 export function useCreateCategory() {
   const queryClient = useQueryClient();
@@ -73,10 +50,6 @@ export function useCreateCategory() {
 
 /**
  * Mutation para cargar categorías iniciales (Admin)
- *
- * @example
- * const { mutate } = useSeedCategories();
- * mutate();
  */
 export function useSeedCategories() {
   const queryClient = useQueryClient();

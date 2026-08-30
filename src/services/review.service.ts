@@ -3,6 +3,7 @@ import type {
   IReviews,
   IReviewAdmin,
   PaginatedReviews,
+  PaginatedMyReviews,
   ICreateReviewDto,
   IReviewResponse,
   ICanReviewResponse,
@@ -42,6 +43,21 @@ export const reviewService = {
     const response = await apiClient.get<PaginatedReviews>("/review", {
       params,
     });
+    return response.data;
+  },
+
+  /**
+   * GET /review/my-reviews - Mis reseñas (paginado)
+   * Requiere: AUTH. Scopeado por el token: devuelve solo las del usuario.
+   */
+  getMyReviews: async (params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedMyReviews> => {
+    const response = await apiClient.get<PaginatedMyReviews>(
+      "/review/my-reviews",
+      { params }
+    );
     return response.data;
   },
 

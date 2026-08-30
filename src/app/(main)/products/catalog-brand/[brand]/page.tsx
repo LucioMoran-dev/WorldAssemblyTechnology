@@ -68,7 +68,11 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
     : undefined;
 
   // Server-side products query: brand from URL + additional filters
-  const { data: productsData, isLoading } = useProducts({
+  const {
+    data: productsData,
+    isLoading,
+    isFetching,
+  } = useProducts({
     page,
     limit,
     brand: brandSlug,
@@ -95,6 +99,10 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
   });
 
   const products = productsData?.items ?? [];
+
+  // "Actualizando": refetch en curso con datos previos en pantalla (gracias a
+  // keepPreviousData). Distinto de isLoading (primera carga → skeletons).
+  const isUpdating = isFetching && !isLoading;
 
   return (
     <div className="min-h-screen bg-white">
@@ -142,9 +150,16 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
 
             {/* Toolbar */}
             <div className="mb-6 flex items-center justify-between border-b border-gray-200 pb-4">
-              <span className="text-sm text-gray-600">
+              <span className="flex items-center gap-2 text-sm text-gray-600">
                 Mostrando {products.length} de {productsData?.total ?? 0}{" "}
                 productos
+                {/* Feedback sutil mientras se refetchean resultados filtrados */}
+                {isUpdating && (
+                  <span className="flex items-center gap-1.5 text-blue-600">
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                    Actualizando resultados…
+                  </span>
+                )}
               </span>
               <div className="flex items-center gap-2">
                 <Button
@@ -187,7 +202,11 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
             ) : products.length > 0 ? (
               <>
                 {viewMode === "grid" ? (
-                  <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                  <div
+                    className={`mb-8 grid grid-cols-2 gap-4 transition-opacity sm:grid-cols-3 lg:grid-cols-4 ${
+                      isUpdating ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
                     {products.map((product) => (
                       <ProductCard
                         key={product.id}
@@ -196,7 +215,11 @@ function CatalogBrandContent({ brandSlug }: { brandSlug: string }) {
                     ))}
                   </div>
                 ) : (
-                  <div className="mb-8 space-y-4">
+                  <div
+                    className={`mb-8 space-y-4 transition-opacity ${
+                      isUpdating ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
                     {products.map((product) => (
                       <div
                         key={product.id}

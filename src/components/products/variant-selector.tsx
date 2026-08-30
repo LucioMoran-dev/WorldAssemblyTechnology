@@ -1,8 +1,9 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useMemo } from "react";
 
-import { VARIANT_TYPE_LABELS } from "@/seeds";
+import { getColorHex, LIGHT_COLOR_NAMES, VARIANT_TYPE_LABELS } from "@/seeds";
 import type { IProductVariant } from "@/types";
 
 interface VariantSelectorProps {
@@ -35,7 +36,6 @@ export function VariantSelector({
   selected,
   onSelect,
 }: VariantSelectorProps) {
-  // Agrupar por tipo y ordenar cada grupo por sortOrder
   const groups = useMemo(() => {
     const byType = new Map<string, IProductVariant[]>();
     for (const variant of variants) {
@@ -63,39 +63,97 @@ export function VariantSelector({
               </span>
             )}
           </p>
-          <div className="flex flex-wrap gap-2">
-            {options.map((option) => {
-              const isSelected = selected[type] === option.id;
-              const isDisabled = !option.isAvailable || option.stock === 0;
-              const modifier = formatModifier(option.priceModifier);
+          {type === "color" ? (
+            <div className="flex flex-wrap items-center gap-3">
+              {options.map((option) => {
+                const hex = getColorHex(option.name);
+                if (!hex) return null;
 
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => onSelect(type, option.id)}
-                  disabled={isDisabled}
-                  title={isDisabled ? "Sin stock" : undefined}
-                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-                    isSelected
-                      ? "border-blue-600 bg-blue-50 text-blue-700"
-                      : isDisabled
-                        ? "cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400 line-through"
-                        : "border-gray-300 bg-white text-gray-700 hover:border-blue-600"
-                  }`}
-                >
-                  {option.name}
-                  {modifier && (
-                    <span
-                      className={`ml-1.5 text-xs ${isSelected ? "text-blue-600" : "text-gray-500"}`}
+                const isSelected = selected[type] === option.id;
+                const isDisabled = !option.isAvailable || option.stock === 0;
+                const isLight = LIGHT_COLOR_NAMES.includes(option.name);
+                const modifier = formatModifier(option.priceModifier);
+
+                return (
+                  <div
+                    key={option.id}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onSelect(type, option.id)}
+                      disabled={isDisabled}
+                      title={
+                        isDisabled ? `${option.name} — sin stock` : option.name
+                      }
+                      aria-label={option.name}
+                      className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                        isLight ? "border border-gray-300" : ""
+                      } ${
+                        isDisabled
+                          ? "cursor-not-allowed opacity-40"
+                          : isSelected
+                            ? "ring-2 ring-blue-600 ring-offset-2"
+                            : "hover:ring-2 hover:ring-gray-300 hover:ring-offset-1"
+                      }`}
+                      style={{ backgroundColor: hex }}
                     >
-                      {modifier}
+                      {isSelected && (
+                        <Check
+                          className={`h-4 w-4 ${isLight ? "text-gray-900" : "text-white"}`}
+                          strokeWidth={3}
+                        />
+                      )}
+                      {/* Barra diagonal para el color sin stock */}
+                      {isDisabled && (
+                        <span className="absolute h-0.5 w-full rotate-45 bg-red-500" />
+                      )}
+                    </button>
+                    <span
+                      className={`text-xs ${isSelected ? "font-medium text-blue-700" : "text-gray-500"}`}
+                    >
+                      {option.name}
+                      {modifier && <span className="ml-0.5">{modifier}</span>}
                     </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {options.map((option) => {
+                const isSelected = selected[type] === option.id;
+                const isDisabled = !option.isAvailable || option.stock === 0;
+                const modifier = formatModifier(option.priceModifier);
+
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => onSelect(type, option.id)}
+                    disabled={isDisabled}
+                    title={isDisabled ? "Sin stock" : undefined}
+                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                      isSelected
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : isDisabled
+                          ? "cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400 line-through"
+                          : "border-gray-300 bg-white text-gray-700 hover:border-blue-600"
+                    }`}
+                  >
+                    {option.name}
+                    {modifier && (
+                      <span
+                        className={`ml-1.5 text-xs ${isSelected ? "text-blue-600" : "text-gray-500"}`}
+                      >
+                        {modifier}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       ))}
     </div>

@@ -22,7 +22,6 @@ export function SearchInput({
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isFirstRender = useRef(true);
 
-  // Sync external value changes
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;

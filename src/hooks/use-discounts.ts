@@ -20,8 +20,7 @@ import { getUserFacingMessage } from "@/utils";
  */
 export function usePreviewDiscounts() {
   return useMutation({
-    mutationFn: (promoCode?: string) =>
-      cartService.previewDiscounts(promoCode),
+    mutationFn: (promoCode?: string) => cartService.previewDiscounts(promoCode),
     onError: (error: unknown) => {
       toast.error(getUserFacingMessage(error, "Error al calcular descuentos"));
     },
@@ -47,6 +46,21 @@ export function useProductDiscounts(params?: IDiscountListParams) {
   });
 }
 
+/**
+ * Descuento automático VIGENTE de un producto (GET /discounts/products/:id).
+ * Público. Devuelve null si el producto no tiene descuento activo, por eso
+ * la UI debe tratar la ausencia como caso normal, no como error.
+ */
+export function useProductDiscount(productId: string) {
+  return useQuery({
+    queryKey: ["discounts", "products", productId],
+    queryFn: () => discountService.getProductDiscount(productId),
+    enabled: !!productId,
+    staleTime: 2 * 60 * 1000,
+    retry: false,
+  });
+}
+
 export function useCreateProductDiscount() {
   const queryClient = useQueryClient();
 
@@ -68,8 +82,13 @@ export function useUpdateProductDiscount() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: IUpdateProductDiscountDto }) =>
-      discountService.updateProductDiscount(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: IUpdateProductDiscountDto;
+    }) => discountService.updateProductDiscount(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["discounts", "products"] });
       queryClient.invalidateQueries({ queryKey: ["products"] });

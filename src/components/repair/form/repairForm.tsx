@@ -205,9 +205,7 @@ export function RepairForm() {
                   rows={4}
                   placeholder="Por ejemplo: La pantalla no enciende, se calienta mucho, hace ruidos extraños, etc."
                   className={`w-full resize-none rounded-lg border px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none ${
-                    errors.issueDescription
-                      ? "border-red-500"
-                      : "border-border"
+                    errors.issueDescription ? "border-red-500" : "border-border"
                   }`}
                 />
                 {errors.issueDescription && (
@@ -222,7 +220,7 @@ export function RepairForm() {
                 </label>
                 <select
                   {...register("urgency")}
-                  className={`w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none ${
+                  className={`w-full rounded-lg border bg-background px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:outline-none ${
                     errors.urgency ? "border-red-500" : "border-border"
                   }`}
                 >
@@ -251,4 +249,3 @@ export function RepairForm() {
     </div>
   );
 }
-

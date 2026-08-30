@@ -7,8 +7,10 @@ import {
   LayoutDashboard,
   Mail,
   Package,
+  RotateCcw,
   Settings,
   ShoppingCart,
+  Star,
   Users,
   Wrench,
 } from "lucide-react";
@@ -22,11 +24,21 @@ const menuItems = [
   { label: "Gestión de Productos", href: "/admin/products", icon: Package },
   { label: "Gestión de Ordenes", href: "/admin/orders", icon: ShoppingCart },
   { label: "Gestión de Usuarios", href: "/admin/users", icon: Users },
-  { label: "Gestión de Categorias", href: "/admin/categories", icon: FolderTree },
-  { label: "Gestión de Descuentos", href: "/admin/discounts", icon: BadgePercent },
+  {
+    label: "Gestión de Categorias",
+    href: "/admin/categories",
+    icon: FolderTree,
+  },
+  {
+    label: "Gestión de Descuentos",
+    href: "/admin/discounts",
+    icon: BadgePercent,
+  },
+  { label: "Reseñas", href: "/admin/reviews", icon: Star },
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { label: "Reparaciones", href: "/admin/repairs", icon: Wrench },
   { label: "Pagos", href: "/admin/payments", icon: CreditCard },
+  { label: "Reembolsos", href: "/admin/refunds", icon: RotateCcw },
   { label: "Configuracion", href: "/admin/settings", icon: Settings },
 ];
 
@@ -64,4 +76,3 @@ export function AdminSidebar() {
     </aside>
   );
 }
-

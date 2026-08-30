@@ -24,10 +24,10 @@ function ReceiveNewsletter() {
   return (
     <div className="mb-6 space-y-4 rounded-lg bg-blue-50 p-4">
       <div>
-        <p className="text-foreground mb-2 text-sm font-semibold">
+        <p className="mb-2 text-sm font-semibold text-gray-900">
           Recibir newsletter
         </p>
-        <p className="text-muted-foreground text-xs">
+        <p className="text-xs text-gray-600">
           Suscribete con tu email. Para desuscribirte desde esta pantalla
           necesitas el token del correo de baja.
         </p>

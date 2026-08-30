@@ -19,7 +19,7 @@ function decodeRoleFromJwt(token: string | undefined): string | null {
   }
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   const backendToken = request.cookies.get("access_token")?.value;
@@ -33,10 +33,7 @@ export function middleware(request: NextRequest) {
     decodeRoleFromJwt(backendToken);
 
   const isAuthRoute =
-    pathname.startsWith("/auth/singin") ||
-    pathname.startsWith("/auth/singup") ||
-    pathname.startsWith("/auth/singin") ||
-    pathname.startsWith("/auth/singup");
+    pathname.startsWith("/auth/signin") || pathname.startsWith("/auth/signup");
 
   if (isAuthRoute && isAuthenticated) {
     return NextResponse.redirect(new URL("/", request.url));
@@ -72,7 +69,5 @@ export const config = {
     "/cart/review-payment",
     "/auth/signin",
     "/auth/signup",
-    "/auth/singin",
-    "/auth/singup",
   ],
 };

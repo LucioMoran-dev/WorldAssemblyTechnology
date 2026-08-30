@@ -20,7 +20,7 @@ function OffersButton() {
     <Button
       variant="default"
       size="sm"
-      className="ml-1 px-2.5 text-[11px] whitespace-nowrap transition-all duration-500 ease-in-out hover:-translate-y-px hover:bg-sky-500 hover:text-white hover:shadow-md hover:ring-2 hover:shadow-sky-500/20 hover:ring-sky-400/40 lg:px-2 lg:text-xs xl:px-4 xl:text-sm"
+      className="ml-1 rounded-2xl px-2.5 text-[11px] whitespace-nowrap transition-all duration-500 ease-in-out hover:-translate-y-px hover:bg-sky-500 hover:text-white hover:shadow-md hover:ring-2 hover:shadow-sky-500/20 hover:ring-sky-400/40 lg:px-2 lg:text-xs xl:px-4 xl:text-sm"
     >
       Ofertas
     </Button>
@@ -29,7 +29,7 @@ function OffersButton() {
 
 export function NavHeaderCategorias() {
   return (
-    <nav className="border-border bg-card/90 hidden flex-1 items-center justify-end gap-0.5 rounded-full border px-1 py-1 shadow-lg lg:mr-1 lg:flex xl:gap-2 xl:px-3">
+    <nav className="hidden items-center gap-0.5 rounded-full border border-border bg-card/90 px-1 py-1 shadow-lg lg:mr-1 lg:flex xl:gap-2 xl:px-3">
       {categories.map((category) => (
         <Link
           key={category.href}
@@ -48,14 +48,14 @@ export function NavHeaderCategorias() {
 
 export function NavHeaderCategoriasMobile() {
   return (
-    <div className="border-border border-t py-3 lg:hidden">
-      <nav className="border-border bg-card max-h-[65vh] overflow-y-auto rounded-2xl border p-2 shadow-lg">
+    <div className="border-t border-border py-3 lg:hidden">
+      <nav className="max-h-[65vh] overflow-y-auto rounded-2xl border border-border bg-card p-2 shadow-lg">
         <div className="flex flex-col gap-1">
           {categories.map((category) => (
             <Link
               key={`mobile-${category.href}`}
               href={category.href}
-              className="text-muted-foreground hover:bg-muted/70 hover:text-foreground focus-visible:bg-muted/70 focus-visible:text-foreground block rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 focus-visible:outline-none"
+              className="block rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-muted/70 hover:text-foreground focus-visible:bg-muted/70 focus-visible:text-foreground focus-visible:outline-none"
             >
               {category.label}
             </Link>

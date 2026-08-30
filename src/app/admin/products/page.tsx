@@ -89,7 +89,11 @@ function AdminProductsContent() {
     return { value: name, label: name };
   });
 
-  const { data: productsData, isLoading } = useProducts({
+  const {
+    data: productsData,
+    isLoading,
+    isFetching,
+  } = useProducts({
     page,
     limit,
     name: filters.name || undefined,
@@ -119,6 +123,10 @@ function AdminProductsContent() {
           : undefined,
   });
 
+  // "Actualizando": refetch en curso con datos previos en pantalla (gracias a
+  // keepPreviousData). Distinto de isLoading (primera carga → skeletons).
+  const isUpdating = isFetching && !isLoading;
+
   const deleteProduct = useDeleteProduct();
   const reactivateProduct = useReactivateProduct();
 
@@ -142,7 +150,7 @@ function AdminProductsContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-foreground text-3xl font-bold">
+        <h1 className="text-3xl font-bold text-foreground">
           Gestión de Productos
         </h1>
         <Button
@@ -217,7 +225,7 @@ function AdminProductsContent() {
           >
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Color
                 </p>
                 <ColorFilter
@@ -226,7 +234,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   RAM
                 </p>
                 <SpecSelectFilter
@@ -236,7 +244,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Almacenamiento
                 </p>
                 <SpecSelectFilter
@@ -246,7 +254,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Procesador
                 </p>
                 <SpecSelectFilter
@@ -256,7 +264,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   VRAM
                 </p>
                 <SpecSelectFilter
@@ -266,7 +274,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Tamaño de Pantalla
                 </p>
                 <SpecSelectFilter
@@ -276,7 +284,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Resolución
                 </p>
                 <SpecSelectFilter
@@ -286,7 +294,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Tasa de Refresco
                 </p>
                 <SpecSelectFilter
@@ -296,7 +304,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Conectividad
                 </p>
                 <SpecSelectFilter
@@ -306,7 +314,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Condición
                 </p>
                 <SpecSelectFilter
@@ -316,7 +324,7 @@ function AdminProductsContent() {
                 />
               </div>
               <div>
-                <p className="text-muted-foreground mb-2 text-xs font-semibold">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
                   Switch (teclados)
                 </p>
                 <SpecSelectFilter
@@ -330,40 +338,52 @@ function AdminProductsContent() {
         </div>
       </FiltersPanel>
 
-      <div className="border-border bg-card overflow-hidden rounded-lg border">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
+        {/* Feedback sutil mientras se refetchean resultados con nuevos filtros */}
+        {isUpdating && (
+          <div className="flex items-center gap-2 border-b border-border bg-blue-50 px-6 py-2 text-sm text-blue-700">
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-blue-700 border-t-transparent" />
+            Actualizando resultados…
+          </div>
+        )}
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="border-border bg-muted/40 border-b">
+            <thead className="border-b border-border bg-muted/40">
               <tr>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Producto
                 </th>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Marca
                 </th>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Categoria
                 </th>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Precio
                 </th>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Stock
                 </th>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Estado
                 </th>
-                <th className="text-muted-foreground px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody>
+            {/* Tabla atenuada y sin clicks mientras llegan los nuevos resultados */}
+            <tbody
+              className={`transition-opacity ${
+                isUpdating ? "pointer-events-none opacity-60" : ""
+              }`}
+            >
               {isLoading ? (
                 [...Array(5)].map((_, i) => (
-                  <tr key={i} className="border-border border-b">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={7} className="px-6 py-4">
-                      <div className="bg-muted h-12 animate-pulse rounded" />
+                      <div className="h-12 animate-pulse rounded bg-muted" />
                     </td>
                   </tr>
                 ))
@@ -371,11 +391,11 @@ function AdminProductsContent() {
                 productsData.items.map((product) => (
                   <tr
                     key={product.id}
-                    className="border-border hover:bg-muted/40 border-b transition-colors"
+                    className="border-b border-border transition-colors hover:bg-muted/40"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="bg-muted relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg">
+                        <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg bg-muted">
                           {product.imgUrls?.[0] ? (
                             <Image
                               src={product.imgUrls[0]}
@@ -385,7 +405,7 @@ function AdminProductsContent() {
                               className="object-cover"
                             />
                           ) : (
-                            <span className="text-muted-foreground text-xs">
+                            <span className="text-xs text-muted-foreground">
                               IMG
                             </span>
                           )}
@@ -395,27 +415,27 @@ function AdminProductsContent() {
                             href={`/products/${product.id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-foreground hover:text-primary font-medium hover:underline"
+                            className="font-medium text-foreground hover:text-primary hover:underline"
                             title="Ver como lo ve el cliente (nueva pestaña)"
                           >
                             {product.name}
                           </Link>
-                          <p className="text-muted-foreground text-xs">
+                          <p className="text-xs text-muted-foreground">
                             {product.model || "N/A"}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="text-muted-foreground px-6 py-4 text-sm">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {product.brand}
                     </td>
-                    <td className="text-muted-foreground px-6 py-4 text-sm">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {product.category_name ||
                         product.category?.category_name ||
                         product.category?.name ||
                         "Sin categoria"}
                     </td>
-                    <td className="text-foreground px-6 py-4 text-sm font-medium">
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
                       ${product.basePrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4">
@@ -447,7 +467,9 @@ function AdminProductsContent() {
                         </button>
                         {product.isActive ? (
                           <button
-                            onClick={() => handleDelete(product.id, product.name)}
+                            onClick={() =>
+                              handleDelete(product.id, product.name)
+                            }
                             disabled={deleteProduct.isPending}
                             className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
                             title="Desactivar producto"
@@ -472,7 +494,7 @@ function AdminProductsContent() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="text-muted-foreground px-6 py-12 text-center"
+                    className="px-6 py-12 text-center text-muted-foreground"
                   >
                     No se encontraron productos
                   </td>
@@ -528,7 +550,7 @@ function AdminProductsContent() {
 export default function AdminProductsPage() {
   return (
     <Suspense
-      fallback={<div className="text-muted-foreground p-6">Cargando...</div>}
+      fallback={<div className="p-6 text-muted-foreground">Cargando...</div>}
     >
       <AdminProductsContent />
     </Suspense>

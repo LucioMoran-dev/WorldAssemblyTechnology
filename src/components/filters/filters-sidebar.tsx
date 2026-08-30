@@ -27,9 +27,7 @@ import { SpecSelectFilter } from "./spec-select-filter";
 
 interface FiltersSidebarProps {
   filters: Record<string, string | undefined>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFilter: (...args: any[]) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFilters: (partial: any) => void;
   clearAllFilters: () => void;
   activeFilterCount: number;

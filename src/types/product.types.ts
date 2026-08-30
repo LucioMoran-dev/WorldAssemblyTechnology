@@ -72,11 +72,7 @@ export interface IProduct {
   model?: string;
   basePrice: number;
   baseStock: number;
-  // Stock total calculado por el back: para productos con variantes suma el
-  // stock de las variantes (baseStock queda en 0). Usar SIEMPRE
-  // `totalStock ?? baseStock` para decidir disponibilidad.
   totalStock?: number;
-  // Precios calculados por el back cuando hay descuentos activos
   finalPrice?: number;
   originalPrice?: number;
   hasActiveDiscount?: boolean;
@@ -90,8 +86,6 @@ export interface IProduct {
   featured: boolean;
   createdAt: string;
   updatedAt: string;
-  // El back devuelve el nombre de la categoría como string de nivel superior.
-  // El objeto `category` anidado solo viene en algunos endpoints (no en la lista).
   category_name?: string;
   category?: ICategory;
   variants?: IProductVariant[];
@@ -151,13 +145,10 @@ export interface IUpdateVariantDto {
   sortOrder?: number;
 }
 
-// Search & Filters
 export interface IProductsSearchQuery {
   name?: string;
   basePrice?: number;
   brand?: string;
-  // Filtro de categoría por NOMBRE (match exacto, case-insensitive).
-  // El viejo `categoryId` ya no existe en el back: mandarlo da 400.
   category_name?: string;
   color?: string;
   minPrice?: number;
@@ -165,7 +156,6 @@ export interface IProductsSearchQuery {
   featured?: boolean;
   page?: number;
   limit?: number;
-  // Variant filters (match parcial case-insensitive sobre el nombre de la variante)
   ram?: string;
   storage?: string;
   processor?: string;

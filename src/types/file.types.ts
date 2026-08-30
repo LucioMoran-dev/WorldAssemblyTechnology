@@ -1,8 +1,9 @@
-/**
- * Tipos relacionados con upload de archivos
- */
-
 export interface IUploadImageResponse {
+  id: string;
+  url: string;
+}
+
+export interface IProductImage {
   id: string;
   url: string;
 }

@@ -39,7 +39,6 @@ interface UseHybridSearchReturn {
 export function useHybridSearch(
   options: UseHybridSearchOptions = {}
 ): UseHybridSearchReturn {
-  // Debounce de 500ms para evitar múltiples requests al webhook de IA
   const { debounceMs = 500, minQueryLength = 2 } = options;
 
   const [query, setQueryState] = useState("");
@@ -54,87 +53,88 @@ export function useHybridSearch(
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
 
-  const search = useCallback((searchQuery: string) => {
-    // Cerrar conexión anterior
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-
-    if (searchQuery.length < minQueryLength) {
-      setLocalResults([]);
-      setAiResults([]);
-      setIsOpen(false);
-      setError(null);
-      return;
-    }
-
-    setIsLoadingLocal(true);
-    setIsLoadingAi(true);
-    setError(null);
-    setIsOpen(true);
-
-    if (!API_URL) {
-      searchLogger.error("NEXT_PUBLIC_API_URL no está configurada");
-      setError("Error de configuración: API URL no definida");
-      setIsLoadingLocal(false);
-      setIsLoadingAi(false);
-      return;
-    }
-
-    const url = `${API_URL}/products/search/hybrid?q=${encodeURIComponent(searchQuery)}`;
-    searchLogger.debug("Iniciando búsqueda SSE", { query: searchQuery, url });
-
-    const eventSource = new EventSource(url);
-    eventSourceRef.current = eventSource;
-
-    eventSource.onmessage = (event) => {
-      try {
-        const payload: IHybridSearchStreamPayload = JSON.parse(event.data);
-
-        if (payload.source === "local") {
-          searchLogger.debug("Resultados locales recibidos", {
-            count: payload.results.length,
-          });
-          setLocalResults(payload.results);
-          setIsLoadingLocal(false);
-        }
-
-        if (payload.source === "ai") {
-          searchLogger.debug("Resultados de IA recibidos", {
-            count: payload.results.length,
-            message: payload.message,
-          });
-          setAiResults(payload.results);
-          setAiMessage(payload.message || null);
-          setIsLoadingAi(false);
-          eventSource.close();
-        }
-      } catch (e) {
-        searchLogger.error("Error parseando respuesta SSE", e);
+  const search = useCallback(
+    (searchQuery: string) => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
-    };
 
-    eventSource.onerror = (e) => {
-      const errorMessage = `SSE Error - URL: ${url}, ReadyState: ${eventSource.readyState}`;
-      searchLogger.error(errorMessage, {
-        readyState: eventSource.readyState,
-        url,
-        event: e,
-      });
+      if (searchQuery.length < minQueryLength) {
+        setLocalResults([]);
+        setAiResults([]);
+        setIsOpen(false);
+        setError(null);
+        return;
+      }
 
-      // Mensaje amigable para el usuario
-      const userMessage =
-        eventSource.readyState === EventSource.CONNECTING
-          ? "No se pudo conectar al servidor de búsqueda"
-          : "Se perdió la conexión con el servidor";
+      setIsLoadingLocal(true);
+      setIsLoadingAi(true);
+      setError(null);
+      setIsOpen(true);
 
-      setError(userMessage);
-      setIsLoadingLocal(false);
-      setIsLoadingAi(false);
-      eventSource.close();
-    };
-  }, [minQueryLength]);
+      if (!API_URL) {
+        searchLogger.error("NEXT_PUBLIC_API_URL no está configurada");
+        setError("Error de configuración: API URL no definida");
+        setIsLoadingLocal(false);
+        setIsLoadingAi(false);
+        return;
+      }
+
+      const url = `${API_URL}/products/search/hybrid?q=${encodeURIComponent(searchQuery)}`;
+      searchLogger.debug("Iniciando búsqueda SSE", { query: searchQuery, url });
+
+      const eventSource = new EventSource(url);
+      eventSourceRef.current = eventSource;
+
+      eventSource.onmessage = (event) => {
+        try {
+          const payload: IHybridSearchStreamPayload = JSON.parse(event.data);
+
+          if (payload.source === "local") {
+            searchLogger.debug("Resultados locales recibidos", {
+              count: payload.results.length,
+            });
+            setLocalResults(payload.results);
+            setIsLoadingLocal(false);
+          }
+
+          if (payload.source === "ai") {
+            searchLogger.debug("Resultados de IA recibidos", {
+              count: payload.results.length,
+              message: payload.message,
+            });
+            setAiResults(payload.results);
+            setAiMessage(payload.message || null);
+            setIsLoadingAi(false);
+            eventSource.close();
+          }
+        } catch (e) {
+          searchLogger.error("Error parseando respuesta SSE", e);
+        }
+      };
+
+      eventSource.onerror = (e) => {
+        const errorMessage = `SSE Error - URL: ${url}, ReadyState: ${eventSource.readyState}`;
+        searchLogger.error(errorMessage, {
+          readyState: eventSource.readyState,
+          url,
+          event: e,
+        });
+
+        const userMessage =
+          eventSource.readyState === EventSource.CONNECTING
+            ? "No se pudo conectar al servidor de búsqueda"
+            : "Se perdió la conexión con el servidor";
+
+        setError(userMessage);
+        setIsLoadingLocal(false);
+        setIsLoadingAi(false);
+        eventSource.close();
+      };
+    },
+    [minQueryLength]
+  );
 
   const setQuery = useCallback(
     (newQuery: string) => {

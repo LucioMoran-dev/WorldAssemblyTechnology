@@ -11,6 +11,7 @@ import { cartLogger } from "@/utils/logger";
 
 import { useAuth } from "./use-auth";
 import { useCart } from "./use-cart";
+import { useIsAdmin } from "./use-is-admin";
 
 function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError).isAxiosError !== undefined;
@@ -52,8 +53,9 @@ export function useCartQuery() {
 export function useCartSummary() {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const isLoading = useAuth((state) => state.isLoading);
+  const { isAdmin } = useIsAdmin();
 
-  const enabled = !isLoading && isAuthenticated;
+  const enabled = !isLoading && isAuthenticated && !isAdmin;
 
   if (process.env.NODE_ENV === "development") {
     cartLogger.info("useCartSummary hook called", {
@@ -70,8 +72,7 @@ export function useCartSummary() {
       return cartService.getSummary();
     },
     enabled,
-    staleTime: 15 * 1000,
-    refetchInterval: enabled ? 30 * 1000 : false,
+    staleTime: 60 * 1000,
     retry: (failureCount, error: unknown) => {
       if (isAxiosError(error) && error.response?.status === 401) return false;
       return failureCount < 2;

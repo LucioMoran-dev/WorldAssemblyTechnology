@@ -1,16 +1,10 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextCoreWebVitals,
+  ...nextTypescript,
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
@@ -23,14 +17,6 @@ const eslintConfig = [
       },
     },
 
-    /*
-       NIVELES:
-       - "off" o 0: Deshabilitada
-       - "warn" o 1: Advertencia (no bloquea)
-       - "error" o 2: Error (bloquea build)
-       -----------------------------------------------------------
-       -  newlines-between: "always" = línea vacía entre grupos
-    */
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "warn",
@@ -49,23 +35,24 @@ const eslintConfig = [
       "react/prop-types": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/set-state-in-effect": "warn",
       "react/self-closing-comp": "warn",
       "react/jsx-boolean-value": ["warn", "never"],
       "import/order": [
         "warn",
         {
           groups: [
-            "builtin", // Node.js: fs, path, http
-            "external", // npm: react, axios, lodash
-            "internal", // @/... aliases
-            "parent", // ../
-            "sibling", // ./
-            "index", // ./index
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
           ],
           "newlines-between": "always",
           alphabetize: {
-            order: "asc", // Orden ascendente (A-Z)
-            caseInsensitive: true, // Ignora mayúsculas
+            order: "asc",
+            caseInsensitive: true,
           },
         },
       ],
@@ -76,7 +63,6 @@ const eslintConfig = [
       "no-var": "error",
       eqeqeq: ["error", "always"],
       curly: ["warn", "multi-line"],
-      "@next/next/no-html-link-for-pages": "warn",
       "@next/next/no-img-element": "warn",
     },
   },
@@ -97,13 +83,7 @@ const eslintConfig = [
       ".eslintcache",
     ],
   },
-  {
-    files: ["*.config.{js,ts,mjs}"],
-    rules: {
-      "@typescript-eslint/no-var-requires": "off",
-      "import/no-anonymous-default-export": "off",
-    },
-  },
+  eslintConfigPrettier,
 ];
 
 export default eslintConfig;

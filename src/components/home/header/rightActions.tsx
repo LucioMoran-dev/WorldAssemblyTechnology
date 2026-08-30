@@ -2,6 +2,7 @@
 
 import {
   Heart,
+  LayoutDashboard,
   Loader2,
   Menu,
   Search,
@@ -18,11 +19,25 @@ import type { FormEvent, ReactNode } from "react";
 
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   useAuth,
   useCartSummary,
   useHybridSearch,
+  useIsAdmin,
   useWishlistSummary,
 } from "@/hooks";
 import { authService } from "@/services";
@@ -42,13 +57,13 @@ export const HeaderRightActions = memo(function HeaderRightActions({
   mobileNavigation,
 }: HeaderRightActionsProps) {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const { data: cartSummary } = useCartSummary();
   const { data: wishlistSummary } = useWishlistSummary();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isMiniWishlistOpen, setIsMiniWishlistOpen] = useState(false);
 
@@ -67,7 +82,6 @@ export const HeaderRightActions = memo(function HeaderRightActions({
   } = useHybridSearch({ debounceMs: 500, minQueryLength: 2 });
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
-  const accountMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -82,33 +96,6 @@ export const HeaderRightActions = memo(function HeaderRightActions({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setShowResults]);
-
-  useEffect(() => {
-    if (!isAccountMenuOpen) return;
-
-    const handleAccountOutside = (event: MouseEvent) => {
-      if (
-        accountMenuRef.current &&
-        !accountMenuRef.current.contains(event.target as Node)
-      ) {
-        setIsAccountMenuOpen(false);
-      }
-    };
-
-    const handleAccountEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsAccountMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleAccountOutside);
-    window.addEventListener("keydown", handleAccountEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", handleAccountOutside);
-      window.removeEventListener("keydown", handleAccountEscape);
-    };
-  }, [isAccountMenuOpen]);
 
   const handleProductClick = (productId: string) => {
     router.push(`/products/${productId}`);
@@ -139,10 +126,6 @@ export const HeaderRightActions = memo(function HeaderRightActions({
     () => setIsMobileMenuOpen((prev) => !prev),
     []
   );
-  const toggleAccountMenu = useCallback(
-    () => setIsAccountMenuOpen((prev) => !prev),
-    []
-  );
   const toggleMiniCart = useCallback(
     () => setIsMiniCartOpen((prev) => !prev),
     []
@@ -155,136 +138,173 @@ export const HeaderRightActions = memo(function HeaderRightActions({
   const closeMiniWishlist = useCallback(() => setIsMiniWishlistOpen(false), []);
 
   return (
-    <>
+    <TooltipProvider delayDuration={300}>
       <div className="flex h-16 items-center justify-between gap-1 sm:h-20 md:h-24">
         {logo}
         {navigation}
 
         <div className="flex items-center gap-0.5 sm:gap-1 lg:gap-1.5">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleSearch}
-            className="h-9 w-9 hover:bg-muted"
-          >
-            {isSearchOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Search className="h-5 w-5" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSearch}
+                aria-label={isSearchOpen ? "Cerrar buscador" : "Buscar"}
+                aria-expanded={isSearchOpen}
+                className="h-9 w-9 hover:bg-muted"
+              >
+                {isSearchOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Search className="h-5 w-5" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isSearchOpen ? "Cerrar buscador" : "Buscar"}
+            </TooltipContent>
+          </Tooltip>
           <ThemeToggle />
 
-          {!isLoading && isAuthenticated && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative h-9 w-9 hover:bg-muted"
-              onClick={toggleMiniWishlist}
-            >
-              <Heart className="h-5 w-5" />
+          {/* Corazón y carrito: solo para clientes autenticados. A los
+              admins se les muestra el acceso directo al panel en su lugar. */}
+          {!isLoading && isAuthenticated && !isAdmin && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-9 w-9 hover:bg-muted"
+                  onClick={toggleMiniWishlist}
+                  aria-label={`Lista de deseos (${wishlistSummary?.itemCount || 0})`}
+                >
+                  <Heart className="h-5 w-5" />
 
-              {wishlistSummary && wishlistSummary.itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
-                  {wishlistSummary.itemCount}
-                </span>
-              )}
-            </Button>
+                  {wishlistSummary && wishlistSummary.itemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
+                      {wishlistSummary.itemCount}
+                    </span>
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Lista de deseos</TooltipContent>
+            </Tooltip>
           )}
 
-          {!isLoading && isAuthenticated && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative h-9 w-9 hover:bg-muted"
-              onClick={toggleMiniCart}
-            >
-              <ShoppingCart className="h-5 w-5" />
+          {!isLoading && isAuthenticated && !isAdmin && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-9 w-9 hover:bg-muted"
+                  onClick={toggleMiniCart}
+                  aria-label={`Carrito (${cartSummary?.itemCount || 0})`}
+                >
+                  <ShoppingCart className="h-5 w-5" />
 
-              {cartSummary && cartSummary.itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
-                  {cartSummary.itemCount}
-                </span>
-              )}
-            </Button>
+                  {cartSummary && cartSummary.itemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
+                      {cartSummary.itemCount}
+                    </span>
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Carrito de compras</TooltipContent>
+            </Tooltip>
           )}
 
-          <div className="relative" ref={accountMenuRef}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleAccountMenu}
-              className="h-9 w-9 hover:bg-muted"
-            >
-              <User className="h-5 w-5" />
-            </Button>
+          {!isLoading && isAdmin && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/admin"
+                  aria-label="Panel Admin"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted"
+                >
+                  <LayoutDashboard className="h-5 w-5" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>Panel Admin</TooltipContent>
+            </Tooltip>
+          )}
+          {/* Menu de cuenta sobre Radix DropdownMenu.
+              Antes era un <div> con useState + useEffect que escuchaba
+              mousedown en document para cerrar al click afuera y keydown para
+              Escape. Eso cubria el mouse, pero no habia navegacion con flechas,
+              ni foco atrapado, ni foco devuelto al boton al cerrar, ni los
+              atributos aria que un lector de pantalla necesita.
+              Radix aporta todo eso y cierra solo al elegir una opcion, por lo
+              que ya no hacen falta los onClick de cierre en cada item. */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Menu de cuenta"
+                className="h-9 w-9 hover:bg-muted"
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
 
-            {isAccountMenuOpen && (
-              <div className="animate-in fade-in zoom-in-95 slide-in-from-top-2 absolute right-0 z-50 mt-2 w-60 rounded-2xl border border-border/70 bg-card p-2 shadow-2xl duration-200">
-                {isAuthenticated ? (
-                  <>
-                    <Link
-                      href="/dashboard"
-                      className="text-muted-foreground hover:bg-muted block px-4 py-2 text-sm"
-                      onClick={() => setIsAccountMenuOpen(false)}
-                    >
-                      Mi Cuenta
-                    </Link>
-                    {user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? (
-                      <Link
-                        href="/admin"
-                        className="text-muted-foreground hover:bg-muted block px-4 py-2 text-sm"
-                        onClick={() => setIsAccountMenuOpen(false)}
-                      >
-                        Admin
-                      </Link>
-                    ) : null}
-
-                    <Link
-                      href="/dashboard/wishlist"
-                      className="text-muted-foreground hover:bg-muted block px-4 py-2 text-sm"
-                      onClick={() => setIsAccountMenuOpen(false)}
-                    >
-                      Mi Lista de Deseos ({wishlistSummary?.itemCount || 0})
-                    </Link>
-                    <div className="border-border my-2 border-t" />
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsAccountMenuOpen(false);
-                      }}
-                      className="text-muted-foreground hover:bg-muted block w-full px-4 py-2 text-left text-sm"
-                    >
-                      Cerrar Sesion
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/auth/singin"
-                      className="text-foreground hover:bg-muted block px-4 py-2 text-sm font-medium"
-                      onClick={() => setIsAccountMenuOpen(false)}
-                    >
+            <DropdownMenuContent className="w-60 rounded-2xl p-2">
+              {isAuthenticated ? (
+                <>
+                  {/* Menu por rol: el admin gestiona (panel + su perfil);
+                      el cliente compra (cuenta + wishlist). El perfil del
+                      admin se edita en /dashboard/account-info — esos
+                      endpoints son rol-agnosticos. */}
+                  {isAdmin ? (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="font-medium">
+                          Panel Admin
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard/account-info">Mi Perfil</Link>
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard">Mi Cuenta</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard/wishlist">
+                          Mi Lista de Deseos ({wishlistSummary?.itemCount || 0})
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={handleLogout}>
+                    Cerrar Sesion
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signin" className="font-medium">
                       Iniciar Sesion
                     </Link>
-                    <Link
-                      href="/auth/singup"
-                      className="text-muted-foreground hover:bg-muted block px-4 py-2 text-sm"
-                      onClick={() => setIsAccountMenuOpen(false)}
-                    >
-                      Crear una Cuenta
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signup">Crear una Cuenta</Link>
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button
             variant="ghost"
             size="icon"
             className="h-9 w-9 hover:bg-muted lg:hidden"
             onClick={toggleMobileMenu}
+            aria-label="Menu de navegacion"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-categories-menu"
           >
@@ -309,7 +329,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
       {isSearchOpen && (
         <div
           ref={searchContainerRef}
-          className="border-border/60 relative border-t py-4"
+          className="relative border-t border-border/60 py-4"
         >
           <form onSubmit={handleSearchSubmit}>
             <div className="relative">
@@ -317,7 +337,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                 {isLoadingLocal || isLoadingAi ? (
                   <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                 ) : (
-                  <Search className="text-muted-foreground h-5 w-5" />
+                  <Search className="h-5 w-5 text-muted-foreground" />
                 )}
               </div>
               <Input
@@ -333,7 +353,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
 
           <div className="mt-2 flex min-h-[24px] items-center gap-4">
             {isLoadingLocal && (
-              <p className="text-muted-foreground text-sm">Buscando...</p>
+              <p className="text-sm text-muted-foreground">Buscando...</p>
             )}
 
             {isLoadingAi && !isLoadingLocal && (
@@ -356,11 +376,11 @@ export const HeaderRightActions = memo(function HeaderRightActions({
           </div>
 
           {showResults && (localResults.length > 0 || aiResults.length > 0) && (
-            <div className="border-border/70 bg-card/95 absolute top-full right-0 left-0 z-50 mt-2 max-h-[50vh] overflow-y-auto rounded-2xl border shadow-2xl backdrop-blur">
+            <div className="absolute top-full right-0 left-0 z-50 mt-2 max-h-[50vh] overflow-y-auto rounded-2xl border border-border/70 bg-card/95 shadow-2xl backdrop-blur">
               {localResults.length > 0 && (
                 <>
-                  <div className="border-border/60 bg-muted/40 sticky top-0 z-10 border-b px-4 py-2">
-                    <p className="text-muted-foreground text-xs">
+                  <div className="sticky top-0 z-10 border-b border-border/60 bg-muted/40 px-4 py-2">
+                    <p className="text-xs text-muted-foreground">
                       {localResults.length} resultado
                       {localResults.length !== 1 ? "s" : ""} encontrado
                       {localResults.length !== 1 ? "s" : ""}
@@ -380,7 +400,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                           onClick={() => handleProductClick(product.id)}
                           className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-muted/40"
                         >
-                          <div className="bg-muted relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg">
+                          <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                             {product.image ? (
                               <Image
                                 src={product.image}
@@ -397,17 +417,17 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                           </div>
 
                           <div className="min-w-0 flex-1">
-                            <p className="text-foreground truncate text-sm font-medium">
+                            <p className="truncate text-sm font-medium text-foreground">
                               {product.name}
                             </p>
-                            <p className="text-muted-foreground text-xs">
+                            <p className="text-xs text-muted-foreground">
                               {product.brand}{" "}
                               {product.category && `- ${product.category}`}
                             </p>
                           </div>
 
                           <div className="flex-shrink-0 text-right">
-                            <p className="text-foreground text-sm font-semibold">
+                            <p className="text-sm font-semibold text-foreground">
                               {formatPrice(product.basePrice)}
                             </p>
                           </div>
@@ -440,7 +460,7 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                           onClick={() => handleProductClick(product.id)}
                           className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-blue-100"
                         >
-                          <div className="bg-muted relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg">
+                          <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                             {product.image ? (
                               <Image
                                 src={product.image}
@@ -457,10 +477,10 @@ export const HeaderRightActions = memo(function HeaderRightActions({
                           </div>
 
                           <div className="min-w-0 flex-1">
-                            <p className="text-foreground truncate text-sm font-medium">
+                            <p className="truncate text-sm font-medium text-foreground">
                               {product.name}
                             </p>
-                            <p className="text-muted-foreground text-xs">
+                            <p className="text-xs text-muted-foreground">
                               {product.brand}
                             </p>
                           </div>
@@ -485,9 +505,9 @@ export const HeaderRightActions = memo(function HeaderRightActions({
             localResults.length === 0 &&
             aiResults.length === 0 &&
             !searchError && (
-              <div className="border-border/70 bg-card/95 absolute top-full right-0 left-0 z-50 mt-2 rounded-2xl border p-6 text-center shadow-2xl">
+              <div className="absolute top-full right-0 left-0 z-50 mt-2 rounded-2xl border border-border/70 bg-card/95 p-6 text-center shadow-2xl">
                 <Search className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
-                <p className="text-foreground font-medium">
+                <p className="font-medium text-foreground">
                   No se encontraron productos para &quot;{searchQuery}&quot;
                 </p>
                 {isLoadingAi && (
@@ -501,14 +521,12 @@ export const HeaderRightActions = memo(function HeaderRightActions({
         </div>
       )}
 
-      {!isLoading && isAuthenticated && (
+      {!isLoading && isAuthenticated && !isAdmin && (
         <MiniCart isOpen={isMiniCartOpen} onClose={closeMiniCart} />
       )}
-      {!isLoading && isAuthenticated && (
+      {!isLoading && isAuthenticated && !isAdmin && (
         <MiniWishlist isOpen={isMiniWishlistOpen} onClose={closeMiniWishlist} />
       )}
-    </>
+    </TooltipProvider>
   );
 });
-
-
