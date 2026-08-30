@@ -1,18 +1,29 @@
 ﻿"use client";
 
+import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
+import { ActionDialog } from "@/components/ui/action-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth, useUpdateProfile, useChangePassword } from "@/hooks";
+import {
+  useAuth,
+  useUpdateProfile,
+  useChangePassword,
+  useDeleteMyAccount,
+} from "@/hooks";
 
 function AccountInfo() {
   const { user } = useAuth();
   const updateProfile = useUpdateProfile();
   const changePassword = useChangePassword();
+  const deleteAccount = useDeleteMyAccount();
+
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -43,21 +54,13 @@ function AccountInfo() {
       return;
     }
 
-    if (!formData.email.trim()) {
-      toast.error("El correo electrónico es obligatorio");
-      return;
-    }
-
     // Actualizar perfil
     try {
+      // Solo `name`: el back NO acepta `email` en este endpoint (whitelist
+      // estricta → 400). El email es la identidad de login y no se cambia
+      // desde acá; por eso el input está deshabilitado.
       await updateProfile.mutateAsync({
-        id: user?.id || "",
         name: formData.name,
-        email: formData.email,
-        birthDate: user?.birthDate || new Date(),
-        phone: user?.phone || "",
-        addresses: user?.addresses?.[0] || "",
-        username: user?.username || "",
       });
 
       // Si se marcó cambiar contraseña, validar y cambiarla
@@ -106,15 +109,15 @@ function AccountInfo() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-foreground text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-foreground">
         Editar Información de Cuenta
       </h1>
 
       <div className="max-w-2xl">
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Información de Cuenta */}
-          <section className="border-border rounded-lg border p-6">
-            <h2 className="text-foreground mb-6 text-lg font-bold">
+          <section className="rounded-lg border border-border p-6">
+            <h2 className="mb-6 text-lg font-bold text-foreground">
               Información de Cuenta
             </h2>
 
@@ -134,21 +137,20 @@ function AccountInfo() {
               </div>
 
               <div>
-                <Label htmlFor="email">Correo Electrónico *</Label>
+                <Label htmlFor="email">Correo Electrónico</Label>
+                {/* Solo lectura: el back no permite cambiar el email en
+                    PUT /users/update/user (es la identidad de login). */}
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
                   className="mt-1"
-                  disabled={isLoading}
-                  required
+                  disabled
+                  readOnly
                 />
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Este correo será usado para iniciar sesión y recibir
-                  notificaciones
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Tu correo de inicio de sesión no puede modificarse desde acá.
+                  Si necesitás cambiarlo, escribinos desde Contacto.
                 </p>
               </div>
 
@@ -163,7 +165,7 @@ function AccountInfo() {
                       changePassword: e.target.checked,
                     })
                   }
-                  className="border-border rounded"
+                  className="rounded border-border"
                   disabled={isLoading}
                 />
                 <Label
@@ -178,8 +180,8 @@ function AccountInfo() {
 
           {/* Cambiar Contraseña */}
           {formData.changePassword && (
-            <section className="border-border rounded-lg border p-6">
-              <h2 className="text-foreground mb-6 text-lg font-bold">
+            <section className="rounded-lg border border-border p-6">
+              <h2 className="mb-6 text-lg font-bold text-foreground">
                 Cambiar Contraseña
               </h2>
 
@@ -216,7 +218,7 @@ function AccountInfo() {
                     required={formData.changePassword}
                     minLength={8}
                   />
-                  <p className="text-muted-foreground mt-1 text-xs">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Mínimo 8 caracteres, incluye mayúsculas, minúsculas y
                     números
                   </p>
@@ -284,7 +286,51 @@ function AccountInfo() {
             </Button>
           </div>
         </form>
+
+        {/* Zona de peligro: baja de la propia cuenta. El back hace soft
+            delete; tras confirmar cerramos sesión y volvemos al inicio. */}
+        <section className="mt-8 rounded-lg border border-red-200 bg-red-50 p-6">
+          <h2 className="mb-2 text-lg font-bold text-red-900">
+            Eliminar mi cuenta
+          </h2>
+          <p className="mb-4 text-sm text-red-800">
+            Se cerrará tu sesión y perderás el acceso a tus pedidos, favoritos y
+            direcciones guardadas. Esta acción no se puede deshacer desde la
+            tienda.
+          </p>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => setIsDeleteAccountOpen(true)}
+            disabled={isLoading || deleteAccount.isPending}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Eliminar mi cuenta
+          </Button>
+        </section>
       </div>
+
+      <ActionDialog
+        open={isDeleteAccountOpen}
+        onOpenChange={(open) => !open && setIsDeleteAccountOpen(false)}
+        title="¿Eliminar tu cuenta?"
+        description="Vas a perder el acceso a tus pedidos, favoritos y direcciones. Escribí ELIMINAR para confirmar."
+        confirmLabel="Eliminar cuenta"
+        variant="destructive"
+        isPending={deleteAccount.isPending}
+        // Confirmación por tipeo: evita borrados accidentales de un click
+        confirmDisabled={deleteConfirmText.trim().toUpperCase() !== "ELIMINAR"}
+        onConfirm={() => {
+          if (user?.id) deleteAccount.mutate(user.id);
+        }}
+      >
+        <Input
+          value={deleteConfirmText}
+          onChange={(e) => setDeleteConfirmText(e.target.value)}
+          placeholder="ELIMINAR"
+          autoFocus
+        />
+      </ActionDialog>
     </div>
   );
 }

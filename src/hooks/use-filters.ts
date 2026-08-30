@@ -8,7 +8,9 @@ interface FilterConfig<TFilters> {
   defaultLimit?: number;
 }
 
-interface UseFiltersReturn<TFilters extends Record<string, string | undefined>> {
+interface UseFiltersReturn<
+  TFilters extends Record<string, string | undefined>,
+> {
   filters: TFilters;
   page: number;
   limit: number;
@@ -37,12 +39,12 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
 
   const { defaults, defaultLimit = 10 } = config;
 
-  // Parse filters from URL
   const filters = useMemo(() => {
     const result = {} as TFilters;
     for (const key of Object.keys(defaults)) {
       const urlValue = searchParams.get(key);
-      (result as Record<string, string | undefined>)[key] = urlValue || (defaults as Record<string, string | undefined>)[key] || "";
+      (result as Record<string, string | undefined>)[key] =
+        urlValue || (defaults as Record<string, string | undefined>)[key] || "";
     }
     return result;
   }, [searchParams, defaults]);
@@ -70,9 +72,13 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
 
   const setFilter = useCallback(
     <K extends keyof TFilters>(key: K, value: TFilters[K]) => {
-      const defaultVal = (defaults as Record<string, string | undefined>)[key as string];
+      const defaultVal = (defaults as Record<string, string | undefined>)[
+        key as string
+      ];
       const newValue = value === defaultVal ? undefined : value;
-      router.replace(buildUrl({ [key as string]: newValue, page: "1" }));
+      router.replace(buildUrl({ [key as string]: newValue, page: "1" }), {
+        scroll: false,
+      });
     },
     [router, buildUrl, defaults]
   );
@@ -81,17 +87,21 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
     (partial: Partial<TFilters>) => {
       const updates: Record<string, string | undefined> = { page: "1" };
       for (const [key, value] of Object.entries(partial)) {
-        const defaultVal = (defaults as Record<string, string | undefined>)[key];
+        const defaultVal = (defaults as Record<string, string | undefined>)[
+          key
+        ];
         updates[key] = value === defaultVal ? undefined : (value as string);
       }
-      router.replace(buildUrl(updates));
+      router.replace(buildUrl(updates), { scroll: false });
     },
     [router, buildUrl, defaults]
   );
 
   const clearFilter = useCallback(
     (key: keyof TFilters) => {
-      router.replace(buildUrl({ [key as string]: undefined, page: "1" }));
+      router.replace(buildUrl({ [key as string]: undefined, page: "1" }), {
+        scroll: false,
+      });
     },
     [router, buildUrl]
   );
@@ -101,12 +111,14 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
     for (const key of Object.keys(defaults)) {
       updates[key] = undefined;
     }
-    router.replace(buildUrl(updates));
+    router.replace(buildUrl(updates), { scroll: false });
   }, [router, buildUrl, defaults]);
 
   const setPage = useCallback(
     (newPage: number) => {
-      router.replace(buildUrl({ page: newPage <= 1 ? undefined : String(newPage) }));
+      router.replace(
+        buildUrl({ page: newPage <= 1 ? undefined : String(newPage) })
+      );
     },
     [router, buildUrl]
   );
@@ -117,7 +129,8 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
         buildUrl({
           limit: newLimit === defaultLimit ? undefined : String(newLimit),
           page: "1",
-        })
+        }),
+        { scroll: false }
       );
     },
     [router, buildUrl, defaultLimit]
@@ -130,7 +143,6 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
       const val = (filters as Record<string, string | undefined>)[key];
       const def = (defaults as Record<string, string | undefined>)[key];
       if (val && val !== def) {
-        // Count minPrice + maxPrice as a single "price" filter
         if (key === "minPrice" || key === "maxPrice") {
           if (!hasPriceFilter) {
             hasPriceFilter = true;
@@ -144,13 +156,14 @@ export function useFilters<TFilters extends Record<string, string | undefined>>(
     return count;
   }, [filters, defaults]);
 
-  // Build queryParams for passing to React Query hooks
   const queryParams = useMemo(() => {
     const params: Record<string, string | number | undefined> = {
       page,
       limit,
     };
-    for (const [key, value] of Object.entries(filters as Record<string, string | undefined>)) {
+    for (const [key, value] of Object.entries(
+      filters as Record<string, string | undefined>
+    )) {
       if (value && value !== "") {
         params[key] = value;
       }

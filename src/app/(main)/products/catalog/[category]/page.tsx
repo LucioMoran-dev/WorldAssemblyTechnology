@@ -1,13 +1,12 @@
 "use client";
 
-import { Grid3x3, List, ShoppingCart } from "lucide-react";
+import { Grid3x3, List } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, use, Suspense } from "react";
 
-import { Pagination } from "@/components/filters/pagination";
 import { FiltersSidebar } from "@/components/filters/filters-sidebar";
-
+import { Pagination } from "@/components/filters/pagination";
 import { ProductCard } from "@/components/home/product-card-home";
 import { Button } from "@/components/ui/button";
 import { useProducts, useCategories, useFilters } from "@/hooks";
@@ -26,29 +25,56 @@ const getAverageRating = (reviews?: IReviews[]): number => {
 };
 
 function CatalogContent({ categorySlug }: { categorySlug: string }) {
-  const { filters, page, limit, setFilter, setFilters, setPage, clearAllFilters, activeFilterCount } = useFilters({
+  const {
+    filters,
+    page,
+    limit,
+    setFilter,
+    setFilters,
+    setPage,
+    clearAllFilters,
+    activeFilterCount,
+  } = useFilters({
     defaults: {
-      name: "", brand: "", color: "", minPrice: "", maxPrice: "", categoryId: "",
-      ram: "", storage: "", processor: "", vram: "",
-      screen_size: "", resolution: "", refresh_rate: "",
-      connectivity: "", condition: "",
-      inStock: "", discounted: "", featured: "",
+      name: "",
+      brand: "",
+      color: "",
+      minPrice: "",
+      maxPrice: "",
+      category_name: "",
+      ram: "",
+      storage: "",
+      processor: "",
+      vram: "",
+      screen_size: "",
+      resolution: "",
+      refresh_rate: "",
+      connectivity: "",
+      condition: "",
+      switch: "",
+      inStock: "",
+      discounted: "",
+      featured: "",
     },
     defaultLimit: 24,
   });
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-  // Resolve category name to categoryId
-  const { data: categoryData } = useCategories({ category: categorySlug, limit: 1 });
+  const { data: categoryData } = useCategories({
+    category: categorySlug,
+    limit: 1,
+  });
   const categoryInfo = categoryData?.items?.[0];
-  const categoryId = categoryInfo?.id;
+  const categoryName = categoryInfo?.category_name ?? categoryInfo?.name;
 
-  // Server-side products query with all filters
-  const { data: productsData, isLoading } = useProducts({
+  const {
+    data: productsData,
+    isLoading,
+    isFetching,
+  } = useProducts({
     page,
     limit,
-    categoryId: categoryId || undefined,
+    category_name: categoryName || undefined,
     name: filters.name || undefined,
     brand: filters.brand || undefined,
     color: filters.color || undefined,
@@ -64,6 +90,7 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
     refresh_rate: filters.refresh_rate || undefined,
     connectivity: filters.connectivity || undefined,
     condition: filters.condition || undefined,
+    switch: filters.switch || undefined,
     // Boolean filters
     inStock: filters.inStock === "true" ? true : undefined,
     discounted: filters.discounted === "true" ? true : undefined,
@@ -71,6 +98,8 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
   });
 
   const products = productsData?.items ?? [];
+
+  const isUpdating = isFetching && !isLoading;
 
   return (
     <div className="min-h-screen bg-white">
@@ -107,22 +136,37 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
               <h1 className="text-2xl font-bold text-gray-900">
                 {categorySlug} ({productsData?.total ?? 0} productos)
               </h1>
-              <Link href="/" className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700">
+              <Link
+                href="/"
+                className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+              >
                 ← Volver
               </Link>
             </div>
 
             {/* Toolbar */}
             <div className="mb-6 flex items-center justify-between border-b border-gray-200 pb-4">
-              <span className="text-sm text-gray-600">
-                Mostrando {products.length} de {productsData?.total ?? 0} productos
+              <span className="flex items-center gap-2 text-sm text-gray-600">
+                Mostrando {products.length} de {productsData?.total ?? 0}{" "}
+                productos
+                {/* Feedback sutil mientras se refetchean resultados filtrados */}
+                {isUpdating && (
+                  <span className="flex items-center gap-1.5 text-blue-600">
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                    Actualizando resultados…
+                  </span>
+                )}
               </span>
               <div className="flex items-center gap-2">
                 <Button
                   variant={viewMode === "grid" ? "default" : "outline"}
                   size="icon"
                   onClick={() => setViewMode("grid")}
-                  className={viewMode === "grid" ? "bg-gray-900 hover:bg-gray-800" : "border-gray-300"}
+                  className={
+                    viewMode === "grid"
+                      ? "bg-gray-900 hover:bg-gray-800"
+                      : "border-gray-300"
+                  }
                 >
                   <Grid3x3 className="h-4 w-4" />
                 </Button>
@@ -130,7 +174,11 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
                   variant={viewMode === "list" ? "default" : "outline"}
                   size="icon"
                   onClick={() => setViewMode("list")}
-                  className={viewMode === "list" ? "bg-gray-900 hover:bg-gray-800" : "border-gray-300"}
+                  className={
+                    viewMode === "list"
+                      ? "bg-gray-900 hover:bg-gray-800"
+                      : "border-gray-300"
+                  }
                 >
                   <List className="h-4 w-4" />
                 </Button>
@@ -141,22 +189,39 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
             {isLoading ? (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                 {[...Array(8)].map((_, i) => (
-                  <div key={i} className="h-64 animate-pulse rounded-lg bg-gray-100" />
+                  <div
+                    key={i}
+                    className="h-64 animate-pulse rounded-lg bg-gray-100"
+                  />
                 ))}
               </div>
             ) : products.length > 0 ? (
               <>
                 {viewMode === "grid" ? (
-                  <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                  <div
+                    className={`mb-8 grid grid-cols-2 gap-4 transition-opacity sm:grid-cols-3 lg:grid-cols-4 ${
+                      isUpdating ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
                     {products.map((product) => (
-                      <ProductCard key={product.id} {...mapProductToCardProps(product)} />
+                      <ProductCard
+                        key={product.id}
+                        {...mapProductToCardProps(product)}
+                      />
                     ))}
                   </div>
                 ) : (
-                  <div className="mb-8 space-y-4">
+                  <div
+                    className={`mb-8 space-y-4 transition-opacity ${
+                      isUpdating ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
                     {products.map((product) => (
-                      <div key={product.id} className="flex gap-4 rounded-lg border border-gray-200 bg-white p-4">
-                        <div className="relative h-32 w-32 flex-shrink-0">
+                      <div
+                        key={product.id}
+                        className="flex gap-4 rounded-lg border border-gray-200 bg-white p-4"
+                      >
+                        <div className="relative h-32 w-32 shrink-0">
                           <Image
                             src={product.imgUrls?.[0] || "/placeholder.svg"}
                             alt={product.name}
@@ -170,23 +235,29 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
                           )}
                         </div>
                         <div className="flex-1">
-                          <h3 className="mb-2 line-clamp-2 text-sm font-medium text-gray-900">{product.name}</h3>
+                          <h3 className="mb-2 line-clamp-2 text-sm font-medium text-gray-900">
+                            {product.name}
+                          </h3>
                           <div className="mb-3 flex items-center gap-2">
                             <div className="flex gap-0.5">
                               {[...Array(5)].map((_, i) => (
-                                <svg key={i} className={`h-4 w-4 ${i < getAverageRating(product.reviews) ? "fill-current text-yellow-400" : "text-gray-300"}`} viewBox="0 0 20 20">
+                                <svg
+                                  key={i}
+                                  className={`h-4 w-4 ${i < getAverageRating(product.reviews) ? "fill-current text-yellow-400" : "text-gray-300"}`}
+                                  viewBox="0 0 20 20"
+                                >
                                   <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                                 </svg>
                               ))}
                             </div>
-                            <span className="text-xs text-gray-500">Reseñas ({product.reviews?.length || 0})</span>
+                            <span className="text-xs text-gray-500">
+                              Reseñas ({product.reviews?.length || 0})
+                            </span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-lg font-bold text-gray-900">${product.basePrice.toFixed(2)}</span>
-                            <Button variant="outline" size="sm" className="border-blue-600 bg-transparent text-blue-600 hover:bg-blue-600 hover:text-white">
-                              <ShoppingCart className="mr-1 h-4 w-4" />
-                              Agregar al Carrito
-                            </Button>
+                            <span className="text-lg font-bold text-gray-900">
+                              ${product.basePrice.toFixed(2)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -207,9 +278,15 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
               </>
             ) : (
               <div className="py-12 text-center">
-                <p className="text-lg text-gray-500">No se encontraron productos</p>
+                <p className="text-lg text-gray-500">
+                  No se encontraron productos
+                </p>
                 {activeFilterCount > 0 && (
-                  <Button variant="link" onClick={clearAllFilters} className="mt-2 text-blue-600">
+                  <Button
+                    variant="link"
+                    onClick={clearAllFilters}
+                    className="mt-2 text-blue-600"
+                  >
                     Limpiar filtros
                   </Button>
                 )}
@@ -237,7 +314,10 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
                 Juego más tarde: todo lo que puede hacer con la notebook más
                 colorida del mundo.
               </p>
-              <Button variant="link" className="h-auto p-0 text-blue-600 hover:text-blue-700">
+              <Button
+                variant="link"
+                className="h-auto p-0 text-blue-600 hover:text-blue-700"
+              >
                 Más
               </Button>
             </div>
@@ -252,7 +332,9 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-white">
                   {feature.icon}
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-gray-900">{feature.title}</h3>
+                <h3 className="mb-2 text-lg font-bold text-gray-900">
+                  {feature.title}
+                </h3>
                 <p className="text-sm text-gray-600">{feature.description}</p>
               </div>
             ))}
@@ -267,14 +349,16 @@ export default function CatalogPage({ params }: PageProps) {
   const { category } = use(params);
 
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="mt-4 text-gray-600">Cargando productos...</p>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+            <p className="mt-4 text-gray-600">Cargando productos...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <CatalogContent categorySlug={category} />
     </Suspense>
   );

@@ -4,6 +4,7 @@ import { ChevronDown, Tag } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
+import { CartItemVariants } from "@/components/cart/cart-item-variants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCartQuery } from "@/hooks";
@@ -79,6 +80,7 @@ function OrderSummarySidebar({
                   />
                   <div className="flex-1">
                     <p className="mb-1 line-clamp-2 text-sm text-foreground">{item.product.name}</p>
+                    <CartItemVariants variants={item.selectedVariants} />
                     <p className="text-xs text-muted-foreground">Cant: {item.quantity}</p>
                     <p className="mt-1 text-sm font-semibold">{formatMoney(item.subtotal)}</p>
                   </div>

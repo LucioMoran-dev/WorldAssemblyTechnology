@@ -20,7 +20,7 @@ function OffersButton() {
     <Button
       variant="default"
       size="sm"
-      className="ml-1 px-2.5 text-[11px] whitespace-nowrap lg:px-2 lg:text-xs xl:px-4 xl:text-sm"
+      className="ml-1 rounded-2xl px-2.5 text-[11px] whitespace-nowrap transition-all duration-500 ease-in-out hover:-translate-y-px hover:bg-sky-500 hover:text-white hover:shadow-md hover:ring-2 hover:shadow-sky-500/20 hover:ring-sky-400/40 lg:px-2 lg:text-xs xl:px-4 xl:text-sm"
     >
       Ofertas
     </Button>
@@ -29,7 +29,7 @@ function OffersButton() {
 
 export function NavHeaderCategorias() {
   return (
-    <nav className="hidden flex-1 items-center justify-end gap-0.5 rounded-full border border-border bg-card/90 px-1 py-1 shadow-lg lg:mr-1 lg:flex xl:gap-2 xl:px-3">
+    <nav className="hidden items-center gap-0.5 rounded-full border border-border bg-card/90 px-1 py-1 shadow-lg lg:mr-1 lg:flex xl:gap-2 xl:px-3">
       {categories.map((category) => (
         <Link
           key={category.href}
@@ -61,11 +61,14 @@ export function NavHeaderCategoriasMobile() {
             </Link>
           ))}
         </div>
-        <Link href="/products/catalog/products?discounted=true&featured=true" className="mt-2 block">
+        <Link
+          href="/products/catalog/products?discounted=true&featured=true"
+          className="mt-2 block"
+        >
           <Button
             variant="default"
             size="sm"
-            className="h-10 w-full text-sm font-semibold"
+            className="h-10 w-full text-sm font-semibold transition-all duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:shadow-md hover:ring-2 hover:shadow-sky-500/20 hover:ring-sky-400/40 active:scale-[0.98]"
           >
             Ofertas
           </Button>

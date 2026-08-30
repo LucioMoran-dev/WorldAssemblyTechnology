@@ -1,7 +1,43 @@
 ﻿import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 
+import { extractApiMessage } from "@/utils/handle-api-error";
 import { apiLogger } from "@/utils/logger";
+
+function describeRoute(error: AxiosError): string {
+  const method = error.config?.method?.toUpperCase() ?? "???";
+  const url = error.config?.url ?? "unknown-url";
+  const params = error.config?.params as Record<string, unknown> | undefined;
+  const query =
+    params && Object.keys(params).length
+      ? "?" +
+        new URLSearchParams(
+          Object.entries(params)
+            .filter(([, v]) => v !== undefined && v !== null && v !== "")
+            .map(([k, v]) => [k, String(v)])
+        ).toString()
+      : "";
+  return `${method} ${url}${query}`;
+}
+
+function reportToDevTerminal(payload: {
+  route: string;
+  status?: number | string;
+  message?: string;
+  detail?: unknown;
+}): void {
+  if (process.env.NODE_ENV !== "development") return;
+  if (typeof window === "undefined") return;
+
+  fetch("/api/dev-log", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {
+    // logging de dev: si falla, no importa
+  });
+}
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -41,28 +77,54 @@ function clearClientSession(): void {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("user");
 
-  document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-  document.cookie = "frontend_user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+  document.cookie =
+    "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+  document.cookie =
+    "frontend_user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
 }
 
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (process.env.NODE_ENV === "development") {
-      apiLogger.error("API Error Details", {
-        type: error.response
-          ? "HTTP Error"
-          : error.request
-            ? "Network Error"
-            : "Request Setup Error",
-        status: error.response?.status || "N/A",
-        statusText: error.response?.statusText || "N/A",
-        message: error.message || "Unknown error",
-        url: error.config?.url || "N/A",
-        method: error.config?.method?.toUpperCase() || "N/A",
-        data: error.response?.data || "No response data",
-        code: error.code || "N/A",
-      });
+      const route = describeRoute(error);
+
+      if (error.response) {
+        const { status, statusText } = error.response;
+        const serverMessage =
+          extractApiMessage(error.response.data) ?? error.message;
+        apiLogger.error(
+          `${route} → ${status} ${statusText} | ${serverMessage}`,
+          {
+            message: serverMessage,
+            response: error.response.data,
+          }
+        );
+        reportToDevTerminal({
+          route,
+          status: `${status} ${statusText}`,
+          message: serverMessage,
+          detail: error.response.data,
+        });
+      } else if (error.request) {
+        apiLogger.error(
+          `${route} → NO RESPONSE from server (${error.code ?? "network error"})`,
+          { detail: error.message }
+        );
+        reportToDevTerminal({
+          route,
+          status: `NO RESPONSE (${error.code ?? "network error"})`,
+          message: error.message,
+        });
+      } else {
+        apiLogger.error(`${route} → request setup failed`, {
+          detail: error.message,
+        });
+        reportToDevTerminal({
+          route,
+          message: `request setup failed: ${error.message}`,
+        });
+      }
     }
 
     if (error.response?.status === 401 && typeof window !== "undefined") {

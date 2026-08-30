@@ -128,7 +128,7 @@ function AdminCategoriesContent() {
           value={filters.category ?? ""}
           onChange={(v) => setFilter("category", v)}
           placeholder="Buscar categorias..."
-          className="min-w-[200px] flex-1"
+          className="min-w-50 flex-1"
         />
       </FiltersPanel>
 
@@ -156,7 +156,7 @@ function AdminCategoriesContent() {
                         setIsCreateModalOpen(false);
                         setEditingCategory(category);
                         setFormData({
-                          name: category.name,
+                          name: category.category_name || category.name,
                           description: category.description,
                         });
                       }}
@@ -166,7 +166,12 @@ function AdminCategoriesContent() {
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => handleDelete(category.id, category.name)}
+                      onClick={() =>
+                        handleDelete(
+                          category.id,
+                          category.category_name || category.name
+                        )
+                      }
                       disabled={deleteCategory.isPending}
                       className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
                       title="Eliminar categoria"
@@ -176,7 +181,7 @@ function AdminCategoriesContent() {
                   </div>
                 </div>
                 <h3 className="text-foreground mb-2 text-lg font-bold">
-                  {category.name}
+                  {category.category_name || category.name || "Sin nombre"}
                 </h3>
                 <p className="text-muted-foreground mb-4 text-sm">
                   {category.description || "Sin descripcion"}

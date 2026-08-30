@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { newsletterService } from "@/services";
@@ -12,10 +11,7 @@ import type {
   ISendPromoDto,
   ICampaignListParams,
 } from "@/types";
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { getUserFacingMessage } from "@/utils";
 
 /**
  * Mutation para suscribirse al newsletter (público)
@@ -28,11 +24,7 @@ export function useNewsletterSubscribe() {
       toast.success("¡Te has suscrito al newsletter exitosamente!");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al suscribirse"
-        : "Error al suscribirse";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al suscribirse"));
     },
   });
 }
@@ -51,22 +43,18 @@ export function useNewsletterUnsubscribe() {
     },
 
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al desuscribirse"
-        : "Error al desuscribirse";
-
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al desuscribirse"));
     },
   });
 }
 
 // ===== ADMIN =====
 
-export function useNewsletterStats() {
+/** Estadísticas de tracking; campaignType filtra por tipo de campaña */
+export function useNewsletterStats(campaignType?: string) {
   return useQuery({
-    queryKey: ["newsletter", "stats"],
-    queryFn: () => newsletterService.getStats(),
+    queryKey: ["newsletter", "stats", campaignType],
+    queryFn: () => newsletterService.getStats(campaignType),
     staleTime: 2 * 60 * 1000,
   });
 }
@@ -78,11 +66,7 @@ export function useSendMonthlyManual() {
       toast.success("Newsletter mensual enviado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al enviar newsletter"
-        : "Error al enviar newsletter";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al enviar newsletter"));
     },
   });
 }
@@ -94,11 +78,7 @@ export function useSendPromo() {
       toast.success(`Promo enviada a ${result.enqueuedCount} suscriptores`);
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al enviar promo"
-        : "Error al enviar promo";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al enviar promo"));
     },
   });
 }
@@ -134,11 +114,7 @@ export function useCreateCampaign() {
       toast.success("Campaña creada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear campaña"
-        : "Error al crear campaña";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear campaña"));
     },
   });
 }
@@ -156,11 +132,7 @@ export function useUpdateCampaign() {
       toast.success("Campaña actualizada");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar campaña"
-        : "Error al actualizar campaña";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar campaña"));
     },
   });
 }
@@ -177,11 +149,7 @@ export function useDeleteCampaign() {
       toast.success("Campaña eliminada");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar campaña"
-        : "Error al eliminar campaña";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar campaña"));
     },
   });
 }
@@ -198,11 +166,7 @@ export function useSendCampaign() {
       toast.success("Campaña enviada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al enviar campaña"
-        : "Error al enviar campaña";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al enviar campaña"));
     },
   });
 }

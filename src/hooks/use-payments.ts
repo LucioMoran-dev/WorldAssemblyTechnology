@@ -1,16 +1,13 @@
 "use client";
 
 import { useQuery, useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { paymentService } from "@/services";
 import type { ICreatePreferenceDto, IPaymentListParams } from "@/types";
-import { useAuth } from "./use-auth";
+import { getUserFacingMessage } from "@/utils";
 
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { useAuth } from "./use-auth";
 
 /**
  * Mutation para crear preferencia de pago MercadoPago
@@ -20,11 +17,9 @@ export function useCreatePreference() {
     mutationFn: (data: ICreatePreferenceDto) =>
       paymentService.createPreference(data),
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear preferencia de pago"
-        : "Error al crear preferencia de pago";
-      toast.error(message);
+      toast.error(
+        getUserFacingMessage(error, "Error al crear preferencia de pago")
+      );
     },
   });
 }

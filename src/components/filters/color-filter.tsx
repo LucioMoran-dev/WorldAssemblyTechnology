@@ -2,15 +2,7 @@
 
 import { Check } from "lucide-react";
 
-const COLORS = [
-  { name: "black", hex: "#000000", label: "Negro" },
-  { name: "blue", hex: "#0000FF", label: "Azul" },
-  { name: "red", hex: "#FF0000", label: "Rojo" },
-  { name: "white", hex: "#FFFFFF", label: "Blanco" },
-  { name: "gray", hex: "#808080", label: "Gris" },
-  { name: "green", hex: "#008000", label: "Verde" },
-  { name: "silver", hex: "#C0C0C0", label: "Plateado" },
-];
+import { COLOR_PALETTE, LIGHT_COLOR_NAMES } from "@/seeds";
 
 interface ColorFilterProps {
   value: string;
@@ -20,15 +12,15 @@ interface ColorFilterProps {
 export function ColorFilter({ value, onChange }: ColorFilterProps) {
   return (
     <div className="flex flex-wrap gap-2.5">
-      {COLORS.map((color) => {
-        const isSelected = value.toLowerCase() === color.name;
-        const isLight = ["white", "silver"].includes(color.name);
+      {COLOR_PALETTE.map((color) => {
+        const isSelected = value.toLowerCase() === color.name.toLowerCase();
+        const isLight = LIGHT_COLOR_NAMES.includes(color.name);
 
         return (
           <button
             key={color.name}
             onClick={() => onChange(isSelected ? "" : color.name)}
-            title={color.label}
+            title={color.name}
             className={`relative flex h-8 w-8 items-center justify-center rounded-full transition-all ${
               isLight ? "border border-gray-300" : ""
             } ${

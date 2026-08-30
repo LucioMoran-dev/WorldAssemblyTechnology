@@ -2,11 +2,6 @@ import type { ICart } from "./cart.types";
 import type { UserRole } from "./common.types";
 import type { IOrder } from "./order.types";
 
-/**
- * Tipos relacionados con usuarios y autenticación
- */
-
-// User Address
 export interface IUserAddress {
   id: string;
   label: string;
@@ -18,7 +13,6 @@ export interface IUserAddress {
   isDefault: boolean;
 }
 
-// User
 export interface IUser {
   id: string;
   email: string;
@@ -35,7 +29,6 @@ export interface IUser {
   cart?: ICart;
 }
 
-// JWT Payload
 export interface IJWTPayload {
   sub: string;
   email: string;
@@ -44,14 +37,12 @@ export interface IJWTPayload {
   exp: number;
 }
 
-// Auth Response
 export interface IAuthResponse {
-  accessToken: string; // ✅ El backend devuelve 'accessToken', no 'token'
-  expiresIn?: number; // Segundos de expiración (opcional)
+  accessToken: string;
+  expiresIn?: number;
   user: IUser;
 }
 
-// DTOs
 export interface ISingUpDto {
   email: string;
   password: string;
@@ -69,13 +60,11 @@ export interface ILoginDto {
 }
 
 export interface IUpdateUserDto {
-  id: string;
-  name: string;
-  email: string;
-  birthDate: Date;
-  phone: string;
-  addresses: IUserAddress | string;
-  username: string;
+  name?: string;
+  username?: string;
+  phone?: string;
+  birthDate?: string;
+  password?: string;
 }
 
 export interface IUpdatePasswordDto {
@@ -116,6 +105,7 @@ export interface IRole {
 export interface IUserListParams {
   page?: number;
   limit?: number;
+  name?: string;
   username?: string;
   email?: string;
 }
@@ -127,7 +117,6 @@ export interface IResetPassword {
   confirmPassword: string;
 }
 
-// Legacy compatibility
 export type SigninDto = ILoginDto;
 export type Address = IUserAddress;
 export type ChangePasswordDto = IUpdatePasswordDto;

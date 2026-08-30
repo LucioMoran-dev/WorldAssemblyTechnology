@@ -3,14 +3,9 @@ import type {
   IWishlist,
   IWishlistSummary,
   IAddToWishlistDto,
-  ICheckWishlistResponse,
   IWishlistItem,
 } from "@/types";
 
-/**
- * Servicio de wishlist (lista de deseos)
- * Endpoints del módulo /wishlist
- */
 export const wishlistService = {
   /**
    * GET /wishlist/my-wishlist - Obtener mi wishlist completa
@@ -53,16 +48,5 @@ export const wishlistService = {
    */
   clearWishlist: async (): Promise<void> => {
     await apiClient.delete("/wishlist/clear");
-  },
-
-  /**
-   * GET /wishlist/check/:productId - Verificar si producto está en wishlist
-   * Requiere: CLIENT | Rate Limit: 60/min
-   */
-  checkProduct: async (productId: string): Promise<ICheckWishlistResponse> => {
-    const response = await apiClient.get<ICheckWishlistResponse>(
-      `/wishlist/check/${productId}`
-    );
-    return response.data;
   },
 };

@@ -1,7 +1,3 @@
-/**
- * Tipos relacionados con pagos (MercadoPago)
- */
-
 export enum PaymentStatus {
   PENDING = "pending",
   APPROVED = "approved",
@@ -25,19 +21,44 @@ export interface ICreatePreferenceDto {
 export interface IPayment {
   id: string;
   orderId: string;
+  userId?: string;
   mercadoPagoId?: string;
   amount: number;
   status: PaymentStatus;
-  paymentMethod?: string;
+  paymentTypeId?: string;
+  paymentMethodId?: string;
+  dateApproved?: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
+}
+
+export interface IPaymentApiShape {
+  id?: string;
+  amount?: number | string;
+  status?: PaymentStatus;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+  orderId?: string;
+  userId?: string;
+  paymentId?: string;
+  paymentTypeId?: string;
+  paymentMethodId?: string;
+  dateApproved?: string;
+  order_id?: string;
+  user_id?: string;
+  payment_id?: string;
+  payment_type_id?: string;
+  payment_method_id?: string;
+  date_approved?: string;
 }
 
 export interface IPaymentStatusResponse {
   id: string;
   status: string;
   statusDetail?: string;
-  paymentMethod?: string;
+  paymentTypeId?: string;
   transactionAmount?: number;
   dateApproved?: string;
 }

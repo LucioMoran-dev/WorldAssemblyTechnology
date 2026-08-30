@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Heart, BarChart3, ShoppingCart } from "lucide-react";
+import { Heart, BarChart3, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,14 +9,14 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  useAddToCart,
   useCheckWishlist,
   useAddToWishlist,
   useRemoveFromWishlist,
   useAuth,
+  useIsAdmin,
 } from "@/hooks";
 import type { IProductCardProps } from "@/types";
-import { productLogger, wishlistLogger } from "@/utils/logger";
+import { wishlistLogger } from "@/utils/logger";
 
 export function ProductCard({
   id,
@@ -37,8 +37,9 @@ export function ProductCard({
 }: IProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const addToCart = useAddToCart();
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  // Los admins no usan wishlist (no compran con esa cuenta): ocultamos el corazón
+  const { isAdmin } = useIsAdmin();
 
   // Wishlist hooks
   const { data: wishlistCheck } = useCheckWishlist(id);
@@ -62,38 +63,6 @@ export function ProductCard({
       ? Math.round(((originalPrice - basePrice) / originalPrice) * 100)
       : 0;
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Evita que el Link se active
-    e.stopPropagation(); // Evita que el evento suba al contenedor
-
-    if (!isAuthenticated) {
-      toast.error("Debes iniciar sesión para agregar el producto a el carrito");
-      return;
-    }
-
-    if (!inStock) {
-      toast.error("Producto fuera de stock");
-      return;
-    }
-    productLogger.debug("Agregando producto al carrito", { id });
-
-    addToCart.mutate(
-      {
-        productId: id, // Asegúrate de que este 'id' sea el string de Mongo/Postgres
-        quantity: 1,
-      },
-      {
-        onSuccess: () => {
-          productLogger.info("Producto añadido al carrito", { id });
-        },
-        onError: (error) => {
-          productLogger.info("Error al añadir al carrito", error);
-          productLogger.error("Error al añadir producto al carrito", error);
-        },
-      }
-    );
-  };
-
   const handleToggleWishlist = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -103,7 +72,6 @@ export function ProductCard({
       return;
     }
 
-    // Los toasts ya se muestran en los hooks, solo registramos en el logger
     if (isInWishlist) {
       removeFromWishlist.mutate(id, {
         onSuccess: () => {
@@ -142,43 +110,40 @@ export function ProductCard({
   }, [isHovered, imageArray.length]);
 
   return (
-    // Wrapper con altura fija - mantiene el espacio en el layout
-    <div className="relative min-h-[340px]">
+    <div className="relative min-h-85">
       {/* Card flotante - completamente aislada del layout */}
       <div
         className="group absolute top-0 right-0 left-0 flex flex-col rounded-xl border transition-all duration-300 ease-out"
         style={{
-          backgroundColor: "white",
-          borderColor: isHovered
-            ? "rgba(59, 130, 246, 0.3)"
-            : "rgba(229, 231, 235, 1)",
+          backgroundColor: "var(--card)",
+          borderColor: isHovered ? "rgba(59, 130, 246, 0.3)" : "var(--border)",
           boxShadow: isHovered
             ? "0 24px 48px -18px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(59, 130, 246, 0.45), 0 10px 24px rgba(59, 130, 246, 0.18)"
             : "0 1px 3px rgba(0, 0, 0, 0.08)",
-          zIndex: isHovered ? 20 : 1, // Por debajo del CategoryCard (30) y navbar (50)
+          zIndex: isHovered ? 20 : 1,
           transform: isHovered
             ? "translateY(-12px) scale(1.04)"
             : "translateY(0) scale(1)",
           minHeight: isHovered ? "450px" : "340px",
-          height: isHovered ? "auto" : "340px",
+          height: "auto",
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Discount Badge tiene prioridad sobre badge normal */}
         {hasDiscountBadge ? (
-          <Badge className="animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 bg-gradient-to-r from-red-500 to-pink-500 px-2 py-0.5 text-[11px] font-bold leading-none text-white shadow-md shadow-red-500/20 duration-200">
+          <Badge className="absolute top-3 left-3 z-10 animate-in border-0 bg-linear-to-r from-red-500 to-pink-500 px-2 py-0.5 text-[11px] leading-none font-bold text-white shadow-md shadow-red-500/20 duration-200 fade-in zoom-in">
             -{discountPercent}%
           </Badge>
         ) : badge ? (
-          <Badge className="gradient-accent animate-in fade-in zoom-in absolute top-3 left-3 z-10 border-0 px-2 py-0.5 text-[11px] font-bold leading-none text-white shadow-md duration-200">
+          <Badge className="gradient-accent absolute top-3 left-3 z-10 animate-in border-0 px-2 py-0.5 text-[11px] leading-none font-bold text-white shadow-md duration-200 fade-in zoom-in">
             {badge}
           </Badge>
         ) : null}
 
         {inStock && (
           <div
-            className={`absolute left-3 z-10 flex items-center gap-1 rounded-full border border-green-100 bg-gradient-to-r from-green-50 to-emerald-50 px-2 py-0.5 text-[11px] text-green-600 shadow-sm ${
+            className={`absolute left-3 z-10 flex items-center gap-1 rounded-full border border-green-100 bg-linear-to-r from-green-50 to-emerald-50 px-2 py-0.5 text-[11px] text-green-600 shadow-sm ${
               hasTopBadge ? "top-11" : "top-3"
             }`}
           >
@@ -194,25 +159,27 @@ export function ProductCard({
               : "pointer-events-none translate-x-8 scale-90 opacity-0"
           }`}
         >
+          {!isAdmin && (
+            <Button
+              size="icon"
+              variant="secondary"
+              className={`border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95 ${
+                isInWishlist
+                  ? "border-red-200 text-red-500 shadow-red-500/20 hover:border-red-300 hover:bg-red-50"
+                  : "border-gray-200 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30"
+              }`}
+              onClick={handleToggleWishlist}
+              disabled={addToWishlist.isPending || removeFromWishlist.isPending}
+            >
+              <Heart
+                className={`h-4 w-4 transition-all ${isInWishlist ? "scale-110 fill-current" : ""}`}
+              />
+            </Button>
+          )}
           <Button
             size="icon"
             variant="secondary"
-            className={`border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95 ${
-              isInWishlist
-                ? "border-red-200 text-red-500 shadow-red-500/20 hover:border-red-300 hover:bg-red-50"
-                : "border-border hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30"
-            }`}
-            onClick={handleToggleWishlist}
-            disabled={addToWishlist.isPending || removeFromWishlist.isPending}
-          >
-            <Heart
-              className={`h-4 w-4 transition-all ${isInWishlist ? "scale-110 fill-current" : ""}`}
-            />
-          </Button>
-          <Button
-            size="icon"
-            variant="secondary"
-            className="border border-border bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30 active:scale-95"
+            className="border border-gray-200 bg-card/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/30 active:scale-95"
           >
             <BarChart3 className="h-4 w-4" />
           </Button>
@@ -221,10 +188,13 @@ export function ProductCard({
         {/* Product Image */}
         <Link
           href={`/products/${id}`}
-          className="relative block rounded-t-xl bg-muted/40"
+          className="relative block rounded-t-xl bg-gray-50"
         >
+          {/* h-44 fijo (antes aspect-square = alto según ancho de columna):
+              así el alto de la card no depende de dónde cayó (carrusel vs
+              catálogo) y el contenido total ya no desborda los mínimos. */}
           <div
-            className={`relative aspect-square overflow-hidden transition-all duration-300 ${isHovered ? "p-3" : "p-4"}`}
+            className={`relative h-44 overflow-hidden transition-all duration-300 ${isHovered ? "p-3" : "p-4"}`}
           >
             <Image
               src={
@@ -258,28 +228,29 @@ export function ProductCard({
         <div
           className={`flex flex-1 flex-col transition-all duration-300 ${isHovered ? "p-3" : "p-2.5"}`}
         >
-          {/* Rating - Solo en hover */}
-          {isHovered && (
-            <div className="animate-in fade-in mb-1 flex items-center gap-2 duration-200">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    className={`h-3.5 w-3.5 ${i < Math.floor(rating) ? "fill-orange-400 text-orange-400" : "text-gray-300"}`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-xs text-muted-foreground">Reseñas ({reviews})</span>
+          {/* Rating — visible SIEMPRE (antes solo en hover): la card en reposo
+              tenía un hueco grande entre nombre y precio (el precio se ancla
+              abajo con el spacer flex-1); mostrar rating y descripción llena
+              ese vacío con información útil. */}
+          <div className="mb-1 flex items-center gap-2">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className={`h-3.5 w-3.5 ${i < Math.floor(rating) ? "fill-orange-400 text-orange-400" : "text-gray-300"}`}
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
             </div>
-          )}
+            <span className="text-xs text-gray-500">Reseñas ({reviews})</span>
+          </div>
 
           {/* Brand & Category - Solo en hover */}
           {isHovered && (brand || category) && (
-            <div className="animate-in fade-in mb-1 flex items-center gap-2 text-xs duration-200">
+            <div className="mb-1 flex animate-in items-center gap-2 text-xs duration-200 fade-in">
               {brand && (
                 <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 font-semibold text-blue-600">
                   {brand}
@@ -287,7 +258,7 @@ export function ProductCard({
               )}
               {brand && category && <span className="text-gray-300">•</span>}
               {category && (
-                <span className="font-medium text-muted-foreground">{category}</span>
+                <span className="font-medium text-gray-500">{category}</span>
               )}
             </div>
           )}
@@ -295,7 +266,7 @@ export function ProductCard({
           {/* Product Name */}
           <Link href={`/products/${id}`}>
             <h3
-              className={`line-clamp-2 font-medium text-foreground transition-all hover:text-blue-600 ${
+              className={`line-clamp-2 font-medium text-gray-900 transition-all hover:text-blue-600 ${
                 isHovered
                   ? "mb-1 text-sm leading-snug"
                   : "mb-2 text-sm leading-tight"
@@ -305,22 +276,17 @@ export function ProductCard({
             </h3>
           </Link>
 
-          {/* Description - Solo visible en hover */}
+          {/* Description — visible siempre (2 líneas máx): completa el espacio
+              entre nombre y precio; ver comentario del rating. */}
           {description && (
-            <p
-              className={`text-xs leading-relaxed text-muted-foreground transition-all duration-300 ${
-                isHovered
-                  ? "mb-1 line-clamp-2 opacity-100"
-                  : "h-0 overflow-hidden opacity-0"
-              }`}
-            >
+            <p className="mb-1 line-clamp-2 text-xs leading-relaxed text-gray-500">
               {description}
             </p>
           )}
 
           {/* Model - Solo visible en hover */}
           {model && isHovered && (
-            <div className="mb-1 text-xs text-muted-foreground">
+            <div className="mb-1 text-xs text-gray-500">
               <span className="font-medium">Modelo:</span> {model}
             </div>
           )}
@@ -333,12 +299,12 @@ export function ProductCard({
             className={`flex items-center gap-2 ${isHovered ? "mb-2" : "mb-0"}`}
           >
             {originalPrice && (
-              <span className="text-sm font-medium text-muted-foreground line-through">
+              <span className="text-sm font-medium text-gray-500 line-through">
                 ${originalPrice.toFixed(2)}
               </span>
             )}
             <span
-              className={`bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text font-bold text-transparent ${
+              className={`bg-linear-to-r from-blue-600 to-blue-700 bg-clip-text font-bold text-transparent ${
                 isHovered ? "text-xl" : "text-lg"
               }`}
             >
@@ -346,42 +312,20 @@ export function ProductCard({
             </span>
           </div>
 
-          {/* Add to Cart / Stock State */}
-          {inStock ? (
-            <Button
-              className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md transition-all duration-500 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 ${
-                isHovered
-                  ? "translate-y-0 scale-100 opacity-100"
-                  : "pointer-events-none translate-y-4 scale-95 !opacity-0"
-              }`}
-              size="sm"
-              onClick={handleAddToCart}
-              disabled={addToCart.isPending}
+          {/* CTA al detalle (solo en hover): ahí se eligen variantes y se compra */}
+          {isHovered && (
+            <Link
+              href={`/products/${id}`}
+              className="block animate-in duration-200 fade-in"
             >
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              {addToCart.isPending ? (
-                <span className="flex items-center gap-2">
-                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Agregando...
-                </span>
-              ) : (
-                "Agregar al Carrito"
-              )}
-            </Button>
-          ) : (
-            <div
-              className={`flex h-9 w-full items-center justify-center rounded-md border border-border bg-muted text-sm font-semibold text-muted-foreground transition-all duration-500 ${
-                isHovered
-                  ? "translate-y-0 scale-100 opacity-100"
-                  : "pointer-events-none translate-y-4 scale-95 !opacity-0"
-              }`}
-            >
-              Sin stock
-            </div>
+              <Button className="h-9 w-full bg-blue-600 text-sm text-white hover:bg-blue-700">
+                Ver detalles
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           )}
         </div>
       </div>
     </div>
   );
 }
-

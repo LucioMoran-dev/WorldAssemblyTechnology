@@ -1,7 +1,3 @@
-/**
- * Tipos relacionados con el formulario de contacto
- */
-
 import * as z from "zod";
 
 export interface IContactDto {

@@ -1,8 +1,3 @@
-/**
- * Tipos relacionados con reviews y calificaciones
- */
-
-// Rating Enum
 export enum Rating {
   ONE = 1,
   TWO = 2,
@@ -10,25 +5,18 @@ export enum Rating {
   FOUR = 4,
   FIVE = 5,
 }
-
-// Usuario en Review (público)
 export interface IReviewUser {
   id: string;
   name: string;
 }
 
-// Usuario en Review (admin) - incluye email
 export interface IReviewUserAdmin extends IReviewUser {
   email: string;
 }
-
-// Producto en Review
 export interface IReviewProduct {
   id: string;
   name: string;
 }
-
-// Review pública (para clientes y público)
 export interface IReviews {
   id: string;
   rating: Rating;
@@ -37,8 +25,6 @@ export interface IReviews {
   user?: IReviewUser;
   product?: IReviewProduct;
 }
-
-// Review para Admin (incluye isVisible y email del usuario)
 export interface IReviewAdmin {
   id: string;
   rating: Rating;
@@ -49,15 +35,17 @@ export interface IReviewAdmin {
   user?: IReviewUserAdmin;
   product?: IReviewProduct;
 }
-
-// Respuesta paginada de reviews (Admin)
 export interface PaginatedReviews {
   items: IReviewAdmin[];
   total: number;
   pages: number;
 }
+export interface PaginatedMyReviews {
+  items: IReviews[];
+  total: number;
+  pages: number;
+}
 
-// DTOs
 export interface ICreateReviewDto {
   productId: string;
   rating: Rating;
@@ -69,15 +57,12 @@ export interface IUpdateReviewDto {
   message?: string;
 }
 
-// Can Review Response
 export interface ICanReviewResponse {
   canReview: boolean;
   hasReviewed?: boolean;
   message?: string;
   reason?: string | null;
 }
-
-// Legacy compatibility
 export interface IReviewResponse {
   id: string;
   rating: number;

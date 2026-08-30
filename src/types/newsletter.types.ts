@@ -1,9 +1,6 @@
-/**
- * Tipos relacionados con Newsletter y Campañas
- */
-
 export type CampaignType = "custom" | "monthly" | "promo" | "welcome";
-export type CampaignStatus = "draft" | "scheduled" | "sending" | "sent" | "failed";
+export type CampaignStatus =
+  "draft" | "scheduled" | "sending" | "sent" | "failed";
 
 export interface INewsletterSubscribeDto {
   email: string;

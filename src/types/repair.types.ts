@@ -1,6 +1,3 @@
-/**
- * Tipos relacionados con el módulo de reparaciones
- */
 import * as z from "zod";
 
 export enum DeviceType {
@@ -63,6 +60,20 @@ export interface IRepairListParams {
   limit?: number;
   status?: RepairStatus;
   urgency?: RepairUrgency;
+}
+
+export interface IRepairComment {
+  id: string;
+  adminId: string;
+  adminName: string;
+  comment: string;
+  statusSnapshot: RepairStatus;
+  createdAt: string;
+}
+
+export interface IRepairHistory {
+  repair: IRepair;
+  comments: IRepairComment[];
 }
 
 export const repairSchema = z.object({

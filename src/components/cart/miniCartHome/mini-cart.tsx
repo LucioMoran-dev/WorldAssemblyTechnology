@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 
+import { CartItemVariants } from "@/components/cart/cart-item-variants";
 import { Button } from "@/components/ui/button";
 import { useCartQuery, useRemoveCartItem } from "@/hooks";
 
@@ -111,6 +112,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
                       Cant: {item.quantity} - $
                       {item.priceAtAddition.toLocaleString()}
                     </p>
+                    <CartItemVariants variants={item.selectedVariants} />
                   </div>
 
                   <div className="flex flex-col gap-1">

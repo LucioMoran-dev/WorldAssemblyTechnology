@@ -1,8 +1,3 @@
-/**
- * Mappers para convertir tipos del backend a tipos del frontend
- * Mantiene compatibilidad con componentes existentes
- */
-
 import type { IProduct, ICartItem, IReviews } from "@/types";
 
 /**
@@ -10,7 +5,12 @@ import type { IProduct, ICartItem, IReviews } from "@/types";
  */
 export function mapProductToCardProps(product: IProduct) {
   const categoryName =
-    product.category?.name ?? product.category?.category_name ?? "Sin categoría";
+    product.category_name ??
+    product.category?.category_name ??
+    product.category?.name ??
+    "Sin categoría";
+
+  const effectiveStock = product.totalStock ?? product.baseStock;
 
   return {
     id: product.id,
@@ -19,15 +19,17 @@ export function mapProductToCardProps(product: IProduct) {
     brand: product.brand,
     model: product.model ?? "—",
     category: categoryName,
-    basePrice: product.basePrice, // Propiedad correcta segun ProductCardProps
-    originalPrice: undefined, // Calcular si hay descuento
-    rating: product.averageRating || 0,
-    reviews: product.reviewCount || 0,
+    basePrice: product.finalPrice ?? product.basePrice,
+    originalPrice: product.hasActiveDiscount
+      ? product.originalPrice
+      : undefined,
+    rating: Number(product.averageRating ?? 0),
+    reviews: Number(product.reviewCount ?? 0),
     image: product.imgUrls[0],
     images: product.imgUrls,
-    imgUrls: product.imgUrls, // Agregado para compatibilidad
+    imgUrls: product.imgUrls,
     badge: product.featured ? "Destacado" : undefined,
-    inStock: product.baseStock > 0,
+    inStock: effectiveStock > 0,
   };
 }
 
@@ -72,11 +74,15 @@ export function mapProductToDetailView(
   product: IProduct,
   reviews?: IReviews[]
 ) {
-  const categoryName = product.category?.name ?? product.category?.category_name;
+  const categoryName =
+    product.category_name ??
+    product.category?.category_name ??
+    product.category?.name;
   const averageRating = reviews ? calculateAverageRating(reviews) : 0;
   const reviewCount = reviews?.length || 0;
 
-  // Extraer caracteristicas del objeto specifications
+  const effectiveStock = product.totalStock ?? product.baseStock;
+
   const features = product.specifications
     ? Object.entries(product.specifications)
         .filter(([key]) => key !== "ports")
@@ -86,10 +92,12 @@ export function mapProductToDetailView(
   return {
     id: product.id,
     name: product.name,
-    price: product.basePrice as number,
-    originalPrice: undefined as number | undefined, // Backend podria agregar precio original para descuentos
-    stock: product.baseStock,
-    stockCount: product.baseStock,
+    price: (product.finalPrice ?? product.basePrice) as number,
+    originalPrice: (product.hasActiveDiscount
+      ? product.originalPrice
+      : undefined) as number | undefined,
+    stock: effectiveStock,
+    stockCount: effectiveStock,
     images: product.imgUrls,
     image: product.imgUrls[0],
     brand: product.brand,
@@ -98,7 +106,7 @@ export function mapProductToDetailView(
     specifications: product.specifications,
     rating: averageRating,
     reviews: reviewCount,
-    inStock: product.baseStock > 0,
+    inStock: effectiveStock > 0,
     sku: product.model || product.id.slice(0, 8).toUpperCase(),
     badge: product.featured ? "DESTACADO" : undefined,
     features,

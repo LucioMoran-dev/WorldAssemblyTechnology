@@ -5,7 +5,7 @@ import { useCategories } from "@/hooks";
 
 interface CategoryFilterProps {
   value: string;
-  onChange: (categoryId: string) => void;
+  onChange: (categoryName: string) => void;
 }
 
 export function CategoryFilter({ value, onChange }: CategoryFilterProps) {
@@ -25,11 +25,11 @@ export function CategoryFilter({ value, onChange }: CategoryFilterProps) {
   if (categories.length === 0) return null;
 
   return (
-    <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+    <div className="max-h-60 space-y-2.5 overflow-y-auto pr-1">
       {categories.map((cat) => {
         const name = cat.category_name ?? cat.name ?? "Sin categoría";
         const count = cat.products?.length;
-        const isChecked = value === cat.id;
+        const isChecked = value === name;
 
         return (
           <label
@@ -39,7 +39,7 @@ export function CategoryFilter({ value, onChange }: CategoryFilterProps) {
             <div className="flex items-center gap-2">
               <Checkbox
                 checked={isChecked}
-                onCheckedChange={() => onChange(isChecked ? "" : cat.id)}
+                onCheckedChange={() => onChange(isChecked ? "" : name)}
                 className="h-4 w-4"
               />
               <span className="text-gray-700">{name}</span>

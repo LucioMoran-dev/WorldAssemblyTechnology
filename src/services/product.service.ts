@@ -10,7 +10,6 @@ import type {
   IProductVariant,
   IPriceCalculation,
   IStockInfo,
-  IHybridSearchResponse,
 } from "@/types";
 
 /**
@@ -21,7 +20,6 @@ export const productService = {
   /**
    * GET /products - Todos los productos sin filtros ni paginación
    * Público | Rate Limit: 60/min
-   * ⚠️ Backend requiere page + limit para paginar
    */
   getProductsAll: async (): Promise<IPaginatedResponse<IProduct>> => {
     const response = await apiClient.get<IPaginatedResponse<IProduct>>(
@@ -98,39 +96,6 @@ export const productService = {
   },
 
   /**
-   * GET /products/search?q=query&ai=true&limit=8 - Búsqueda híbrida
-   * Público | Rate Limit: 60/min
-   *
-   * @param query - Texto de búsqueda (mínimo 1 carácter)
-   * @param useAi - Incluir resultados de IA (default: false)
-   * @param limit - Cantidad de resultados (default: 8)
-   */
-  search: async (
-    query: string,
-    useAi = false,
-    limit = 8
-  ): Promise<IHybridSearchResponse> => {
-    if (!query || query.trim().length < 1) {
-      return { results: [], source: "local" };
-    }
-
-    const params: Record<string, string | number | boolean> = {
-      q: query.trim(),
-      limit,
-    };
-
-    if (useAi) {
-      params.ai = true;
-    }
-
-    const response = await apiClient.get<IHybridSearchResponse>(
-      "/products/search",
-      { params }
-    );
-    return response.data;
-  },
-
-  /**
    * GET /products/:id/related - Productos relacionados
    * Público | Rate Limit: 60/min
    */
@@ -187,7 +152,40 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   create: async (data: ICreateProductDto): Promise<IProduct> => {
-    const response = await apiClient.post<IProduct>("/products", data);
+    const { categoryName, ...rest } = data;
+    const response = await apiClient.post<IProduct>("/products", {
+      ...rest,
+      category_name: categoryName,
+    });
+    return response.data;
+  },
+
+  /**
+   * POST /products/with-images - Crear producto + imágenes en un solo request (atómico)
+   * Requiere: ADMIN | Content-Type: multipart/form-data
+   *
+   * - `data`: el CreateProductDto serializado como JSON (sin imgUrls: se ignoran).
+   * - `images`: 0..N archivos bajo el mismo field `images` (máx 8, 5MB c/u).
+   * Devuelve el producto completo con `imgUrls` ya poblado.
+   */
+  createWithImages: async (
+    data: ICreateProductDto,
+    images: File[]
+  ): Promise<IProduct> => {
+    const { categoryName, imgUrls: _ignoredImgUrls, ...rest } = data;
+
+    const formData = new FormData();
+    formData.append(
+      "data",
+      JSON.stringify({ ...rest, category_name: categoryName })
+    );
+    images.forEach((file) => formData.append("images", file));
+
+    const response = await apiClient.post<IProduct>(
+      "/products/with-images",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
     return response.data;
   },
 
@@ -196,7 +194,12 @@ export const productService = {
    * Requiere: ADMIN | Rate Limit: 60/min
    */
   update: async (id: string, data: IUpdateProductDto): Promise<IProduct> => {
-    const response = await apiClient.put<IProduct>(`/products/${id}`, data);
+    const { categoryName, ...rest } = data;
+    const payload =
+      categoryName !== undefined
+        ? { ...rest, category_name: categoryName }
+        : rest;
+    const response = await apiClient.put<IProduct>(`/products/${id}`, payload);
     return response.data;
   },
 

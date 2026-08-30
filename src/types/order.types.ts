@@ -1,11 +1,6 @@
 import type { IVariantSnapshot } from "./common.types";
 import type { IUserAddress } from "./user.types";
 
-/**
- * Tipos relacionados con órdenes de compra
- */
-
-// Order Status Enum
 export enum OrderStatus {
   PENDING = "pending",
   PAID = "paid",
@@ -15,7 +10,6 @@ export enum OrderStatus {
   CANCELLED = "cancelled",
 }
 
-// Product Snapshot (para órdenes)
 export interface IProductSnapshot {
   name: string;
   description: string;
@@ -24,10 +18,8 @@ export interface IProductSnapshot {
   model?: string;
 }
 
-// Re-export VariantSnapshot para compatibilidad
 export type { IVariantSnapshot };
 
-// Order Item
 export interface OrderItem {
   id: string;
   quantity: number;
@@ -41,8 +33,6 @@ export interface OrderItem {
   variantsSnapshot: IVariantSnapshot[] | null;
   createdAt: string;
 }
-
-// Order Detail
 export interface OrderDetail {
   id: string;
   subtotal: number;
@@ -56,8 +46,6 @@ export interface OrderDetail {
   paymentMethod?: string;
   items: OrderItem[];
 }
-
-// Order
 export interface IOrder {
   id: string;
   orderNumber: string;
@@ -69,20 +57,26 @@ export interface IOrder {
     id: string;
     name: string;
     email: string;
+    phone?: string;
   };
   orderDetail: OrderDetail;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  carrier?: string;
+  estimatedDelivery?: string;
 }
 
-// DTOs
 export interface IUpdateOrderStatusDto {
   status: OrderStatus;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  carrier?: string;
+  estimatedDelivery?: string;
 }
-
-// Query Filters
 export interface IOrderFilters {
   status?: OrderStatus;
-  startDate?: string; // YYYY-MM-DD
-  endDate?: string; // YYYY-MM-DD
+  startDate?: string;
+  endDate?: string;
   orderNumber?: string;
   userEmail?: string;
   page?: number;
@@ -97,7 +91,6 @@ export interface IPaginatedOrders {
 
 export type IOrdersListResponse = IPaginatedOrders;
 
-// Order Stats (ADMIN)
 export interface IOrderStats {
   totalOrders: number;
   ordersByStatus: {
@@ -116,6 +109,12 @@ export interface IOrderStats {
   cancellationRate: string;
 }
 
-// Legacy compatibility
+export const NEXT_ORDER_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
+  [OrderStatus.PENDING]: OrderStatus.PAID,
+  [OrderStatus.PAID]: OrderStatus.PROCESSING,
+  [OrderStatus.PROCESSING]: OrderStatus.SHIPPED,
+  [OrderStatus.SHIPPED]: OrderStatus.DELIVERED,
+};
+
 export type OrderListParams = IOrderFilters;
 export type PaymentMethod = string;

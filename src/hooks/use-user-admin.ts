@@ -1,12 +1,12 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import { useAuth } from "@/hooks/use-auth";
 import { roleService, userService } from "@/services";
 import type { IChangeRoleDto, IUser, IUserListParams } from "@/types";
+import { getUserFacingMessage } from "@/utils";
 
 /**
  * Hook para obtener lista de usuarios (ADMIN)
@@ -36,11 +36,7 @@ export function useDeleteUser() {
       toast.success("Usuario eliminado correctamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar usuario"
-        : "Error al eliminar usuario";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar usuario"));
     },
   });
 }
@@ -58,11 +54,7 @@ export function useRestoreUser() {
       toast.success("Usuario restaurado correctamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al restaurar usuario"
-        : "Error al restaurar usuario";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al restaurar usuario"));
     },
   });
 }
@@ -81,11 +73,7 @@ export function useChangeUserRole() {
       toast.success(`Rol cambiado a ${user.role} correctamente`);
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al cambiar rol"
-        : "Error al cambiar rol";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al cambiar rol"));
     },
   });
 }

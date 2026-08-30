@@ -1,18 +1,11 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { reviewService, type ReviewsQueryParams } from "@/services";
 import type { ICreateReviewDto } from "@/types";
-
-/**
- * Type guard para verificar si un error es de Axios
- */
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
+import { getUserFacingMessage } from "@/utils";
 
 /**
  * React Query hooks para reviews
@@ -97,11 +90,7 @@ export function useCreateReview() {
       toast.success("Review creada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al crear review"
-        : "Error al crear review";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al crear review"));
     },
   });
 }
@@ -120,17 +109,28 @@ export function useToggleReviewVisibility() {
       toast.success(`Review marcada como ${status}`);
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al cambiar visibilidad"
-        : "Error al cambiar visibilidad";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al cambiar visibilidad"));
     },
   });
 }
 
 /**
- * Mutation para eliminar review
+ * Mis reseñas (GET /review/my-reviews, paginado).
+ * Scopeado por el token: el back devuelve solo las del usuario autenticado.
+ */
+export function useMyReviews(params?: { page?: number; limit?: number }) {
+  return useQuery({
+    queryKey: ["reviews", "my-reviews", params],
+    queryFn: () => reviewService.getMyReviews(params),
+    staleTime: 1 * 60 * 1000,
+  });
+}
+
+/**
+ * Mutation para eliminar review.
+ * DELETE /review/:id ahora resuelve por rol en el back: el CLIENTE borra
+ * solo la propia; ADMIN/SUPER_ADMIN pueden borrar cualquiera. Por eso el
+ * mismo hook sirve para el dashboard del cliente y para el panel admin.
  */
 export function useDeleteReview() {
   const queryClient = useQueryClient();
@@ -139,14 +139,10 @@ export function useDeleteReview() {
     mutationFn: (id: string) => reviewService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
-      toast.success("Review eliminada exitosamente");
+      toast.success("Reseña eliminada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al eliminar review"
-        : "Error al eliminar review";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al eliminar la reseña"));
     },
   });
 }

@@ -2,14 +2,8 @@ import type { IVariantSnapshot } from "./common.types";
 import type { IProduct, IProductVariant } from "./product.types";
 import type { IUser } from "./user.types";
 
-/**
- * Tipos relacionados con el carrito de compras
- */
-
-// Re-export VariantSnapshot para compatibilidad
 export type { IVariantSnapshot };
 
-// Cart Item
 export interface ICartItem {
   id: string;
   quantity: number;
@@ -20,7 +14,6 @@ export interface ICartItem {
   selectedVariants?: IVariantSnapshot[];
 }
 
-// Cart
 export interface ICart {
   id: string;
   user: IUser;
@@ -32,14 +25,12 @@ export interface ICart {
   updatedAt: string;
 }
 
-// Cart Summary (para navbar)
 export interface ICartSummary {
   itemCount: number;
   total: number;
   hasItems?: boolean;
 }
 
-// DTOs
 export interface IAddToCartDto {
   productId: string;
   quantity: number;
@@ -93,12 +84,10 @@ export interface ICartDiscountPreview {
   items: ICartDiscountPreviewItem[];
 }
 
-// Response types
 export interface ISelectedAddressResponse {
   selectedAddressId: string | null;
 }
 
-// Legacy compatibility
 export interface IStockValidationIssue {
   itemId: string;
   productId: string;

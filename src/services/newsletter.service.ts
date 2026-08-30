@@ -58,8 +58,11 @@ export const newsletterService = {
    * GET /newsletter/stats - Estadísticas de tracking
    * Requiere: ADMIN+
    */
-  getStats: async (): Promise<INewsletterStats> => {
-    const response = await apiClient.get<INewsletterStats>("/newsletter/stats");
+  getStats: async (campaignType?: string): Promise<INewsletterStats> => {
+    const response = await apiClient.get<INewsletterStats>(
+      "/newsletter/stats",
+      { params: campaignType ? { campaignType } : undefined }
+    );
     return response.data;
   },
 

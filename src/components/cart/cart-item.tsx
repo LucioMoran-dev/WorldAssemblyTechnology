@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import type { CartItemProps } from "@/types";
 
+import { CartItemVariants } from "./cart-item-variants";
 import QuantityController from "./quantity-controller";
 
 function CartItem({ item, quantity, onUpdateQuantity }: CartItemProps) {
@@ -20,6 +21,7 @@ function CartItem({ item, quantity, onUpdateQuantity }: CartItemProps) {
         />
         <div className="flex-1">
           <p className="line-clamp-3 text-sm text-foreground">{item.name}</p>
+          <CartItemVariants variants={item.selectedVariants} />
         </div>
       </div>
 

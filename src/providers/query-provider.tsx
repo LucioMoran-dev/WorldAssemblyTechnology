@@ -19,10 +19,9 @@ export default function QueryProvider({
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Configuración por defecto para todas las queries
-            staleTime: 60 * 1000, // 1 minuto
-            refetchOnWindowFocus: false, // No refetch al volver a la ventana
-            retry: 1, // Reintentar solo 1 vez en caso de error
+            staleTime: 60 * 1000,
+            refetchOnWindowFocus: false,
+            retry: 1,
           },
         },
       })

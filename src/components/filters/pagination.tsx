@@ -29,7 +29,9 @@ export function Pagination({
 }: PaginationProps) {
   if (pages <= 1 && variant === "admin") {
     return (
-      <div className={`flex items-center justify-between border-t border-border px-6 py-4 ${className}`}>
+      <div
+        className={`flex items-center justify-between border-t border-border px-6 py-4 ${className}`}
+      >
         <p className="text-sm text-muted-foreground">
           Mostrando {itemsShown} de {total} {itemLabel}
         </p>
@@ -39,7 +41,9 @@ export function Pagination({
 
   if (variant === "admin") {
     return (
-      <div className={`flex items-center justify-between border-t border-border px-6 py-4 ${className}`}>
+      <div
+        className={`flex items-center justify-between border-t border-border px-6 py-4 ${className}`}
+      >
         <p className="text-sm text-muted-foreground">
           Mostrando {itemsShown} de {total} {itemLabel}
         </p>
@@ -107,7 +111,7 @@ export function Pagination({
             key={pageNum}
             variant={pageNum === page ? "default" : "outline"}
             size="sm"
-            className="h-9 min-w-[36px]"
+            className="h-9 min-w-9"
             onClick={() => onPageChange(pageNum)}
             disabled={isLoading}
           >

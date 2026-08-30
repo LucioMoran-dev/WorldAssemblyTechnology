@@ -1,43 +1,79 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { orderService } from "@/services";
 import type { OrderListParams, IUpdateOrderStatusDto } from "@/types";
+import { OrderStatus } from "@/types";
+import { getUserFacingMessage } from "@/utils";
 
-/**
- * Type guard para verificar si un error es de Axios
- */
-function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
-
-/**
- * React Query hooks para órdenes
- */
-
-/**
- * Hook para obtener mis órdenes
- */
 export function useMyOrders() {
   return useQuery({
     queryKey: ["orders", "my-orders"],
     queryFn: () => orderService.getMyOrders(),
-    staleTime: 1 * 60 * 1000, // 1 minuto
+    staleTime: 1 * 60 * 1000,
   });
 }
 
-/**
- * Hook para obtener una orden por ID
- */
 export function useOrder(id: string) {
   return useQuery({
     queryKey: ["orders", id],
     queryFn: () => orderService.getById(id),
     enabled: !!id,
   });
+}
+
+// Cada cuánto le preguntamos al back si el pago ya se confirmó, y hasta
+// cuándo insistimos. El webhook de Mercado Pago puede tardar unos segundos
+// (retry de 1s + hasta 6 reintentos de 3s), por eso 60s de ventana.
+const PAYMENT_POLL_INTERVAL_MS = 3000;
+const PAYMENT_POLL_TIMEOUT_MS = 60000;
+
+/**
+ * Confirma el pago de una orden después de volver de Mercado Pago.
+ * Devuelve: la orden, si está confirmada (paid o más avanzada), si se
+ * agotó el tiempo, y si sigue esperando.
+ */
+export function useOrderPaymentConfirmation(orderId: string) {
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (!orderId) return;
+    setHasTimedOut(false);
+    const timer = setTimeout(
+      () => setHasTimedOut(true),
+      PAYMENT_POLL_TIMEOUT_MS
+    );
+    return () => clearTimeout(timer);
+  }, [orderId]);
+
+  const query = useQuery({
+    queryKey: ["orders", orderId],
+    queryFn: () => orderService.getById(orderId),
+    enabled: !!orderId,
+    staleTime: 0,
+    refetchInterval: (q) => {
+      const order = q.state.data;
+      if (order && order.status !== OrderStatus.PENDING) return false;
+      if (hasTimedOut) return false;
+      return PAYMENT_POLL_INTERVAL_MS;
+    },
+  });
+
+  const order = query.data;
+  const isConfirmed = Boolean(order && order.status !== OrderStatus.PENDING);
+  const isPaid = order?.status === OrderStatus.PAID;
+
+  return {
+    order,
+    isPaid,
+    isConfirmed,
+    isWaiting: !isConfirmed && !hasTimedOut,
+    hasTimedOut: hasTimedOut && !isConfirmed,
+    isError: query.isError,
+  };
 }
 
 /**
@@ -77,11 +113,7 @@ export function useUpdateOrderStatus() {
       toast.success("Estado de orden actualizado");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al actualizar orden"
-        : "Error al actualizar orden";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al actualizar orden"));
     },
   });
 }
@@ -95,21 +127,17 @@ export function useCancelOrder() {
   return useMutation({
     mutationFn: ({
       orderId,
-      reason,
+      cancellationReason,
     }: {
       orderId: string;
-      reason?: string;
-    }) => orderService.cancelOrder(orderId, reason),
+      cancellationReason: string;
+    }) => orderService.cancelOrder(orderId, cancellationReason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast.success("Orden cancelada exitosamente");
     },
     onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ||
-          "Error al cancelar orden"
-        : "Error al cancelar orden";
-      toast.error(message);
+      toast.error(getUserFacingMessage(error, "Error al cancelar orden"));
     },
   });
 }

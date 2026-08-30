@@ -14,7 +14,7 @@ export function LogoDeHeader() {
           sizes="(max-width: 640px) 128px, (max-width: 768px) 144px, 160px"
         />
       </div>
-      <span className="hidden text-lg font-extrabold text-foreground xl:inline">
+      <span className="hidden text-sm font-extrabold tracking-tight text-foreground sm:inline md:text-base xl:text-lg">
         WorldAssemblyTech
       </span>
     </Link>

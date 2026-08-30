@@ -1,10 +1,5 @@
-/**
- * Tipos relacionados con descuentos y códigos promocionales
- */
-
 export type DiscountType = "percentage" | "fixed";
 
-// Descuento automático de producto (admin)
 export interface IProductDiscount {
   id: string;
   productId: string;
@@ -34,7 +29,6 @@ export interface IUpdateProductDiscountDto {
   isActive?: boolean;
 }
 
-// Código promocional (admin)
 export interface IPromoCode {
   id: string;
   code: string;

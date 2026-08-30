@@ -13,7 +13,6 @@ export function DataInitProvider({ children }: { children: React.ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Solo inicializar una vez
     if (!isInitialized) {
       initializeAppData()
         .then(() => {
@@ -21,12 +20,10 @@ export function DataInitProvider({ children }: { children: React.ReactNode }) {
         })
         .catch((error) => {
           logger.error("Error initializing app data", error);
-          // Marcamos como inicializado de todos modos para no bloquear la app
           setIsInitialized(true);
         });
     }
   }, [isInitialized]);
 
-  // Renderizar los hijos inmediatamente, la inicialización es en background
   return <>{children}</>;
 }

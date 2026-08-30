@@ -2,6 +2,10 @@
  * Exportación centralizada de todos los types
  */
 
+// Import local para poder usar el tipo dentro de este mismo archivo
+// (los `export * from` de abajo re-exportan, pero no traen el nombre acá)
+import type { IVariantSnapshot } from "./common.types";
+
 // ===== TYPES DEL BACKEND =====
 
 // Common types
@@ -18,6 +22,9 @@ export * from "./cart.types";
 
 // Order types
 export * from "./order.types";
+
+// Refund types
+export * from "./refund.types";
 
 // Review types
 export * from "./review.types";
@@ -98,6 +105,8 @@ export interface CartItemProps {
     name: string;
     price: number;
     image?: string;
+    // Variantes elegidas (snapshot del back) para mostrarlas bajo el nombre
+    selectedVariants?: IVariantSnapshot[];
   };
   quantity: number;
   onUpdateQuantity: (id: string, delta: number) => void;
@@ -109,6 +118,7 @@ export interface CartItemsListProps {
     name: string;
     price: number;
     image?: string;
+    selectedVariants?: IVariantSnapshot[];
   }>;
   quantities: { [key: string]: number };
   onUpdateQuantity: (id: string, delta: number) => void;

@@ -1,13 +1,13 @@
 "use client";
 
-import { Eye, EyeOff, Trash2, Star } from "lucide-react";
+import { Eye, EyeOff, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useState, Suspense } from "react";
+import { Suspense, useState } from "react";
 
-import { Pagination } from "@/components/filters/pagination";
-import { SearchInput } from "@/components/filters/search-input";
 import { EnumSelectFilter } from "@/components/filters/enum-select-filter";
 import { FiltersPanel } from "@/components/filters/filters-panel";
+import { Pagination } from "@/components/filters/pagination";
+import { SearchInput } from "@/components/filters/search-input";
 import { ActionDialog } from "@/components/ui/action-dialog";
 import {
   useAllReviews,
@@ -34,36 +34,50 @@ const ratingOptions = [
 ];
 
 function AdminReviewsContent() {
-  const { filters, page, limit, setFilter, setPage, clearAllFilters, activeFilterCount } = useFilters({
+  const {
+    filters,
+    page,
+    limit,
+    setFilter,
+    setPage,
+    clearAllFilters,
+    activeFilterCount,
+  } = useFilters({
     defaults: { userName: "", rating: "" },
     defaultLimit: 10,
   });
 
-  const [deleteReviewTarget, setDeleteReviewTarget] = useState<string | null>(null);
-
+  // Moderación: dos herramientas con propósitos distintos.
+  // - Ocultar (PATCH /review/:id/visibility): reversible, conserva el dato.
+  // - Eliminar (DELETE /review/:id): permanente. El back ahora resuelve por
+  //   rol y deja que ADMIN/SUPER_ADMIN borre cualquier reseña.
   const { data: reviewsData, isLoading } = useAllReviews({
     page,
     limit,
     rating: filters.rating ? parseInt(filters.rating) : undefined,
     userName: filters.userName || undefined,
   });
-  const deleteReview = useDeleteReview();
   const toggleVisibility = useToggleReviewVisibility();
+  const deleteReview = useDeleteReview();
+
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const reviews = reviewsData?.items ?? [];
   const totalPages = reviewsData?.pages ?? 1;
   const total = reviewsData?.total ?? 0;
 
-  const handleDelete = (id: string) => setDeleteReviewTarget(id);
-
-  const handleConfirmDelete = async () => {
-    if (!deleteReviewTarget) return;
-    await deleteReview.mutateAsync(deleteReviewTarget);
-    setDeleteReviewTarget(null);
-  };
-
   const handleToggleVisibility = async (id: string) => {
     await toggleVisibility.mutateAsync(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteReview.mutateAsync(deleteTarget);
+      setDeleteTarget(null);
+    } catch {
+      // el hook ya muestra el toast; dejamos el diálogo abierto
+    }
   };
 
   const renderStars = (rating: number) => (
@@ -80,15 +94,20 @@ function AdminReviewsContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">Gestión de Reseñas</h1>
+        <h1 className="text-3xl font-bold text-foreground">
+          Gestión de Reseñas
+        </h1>
       </div>
 
-      <FiltersPanel activeCount={activeFilterCount} onClearAll={clearAllFilters}>
+      <FiltersPanel
+        activeCount={activeFilterCount}
+        onClearAll={clearAllFilters}
+      >
         <SearchInput
           value={filters.userName ?? ""}
           onChange={(v) => setFilter("userName", v)}
           placeholder="Buscar por usuario..."
-          className="flex-1 min-w-[200px]"
+          className="min-w-50 flex-1"
         />
         <EnumSelectFilter
           value={filters.rating ?? ""}
@@ -103,13 +122,27 @@ function AdminReviewsContent() {
           <table className="w-full">
             <thead className="border-b border-border bg-muted/40">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Usuario</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Producto</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Calificacion</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Mensaje</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Fecha</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Visible</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">Acciones</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Usuario
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Producto
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Calificacion
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Mensaje
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Fecha
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Visible
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted-foreground">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -123,29 +156,47 @@ function AdminReviewsContent() {
                 ))
               ) : reviews.length > 0 ? (
                 reviews.map((review) => (
-                  <tr key={review.id} className="border-b border-border hover:bg-muted/40">
+                  <tr
+                    key={review.id}
+                    className="border-b border-border hover:bg-muted/40"
+                  >
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-medium text-foreground">{review.user?.name ?? "Usuario desconocido"}</p>
-                        <p className="text-sm text-muted-foreground">{review.user?.email ?? "-"}</p>
+                        <p className="font-medium text-foreground">
+                          {review.user?.name ?? "Usuario desconocido"}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {review.user?.email ?? "-"}
+                        </p>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-foreground">
                       {review.product?.id ? (
-                        <Link href={`/products/${review.product.id}`} className="text-blue-600 hover:underline">
+                        <Link
+                          href={`/products/${review.product.id}`}
+                          className="text-blue-600 hover:underline"
+                        >
                           {review.product.name}
                         </Link>
                       ) : (
-                        <span className="text-muted-foreground">{review.product?.name ?? "Producto eliminado"}</span>
+                        <span className="text-muted-foreground">
+                          {review.product?.name ?? "Producto eliminado"}
+                        </span>
                       )}
                     </td>
                     <td className="px-6 py-4">{renderStars(review.rating)}</td>
                     <td className="px-6 py-4">
-                      <p className="line-clamp-2 max-w-xs text-sm text-muted-foreground">{review.message}</p>
+                      <p className="line-clamp-2 max-w-xs text-sm text-muted-foreground">
+                        {review.message}
+                      </p>
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">{formatDate(review.createdAt)}</td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {formatDate(review.createdAt)}
+                    </td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${review.isVisible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${review.isVisible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                      >
                         {review.isVisible ? "Visible" : "Oculta"}
                       </span>
                     </td>
@@ -155,15 +206,23 @@ function AdminReviewsContent() {
                           onClick={() => handleToggleVisibility(review.id)}
                           disabled={toggleVisibility.isPending}
                           className={`rounded-lg p-2 transition-colors disabled:opacity-50 ${review.isVisible ? "text-orange-600 hover:bg-orange-50" : "text-green-600 hover:bg-green-50"}`}
-                          title={review.isVisible ? "Ocultar resena" : "Mostrar resena"}
+                          title={
+                            review.isVisible
+                              ? "Ocultar resena"
+                              : "Mostrar resena"
+                          }
                         >
-                          {review.isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {review.isVisible ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                         </button>
                         <button
-                          onClick={() => handleDelete(review.id)}
+                          onClick={() => setDeleteTarget(review.id)}
                           disabled={deleteReview.isPending}
                           className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
-                          title="Eliminar resena"
+                          title="Eliminar reseña"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -173,7 +232,10 @@ function AdminReviewsContent() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-12 text-center text-muted-foreground"
+                  >
                     No se encontraron resenas
                   </td>
                 </tr>
@@ -193,11 +255,13 @@ function AdminReviewsContent() {
         />
       </div>
 
+      {/* Borrado permanente. Si la intención es solo sacarla de la vista
+          pública, el toggle de visibilidad es la opción reversible. */}
       <ActionDialog
-        open={Boolean(deleteReviewTarget)}
-        onOpenChange={(open) => { if (!open) setDeleteReviewTarget(null); }}
-        title="Eliminar resena"
-        description="Esta accion eliminara la resena de forma permanente."
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="¿Eliminar esta reseña?"
+        description="Se borra de forma permanente. Si solo querés que deje de verse en el producto, usá el botón de ocultar."
         confirmLabel="Eliminar"
         variant="destructive"
         isPending={deleteReview.isPending}
@@ -209,7 +273,9 @@ function AdminReviewsContent() {
 
 export default function AdminReviewsPage() {
   return (
-    <Suspense fallback={<div className="p-6 text-muted-foreground">Cargando...</div>}>
+    <Suspense
+      fallback={<div className="p-6 text-muted-foreground">Cargando...</div>}
+    >
       <AdminReviewsContent />
     </Suspense>
   );

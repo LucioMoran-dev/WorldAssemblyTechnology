@@ -1,8 +1,3 @@
-/**
- * Utilidades para inicializar datos en la base de datos
- * Este archivo contiene funciones para precargar categorías y otros datos iniciales
- */
-
 import { categoryService } from "@/services";
 import { categoryLogger, logger } from "@/utils/logger";
 
@@ -36,7 +31,6 @@ export async function seedCategoriesIfNeeded(): Promise<void> {
     }
   } catch (error) {
     categoryLogger.error("Error seeding categories", error);
-    // No lanzamos el error para no romper la app si falla
   }
 }
 
@@ -46,12 +40,7 @@ export async function seedCategoriesIfNeeded(): Promise<void> {
 export async function initializeAppData(): Promise<void> {
   logger.info("initializeAppData", "Initializing app data...");
 
-  // Precargar categorías
   await seedCategoriesIfNeeded();
-
-  // Aquí puedes agregar más inicializaciones si es necesario
-  // await seedProductsIfNeeded();
-  // await seedBrandsIfNeeded();
 
   logger.info("initializeAppData", "App data initialized");
 }

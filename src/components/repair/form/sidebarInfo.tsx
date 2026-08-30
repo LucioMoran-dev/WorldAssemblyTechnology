@@ -24,18 +24,26 @@ export function SidebarInfo() {
             <p className="font-medium text-foreground">
               Lun-Jue: 9:00 AM - 5:30 PM
             </p>
-            <p className="font-medium text-foreground">Vie: 9:00 AM - 6:00 PM</p>
-            <p className="font-medium text-foreground">Sáb: 11:00 AM - 5:00 PM</p>
+            <p className="font-medium text-foreground">
+              Vie: 9:00 AM - 6:00 PM
+            </p>
+            <p className="font-medium text-foreground">
+              Sáb: 11:00 AM - 5:00 PM
+            </p>
           </div>
         </div>
       </div>
 
       {/* Services */}
+      {/* Dark-mode: bg-blue-50 y los text-gray-* se remapean juntos en la capa
+          de compatibilidad de globals.css (fondo → azul oscuro, texto → claro).
+          Importante que el texto use clases gray explícitas: sin color propio
+          los ítems heredaban blanco y quedaban invisibles en light. */}
       <div className="rounded-xl border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 font-bold text-foreground">
+        <h3 className="mb-4 font-bold text-gray-900">
           Servicios que Ofrecemos
         </h3>
-        <ul className="space-y-2 text-sm">
+        <ul className="space-y-2 text-sm text-gray-700">
           <li className="flex items-start gap-2">
             <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
             <span>Reparación de laptops y notebooks</span>

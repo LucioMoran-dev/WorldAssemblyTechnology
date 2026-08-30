@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
             <DollarSign className="h-5 w-5 text-green-600" />
           </div>
           {statsLoading ? (
-            <div className="h-10 animate-pulse rounded bg-muted"></div>
+            <div className="h-10 animate-pulse rounded bg-muted" />
           ) : (
             <>
               <p className="text-3xl font-bold text-foreground">
@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
             <ShoppingCart className="h-5 w-5 text-blue-600" />
           </div>
           {statsLoading ? (
-            <div className="h-10 animate-pulse rounded bg-muted"></div>
+            <div className="h-10 animate-pulse rounded bg-muted" />
           ) : (
             <>
               <p className="text-3xl font-bold text-foreground">{stats?.totalOrders || 0}</p>
@@ -95,7 +95,7 @@ export default function AdminDashboardPage() {
             <Package className="h-5 w-5 text-purple-600" />
           </div>
           {statsLoading ? (
-            <div className="h-10 animate-pulse rounded bg-muted"></div>
+            <div className="h-10 animate-pulse rounded bg-muted" />
           ) : (
             <>
               <p className="text-3xl font-bold text-foreground">{stats?.completionRate || '0%'}</p>
@@ -112,7 +112,7 @@ export default function AdminDashboardPage() {
             <XCircle className="h-5 w-5 text-red-600" />
           </div>
           {statsLoading ? (
-            <div className="h-10 animate-pulse rounded bg-muted"></div>
+            <div className="h-10 animate-pulse rounded bg-muted" />
           ) : (
             <>
               <p className="text-3xl font-bold text-foreground">{stats?.cancellationRate || '0%'}</p>
@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="border-b border-border">
                     <td colSpan={5} className="py-4">
-                      <div className="h-10 animate-pulse rounded bg-muted"></div>
+                      <div className="h-10 animate-pulse rounded bg-muted" />
                     </td>
                   </tr>
                 ))

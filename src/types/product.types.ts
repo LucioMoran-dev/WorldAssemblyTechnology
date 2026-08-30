@@ -6,12 +6,18 @@ import type { IReviews } from "./review.types";
 
 // Variant Type Enum
 export enum VariantType {
-  RAM = "RAM",
-  STORAGE = "STORAGE",
-  PROCESSOR = "PROCESSOR",
-  COLOR = "COLOR",
-  WARRANTY = "WARRANTY",
-  SIZE = "SIZE",
+  RAM = "ram",
+  STORAGE = "storage",
+  PROCESSOR = "processor",
+  VRAM = "vram",
+  COLOR = "color",
+  CONNECTIVITY = "connectivity",
+  SCREEN_SIZE = "screen_size",
+  RESOLUTION = "resolution",
+  REFRESH_RATE = "refresh_rate",
+  WARRANTY = "warranty",
+  CONDITION = "condition",
+  SWITCH = "switch",
 }
 
 // Category
@@ -66,6 +72,13 @@ export interface IProduct {
   model?: string;
   basePrice: number;
   baseStock: number;
+  totalStock?: number;
+  finalPrice?: number;
+  originalPrice?: number;
+  hasActiveDiscount?: boolean;
+  discountAmount?: number;
+  discountPercentage?: number | null;
+  discountEndDate?: string | null;
   imgUrls: string[];
   specifications?: IProductSpecifications;
   isActive: boolean;
@@ -73,7 +86,8 @@ export interface IProduct {
   featured: boolean;
   createdAt: string;
   updatedAt: string;
-  category: ICategory;
+  category_name?: string;
+  category?: ICategory;
   variants?: IProductVariant[];
   files?: IProductFile[];
   reviews?: IReviews[];
@@ -108,6 +122,7 @@ export interface IUpdateProductDto {
   imgUrls?: string[];
   featured?: boolean;
   specifications?: IProductSpecifications;
+  isActive?: boolean;
 }
 
 export interface ICreateVariantDto {
@@ -130,19 +145,17 @@ export interface IUpdateVariantDto {
   sortOrder?: number;
 }
 
-// Search & Filters
 export interface IProductsSearchQuery {
   name?: string;
   basePrice?: number;
   brand?: string;
-  categoryId?: string;
+  category_name?: string;
   color?: string;
   minPrice?: number;
   maxPrice?: number;
   featured?: boolean;
   page?: number;
   limit?: number;
-  // Variant filters (string LIKE en product_variants)
   ram?: string;
   storage?: string;
   processor?: string;
@@ -152,9 +165,15 @@ export interface IProductsSearchQuery {
   refresh_rate?: string;
   connectivity?: string;
   condition?: string;
+  switch?: string;
+  // Filtro genérico de variantes: se usan LOS DOS juntos (si va uno solo, el
+  // back lo ignora). Sirve para tipos sin filtro propio, ej. warranty.
+  variantType?: string;
+  variantValue?: string;
   // Boolean filters
   inStock?: boolean;
   discounted?: boolean;
+  isActive?: boolean;
 }
 
 export interface IPaginatedProducts {
@@ -206,36 +225,22 @@ export interface IHybridSearchResponse {
 // Legacy compatibility
 export type ProductFilters = IProductsSearchQuery;
 
-// Price Calculation Response (GET /products/:id/price)
+// Respuesta REAL de GET /products/:id/price?variants=...
+// (ver docs/frontend-variants-guide.md §3: NO devuelve tax/subtotal/desglose;
+// finalPrice = basePrice + Σ priceModifier, con descuento ya aplicado)
 export interface IPriceCalculation {
   productId: string;
-  basePrice: number;
-  variantModifiers: number;
-  subtotal: number;
-  tax: number;
-  total: number;
-  selectedVariants?: {
-    id: string;
-    type: string;
-    name: string;
-    priceModifier: number;
-  }[];
+  variantIds: string[];
+  finalPrice: number;
 }
 
-// Stock Information Response (GET /products/:id/stock)
+// Respuesta REAL de GET /products/:id/stock?variants=...
+// (ver docs/frontend-variants-guide.md §4: availableStock = min(stock de las
+// variantes elegidas); sin variants = stock total del producto)
 export interface IStockInfo {
   productId: string;
-  productName: string;
-  baseStock: number;
-  variantStock: number | null;
+  variantIds: string[];
   availableStock: number;
-  isAvailable: boolean;
-  selectedVariants?: {
-    id: string;
-    type: string;
-    name: string;
-    stock: number;
-  }[];
 }
 
 // UI Props (for components)
