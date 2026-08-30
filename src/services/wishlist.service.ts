@@ -6,10 +6,6 @@ import type {
   IWishlistItem,
 } from "@/types";
 
-/**
- * Servicio de wishlist (lista de deseos)
- * Endpoints del módulo /wishlist
- */
 export const wishlistService = {
   /**
    * GET /wishlist/my-wishlist - Obtener mi wishlist completa
@@ -53,8 +49,4 @@ export const wishlistService = {
   clearWishlist: async (): Promise<void> => {
     await apiClient.delete("/wishlist/clear");
   },
-
-  // Nota: se eliminó checkProduct (GET /wishlist/check/:id). Hacer un request
-  // por producto disparaba el rate limit del back (429) con listas grandes;
-  // ahora useCheckWishlist deriva la respuesta de la wishlist completa cacheada.
 };

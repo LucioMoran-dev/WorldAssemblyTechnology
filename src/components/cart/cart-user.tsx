@@ -17,28 +17,23 @@ function CartUser() {
   const [selectedCountry, setSelectedCountry] = useState("Australia");
   const [shippingMethod, setShippingMethod] = useState("standard");
 
-  // 1. Mapeo exacto basado en tu método mapCartToResponse de NestJS
   const items =
     cart?.items.map((item) => ({
       id: item.id,
       name: item.product.name,
-      price: item.priceAtAddition, // Tomado de ICartItemResponseDTO
+      price: item.priceAtAddition,
       image: item.product.imgUrls?.[0] || "",
       quantity: item.quantity,
       subtotal: item.subtotal,
-      // Snapshot de variantes elegidas (para mostrarlas bajo el nombre)
       selectedVariants: item.selectedVariants,
     })) || [];
 
-  // 2. Cálculos financieros
-  // Nota: cart.total ya viene calculado desde NestJS (recalculateCartTotal)
   const subtotal = cart?.total || 0;
   const shipping = shippingMethod === "standard" ? 21.0 : 0.0;
   const tax = subtotal * 0.05;
   const gst = subtotal * 0.05;
   const total = subtotal + shipping + tax + gst;
 
-  // 3. Objeto de cantidades para CartItemsListProps
   const quantities = items.reduce(
     (acc, item) => {
       acc[item.id] = item.quantity;
@@ -52,9 +47,6 @@ function CartUser() {
     if (!item) return;
 
     const newQuantity = item.quantity + delta;
-
-    // Si la cantidad llega a 0, podrías optar por eliminarlo o dejar que el backend lo maneje
-    // Según tu UpdateCartItemDTO, 0 es permitido para eliminar.
     updateItemMutation.mutate({
       itemId,
       data: { quantity: Math.max(0, newQuantity) },
@@ -84,8 +76,6 @@ function CartUser() {
             items={items}
             quantities={quantities}
             onUpdateQuantity={handleUpdateQuantity}
-            // Asegúrate de que CartItemsListProps incluya onRemoveItem
-            // o pásalo si CartItemsList lo soporta
           />
 
           <SummarySidebar
@@ -112,4 +102,3 @@ function CartUser() {
 }
 
 export default CartUser;
-

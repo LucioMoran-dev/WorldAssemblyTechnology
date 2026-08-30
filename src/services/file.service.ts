@@ -1,16 +1,11 @@
 import { apiClient } from "@/lib/api";
-import type { IUploadImageResponse } from "@/types";
+import type { IProductImage, IUploadImageResponse } from "@/types";
 
 /**
  * Servicio de archivos
  * Endpoints del módulo /files
  */
 export const fileService = {
-  /**
-   * POST /files/uploadImage/:id - Subir imagen de producto (Admin only)
-   * Requiere: ADMIN | Rate Limit: 60/min
-   * Content-Type: multipart/form-data
-   */
   uploadProductImage: async (
     productId: string,
     file: File,
@@ -38,5 +33,25 @@ export const fileService = {
     );
 
     return response.data;
+  },
+
+  /**
+   * GET /files/product/:productId - Imágenes del producto con su ID
+   * Requiere: ADMIN
+   */
+  getProductImages: async (productId: string): Promise<IProductImage[]> => {
+    const response = await apiClient.get<IProductImage[]>(
+      `/files/product/${productId}`
+    );
+    return response.data;
+  },
+
+  /**
+   * DELETE /files/image/:imageId - Eliminar una imagen
+   * Requiere: ADMIN
+   * Borra la referencia en la DB y el archivo en Cloudinary.
+   */
+  deleteImage: async (imageId: string): Promise<void> => {
+    await apiClient.delete(`/files/image/${imageId}`);
   },
 };

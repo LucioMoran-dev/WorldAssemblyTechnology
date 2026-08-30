@@ -23,6 +23,9 @@ export * from "./cart.types";
 // Order types
 export * from "./order.types";
 
+// Refund types
+export * from "./refund.types";
+
 // Review types
 export * from "./review.types";
 

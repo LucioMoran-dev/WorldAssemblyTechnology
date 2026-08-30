@@ -1,6 +1,3 @@
-/**
- * Tipos relacionados con el módulo de reparaciones
- */
 import * as z from "zod";
 
 export enum DeviceType {

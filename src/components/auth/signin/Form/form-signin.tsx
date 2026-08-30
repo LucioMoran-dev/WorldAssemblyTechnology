@@ -69,7 +69,7 @@ export function FormSingIn() {
   return (
     <>
       <h2 className="mb-4 text-xl font-semibold">Clientes Registrados</h2>
-      <p className="text-muted-foreground mb-6">
+      <p className="mb-6 text-muted-foreground">
         Si tienes una cuenta, inicia sesión con tu dirección de email.
       </p>
 
@@ -141,7 +141,7 @@ export function FormSingIn() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="text-muted-foreground bg-card px-2">
+            <span className="bg-card px-2 text-muted-foreground">
               O continuar con
             </span>
           </div>

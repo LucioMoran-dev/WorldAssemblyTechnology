@@ -115,7 +115,22 @@ export function useToggleReviewVisibility() {
 }
 
 /**
- * Mutation para eliminar review
+ * Mis reseñas (GET /review/my-reviews, paginado).
+ * Scopeado por el token: el back devuelve solo las del usuario autenticado.
+ */
+export function useMyReviews(params?: { page?: number; limit?: number }) {
+  return useQuery({
+    queryKey: ["reviews", "my-reviews", params],
+    queryFn: () => reviewService.getMyReviews(params),
+    staleTime: 1 * 60 * 1000,
+  });
+}
+
+/**
+ * Mutation para eliminar review.
+ * DELETE /review/:id ahora resuelve por rol en el back: el CLIENTE borra
+ * solo la propia; ADMIN/SUPER_ADMIN pueden borrar cualquiera. Por eso el
+ * mismo hook sirve para el dashboard del cliente y para el panel admin.
  */
 export function useDeleteReview() {
   const queryClient = useQueryClient();
@@ -124,10 +139,10 @@ export function useDeleteReview() {
     mutationFn: (id: string) => reviewService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
-      toast.success("Review eliminada exitosamente");
+      toast.success("Reseña eliminada exitosamente");
     },
     onError: (error: unknown) => {
-      toast.error(getUserFacingMessage(error, "Error al eliminar review"));
+      toast.error(getUserFacingMessage(error, "Error al eliminar la reseña"));
     },
   });
 }

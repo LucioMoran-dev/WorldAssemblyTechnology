@@ -10,7 +10,6 @@ import type {
   IProductVariant,
   IPriceCalculation,
   IStockInfo,
-  IHybridSearchResponse,
 } from "@/types";
 
 /**
@@ -21,7 +20,6 @@ export const productService = {
   /**
    * GET /products - Todos los productos sin filtros ni paginación
    * Público | Rate Limit: 60/min
-   * ⚠️ Backend requiere page + limit para paginar
    */
   getProductsAll: async (): Promise<IPaginatedResponse<IProduct>> => {
     const response = await apiClient.get<IPaginatedResponse<IProduct>>(
@@ -93,39 +91,6 @@ export const productService = {
       {
         params: filters,
       }
-    );
-    return response.data;
-  },
-
-  /**
-   * GET /products/search?q=query&ai=true&limit=8 - Búsqueda híbrida
-   * Público | Rate Limit: 60/min
-   *
-   * @param query - Texto de búsqueda (mínimo 1 carácter)
-   * @param useAi - Incluir resultados de IA (default: false)
-   * @param limit - Cantidad de resultados (default: 8)
-   */
-  search: async (
-    query: string,
-    useAi = false,
-    limit = 8
-  ): Promise<IHybridSearchResponse> => {
-    if (!query || query.trim().length < 1) {
-      return { results: [], source: "local" };
-    }
-
-    const params: Record<string, string | number | boolean> = {
-      q: query.trim(),
-      limit,
-    };
-
-    if (useAi) {
-      params.ai = true;
-    }
-
-    const response = await apiClient.get<IHybridSearchResponse>(
-      "/products/search",
-      { params }
     );
     return response.data;
   },
@@ -207,7 +172,6 @@ export const productService = {
     data: ICreateProductDto,
     images: File[]
   ): Promise<IProduct> => {
-    // imgUrls se ignora del lado del back (se arma desde los archivos subidos)
     const { categoryName, imgUrls: _ignoredImgUrls, ...rest } = data;
 
     const formData = new FormData();
@@ -231,9 +195,10 @@ export const productService = {
    */
   update: async (id: string, data: IUpdateProductDto): Promise<IProduct> => {
     const { categoryName, ...rest } = data;
-    const payload = categoryName !== undefined
-      ? { ...rest, category_name: categoryName }
-      : rest;
+    const payload =
+      categoryName !== undefined
+        ? { ...rest, category_name: categoryName }
+        : rest;
     const response = await apiClient.put<IProduct>(`/products/${id}`, payload);
     return response.data;
   },

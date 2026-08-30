@@ -45,6 +45,22 @@ export function useMyAddresses() {
 }
 
 /**
+ * Estadísticas propias del usuario (GET /users/stats/me):
+ * totalOrders, totalSpent, wishlistItems, reviewsGiven.
+ */
+export function useMyStats() {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const isLoading = useAuth((state) => state.isLoading);
+
+  return useQuery({
+    queryKey: ["user", "stats", "me"],
+    queryFn: () => userService.getMyStats(),
+    enabled: !isLoading && isAuthenticated,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+/**
  * Mutation para actualizar perfil
  */
 export function useUpdateProfile() {
@@ -63,6 +79,30 @@ export function useUpdateProfile() {
         ? (error.response?.data as ErrorResponse)?.message ||
           "Error al actualizar perfil"
         : "Error al actualizar perfil";
+      toast.error(message);
+    },
+  });
+}
+
+/**
+ * Eliminar la PROPIA cuenta (DELETE /users/:id — soft delete en el back).
+ */
+export function useDeleteMyAccount() {
+  const { logout } = useAuth();
+
+  return useMutation({
+    mutationFn: (userId: string) => userService.deleteUser(userId),
+    onSuccess: () => {
+      toast.success("Tu cuenta fue eliminada");
+      logout();
+      // Redirect duro: limpia todo el estado en memoria de la sesión
+      window.location.href = "/";
+    },
+    onError: (error: unknown) => {
+      const message = isAxiosError(error)
+        ? (error.response?.data as ErrorResponse)?.message ||
+          "Error al eliminar la cuenta"
+        : "Error al eliminar la cuenta";
       toast.error(message);
     },
   });

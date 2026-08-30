@@ -3,10 +3,27 @@ import type {
   IPaymentPreference,
   ICreatePreferenceDto,
   IPayment,
+  IPaymentApiShape,
   IPaymentStatusResponse,
   IPaymentListParams,
   IPaginatedResponse,
 } from "@/types";
+
+function normalizePayment(raw: IPaymentApiShape): IPayment {
+  return {
+    id: raw.id ?? "",
+    orderId: raw.orderId ?? raw.order_id ?? "",
+    userId: raw.userId ?? raw.user_id,
+    mercadoPagoId: raw.paymentId ?? raw.payment_id,
+    amount: Number(raw.amount ?? 0),
+    status: raw.status as IPayment["status"],
+    paymentTypeId: raw.paymentTypeId ?? raw.payment_type_id,
+    paymentMethodId: raw.paymentMethodId ?? raw.payment_method_id,
+    dateApproved: raw.dateApproved ?? raw.date_approved,
+    createdAt: raw.createdAt ?? raw.created_at ?? "",
+    updatedAt: raw.updatedAt ?? raw.updated_at,
+  };
+}
 
 /**
  * Servicio de pagos (MercadoPago)
@@ -34,11 +51,14 @@ export const paymentService = {
   getMyPayments: async (
     params?: IPaymentListParams
   ): Promise<IPaginatedResponse<IPayment>> => {
-    const response = await apiClient.get<IPaginatedResponse<IPayment>>(
+    const response = await apiClient.get<IPaginatedResponse<IPaymentApiShape>>(
       "/payments/my-payments",
       { params }
     );
-    return response.data;
+    return {
+      ...response.data,
+      items: (response.data.items ?? []).map(normalizePayment),
+    };
   },
 
   /**
@@ -61,11 +81,14 @@ export const paymentService = {
   getAllPayments: async (
     params?: IPaymentListParams
   ): Promise<IPaginatedResponse<IPayment>> => {
-    const response = await apiClient.get<IPaginatedResponse<IPayment>>(
+    const response = await apiClient.get<IPaginatedResponse<IPaymentApiShape>>(
       "/payments",
       { params }
     );
-    return response.data;
+    return {
+      ...response.data,
+      items: (response.data.items ?? []).map(normalizePayment),
+    };
   },
 
   /**
@@ -73,9 +96,13 @@ export const paymentService = {
    * Requiere: ADMIN+
    */
   getPaymentsByOrder: async (orderId: string): Promise<IPayment[]> => {
-    const response = await apiClient.get<IPayment[]>(
-      `/payments/order/${orderId}`
-    );
-    return response.data;
+    const response = await apiClient.get<
+      IPaymentApiShape | IPaymentApiShape[] | null
+    >(`/payments/order/${orderId}`);
+
+    const raw = response.data;
+    if (!raw) return [];
+    const list = Array.isArray(raw) ? raw : [raw];
+    return list.filter((p) => p && p.id).map(normalizePayment);
   },
 };

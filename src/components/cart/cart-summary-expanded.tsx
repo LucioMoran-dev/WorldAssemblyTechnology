@@ -37,7 +37,7 @@ function CartSummaryExpanded({
             <select
               value={selectedCountry}
               onChange={(e) => onCountryChange(e.target.value)}
-              className="w-full rounded border border-border px-3 py-2 text-sm"
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
             >
               <option>Australia</option>
               <option>Estados Unidos</option>
@@ -68,7 +68,8 @@ function CartSummaryExpanded({
                 className="mt-0.5 text-blue-600"
               />
               <span className="text-xs text-muted-foreground">
-                El precio puede variar según el artículo/destino. El personal de la tienda se pondrá en contacto contigo. $21.00
+                El precio puede variar según el artículo/destino. El personal de
+                la tienda se pondrá en contacto contigo. $21.00
               </span>
             </label>
             <p className="mt-3 text-sm font-medium">Recoger en tienda</p>
@@ -100,7 +101,9 @@ function CartSummaryExpanded({
         </button>
         {discountExpanded && (
           <div className="mt-4 space-y-3">
-            <p className="text-sm text-muted-foreground">Ingresa tu código de descuento</p>
+            <p className="text-sm text-muted-foreground">
+              Ingresa tu código de descuento
+            </p>
             <Input
               type="text"
               placeholder="Ingresa tu Código de Descuento"
@@ -179,5 +182,3 @@ function CartSummaryExpanded({
 }
 
 export default CartSummaryExpanded;
-
-

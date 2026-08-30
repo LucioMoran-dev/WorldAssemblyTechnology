@@ -1,7 +1,3 @@
-/**
- * Tipos comunes y compartidos entre módulos
- */
-
 export interface IPaginatedResponse<T> {
   items: T[];
   total: number;

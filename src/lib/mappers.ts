@@ -1,8 +1,3 @@
-/**
- * Mappers para convertir tipos del backend a tipos del frontend
- * Mantiene compatibilidad con componentes existentes
- */
-
 import type { IProduct, ICartItem, IReviews } from "@/types";
 
 /**
@@ -15,8 +10,6 @@ export function mapProductToCardProps(product: IProduct) {
     product.category?.name ??
     "Sin categoría";
 
-  // Stock efectivo: con variantes el baseStock es 0 y el stock real
-  // viene sumado por el back en totalStock
   const effectiveStock = product.totalStock ?? product.baseStock;
 
   return {
@@ -27,13 +20,14 @@ export function mapProductToCardProps(product: IProduct) {
     model: product.model ?? "—",
     category: categoryName,
     basePrice: product.finalPrice ?? product.basePrice,
-    // Solo mostramos precio tachado si el back confirma descuento activo
-    originalPrice: product.hasActiveDiscount ? product.originalPrice : undefined,
-    rating: product.averageRating || 0,
-    reviews: product.reviewCount || 0,
+    originalPrice: product.hasActiveDiscount
+      ? product.originalPrice
+      : undefined,
+    rating: Number(product.averageRating ?? 0),
+    reviews: Number(product.reviewCount ?? 0),
     image: product.imgUrls[0],
     images: product.imgUrls,
-    imgUrls: product.imgUrls, // Agregado para compatibilidad
+    imgUrls: product.imgUrls,
     badge: product.featured ? "Destacado" : undefined,
     inStock: effectiveStock > 0,
   };
@@ -87,11 +81,8 @@ export function mapProductToDetailView(
   const averageRating = reviews ? calculateAverageRating(reviews) : 0;
   const reviewCount = reviews?.length || 0;
 
-  // Stock efectivo: con variantes el baseStock es 0 y el stock real
-  // viene sumado por el back en totalStock
   const effectiveStock = product.totalStock ?? product.baseStock;
 
-  // Extraer caracteristicas del objeto specifications
   const features = product.specifications
     ? Object.entries(product.specifications)
         .filter(([key]) => key !== "ports")
@@ -102,7 +93,6 @@ export function mapProductToDetailView(
     id: product.id,
     name: product.name,
     price: (product.finalPrice ?? product.basePrice) as number,
-    // Precio tachado solo si el back confirma descuento activo
     originalPrice: (product.hasActiveDiscount
       ? product.originalPrice
       : undefined) as number | undefined,

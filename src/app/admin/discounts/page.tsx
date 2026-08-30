@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Edit2, Plus, Trash2 } from "lucide-react";
+import { Edit2, History, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { ActionDialog } from "@/components/ui/action-dialog";
@@ -16,6 +16,8 @@ import {
   useUpdatePromoCode,
 } from "@/hooks";
 import type { DiscountType } from "@/types";
+
+import { PromoUsageDialog } from "./promo-usage-dialog";
 
 export default function AdminDiscountsPage() {
   const [discountType, setDiscountType] = useState<DiscountType>("percentage");
@@ -47,6 +49,11 @@ export default function AdminDiscountsPage() {
   const [deletePromoCodeId, setDeletePromoCodeId] = useState<string | null>(
     null
   );
+  // Código cuyo historial de uso se está viendo
+  const [usageDialog, setUsageDialog] = useState<{
+    id: string;
+    code: string;
+  } | null>(null);
 
   const { data: productDiscounts = [], isLoading: isLoadingDiscounts } =
     useProductDiscounts();
@@ -131,7 +138,9 @@ export default function AdminDiscountsPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-foreground">Gestión de descuentos</h1>
+      <h1 className="text-3xl font-bold text-foreground">
+        Gestión de descuentos
+      </h1>
 
       <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="mb-4 text-xl font-semibold text-foreground">
@@ -148,7 +157,9 @@ export default function AdminDiscountsPage() {
           <select
             className="rounded border border-border px-3 py-2"
             value={discountType}
-            onChange={(event) => setDiscountType(event.target.value as DiscountType)}
+            onChange={(event) =>
+              setDiscountType(event.target.value as DiscountType)
+            }
           >
             <option value="percentage">Porcentaje</option>
             <option value="fixed">Monto fijo</option>
@@ -196,23 +207,33 @@ export default function AdminDiscountsPage() {
             <tbody>
               {isLoadingDiscounts ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                  <td
+                    colSpan={5}
+                    className="px-3 py-6 text-center text-muted-foreground"
+                  >
                     Cargando...
                   </td>
                 </tr>
               ) : productDiscounts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                  <td
+                    colSpan={5}
+                    className="px-3 py-6 text-center text-muted-foreground"
+                  >
                     No hay descuentos cargados
                   </td>
                 </tr>
               ) : (
                 productDiscounts.map((discount) => (
                   <tr key={discount.id} className="border-b border-border">
-                    <td className="px-3 py-2 font-mono text-xs">{discount.productId}</td>
+                    <td className="px-3 py-2 font-mono text-xs">
+                      {discount.productId}
+                    </td>
                     <td className="px-3 py-2">{discount.discountType}</td>
                     <td className="px-3 py-2">{discount.value}</td>
-                    <td className="px-3 py-2">{discount.isActive ? "Si" : "No"}</td>
+                    <td className="px-3 py-2">
+                      {discount.isActive ? "Si" : "No"}
+                    </td>
                     <td className="px-3 py-2">
                       <div className="flex gap-2">
                         <Button
@@ -230,7 +251,9 @@ export default function AdminDiscountsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setDeleteProductDiscountId(discount.id)}
+                          onClick={() =>
+                            setDeleteProductDiscountId(discount.id)
+                          }
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -259,7 +282,9 @@ export default function AdminDiscountsPage() {
           <select
             className="rounded border border-border px-3 py-2"
             value={promoType}
-            onChange={(event) => setPromoType(event.target.value as DiscountType)}
+            onChange={(event) =>
+              setPromoType(event.target.value as DiscountType)
+            }
           >
             <option value="percentage">Porcentaje</option>
             <option value="fixed">Monto fijo</option>
@@ -322,28 +347,50 @@ export default function AdminDiscountsPage() {
             <tbody>
               {isLoadingPromoCodes ? (
                 <tr>
-                  <td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">
+                  <td
+                    colSpan={6}
+                    className="px-3 py-6 text-center text-muted-foreground"
+                  >
                     Cargando...
                   </td>
                 </tr>
               ) : promoCodes.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">
+                  <td
+                    colSpan={6}
+                    className="px-3 py-6 text-center text-muted-foreground"
+                  >
                     No hay codigos cargados
                   </td>
                 </tr>
               ) : (
                 promoCodes.map((promo) => (
                   <tr key={promo.id} className="border-b border-border">
-                    <td className="px-3 py-2 font-mono text-xs">{promo.code}</td>
+                    <td className="px-3 py-2 font-mono text-xs">
+                      {promo.code}
+                    </td>
                     <td className="px-3 py-2">{promo.discountType}</td>
                     <td className="px-3 py-2">{promo.value}</td>
                     <td className="px-3 py-2">
                       {promo.currentUses}/{promo.maxUses}
                     </td>
-                    <td className="px-3 py-2">{promo.isActive ? "Si" : "No"}</td>
+                    <td className="px-3 py-2">
+                      {promo.isActive ? "Si" : "No"}
+                    </td>
                     <td className="px-3 py-2">
                       <div className="flex gap-2">
+                        {/* Historial de uso: quién usó el código, en qué
+                            orden y cuánto descuento se aplicó */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setUsageDialog({ id: promo.id, code: promo.code })
+                          }
+                          title="Ver historial de uso"
+                        >
+                          <History className="h-4 w-4" />
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
@@ -458,7 +505,11 @@ export default function AdminDiscountsPage() {
         isPending={deletePromoCode.isPending}
         onConfirm={handleConfirmDeletePromoCode}
       />
+
+      <PromoUsageDialog
+        target={usageDialog}
+        onClose={() => setUsageDialog(null)}
+      />
     </div>
   );
 }
-

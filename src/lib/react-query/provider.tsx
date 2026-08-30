@@ -14,17 +14,12 @@ export function ReactQueryProvider({
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Tiempo de stale time por defecto (datos se consideran "frescos" durante este tiempo)
-            staleTime: 60 * 1000, // 1 minuto
-            // No refetch automático cuando el usuario regresa a la ventana
+            staleTime: 60 * 1000,
             refetchOnWindowFocus: false,
-            // Retry automático en caso de error
             retry: 1,
-            // Tiempo de cache
-            gcTime: 5 * 60 * 1000, // 5 minutos (anteriormente cacheTime)
+            gcTime: 5 * 60 * 1000,
           },
           mutations: {
-            // Retry en mutations
             retry: 0,
           },
         },
@@ -34,7 +29,6 @@ export function ReactQueryProvider({
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {/* DevTools solo en desarrollo */}
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} position="bottom" />
       )}

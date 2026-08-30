@@ -1,4 +1,4 @@
-﻿import { SignInPage } from "@/components/auth/singin/signin-page";
+﻿import { SignInPage } from "@/components/auth/signin/signin-page";
 
 export default function SingIn() {
   return (

@@ -1,6 +1,11 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -10,6 +15,7 @@ import type {
   IUpdateProductDto,
   IProductsSearchQuery,
   ICreateVariantDto,
+  IUpdateVariantDto,
   IProduct,
   IPaginatedResponse,
 } from "@/types";
@@ -34,9 +40,7 @@ function patchProductActiveInCache(
       old?.items
         ? {
             ...old,
-            items: old.items.map((p) =>
-              p.id === id ? { ...p, isActive } : p
-            ),
+            items: old.items.map((p) => (p.id === id ? { ...p, isActive } : p)),
           }
         : old
   );
@@ -78,9 +82,9 @@ export function useProducts(filters?: IProductsSearchQuery) {
   return useQuery({
     queryKey: ["products", filters],
     queryFn: () => productService.getProducts(filters),
-    staleTime: 2 * 60 * 1000, // 2 minutos
+    placeholderData: keepPreviousData,
+    staleTime: 2 * 60 * 1000,
     retry: (failureCount, error: unknown) => {
-      // No reintentar si es error 401 en endpoint público
       if (isAxiosError(error) && error.response?.status === 401) return false;
       return failureCount < 2;
     },
@@ -183,8 +187,13 @@ export function useCreateProductWithImages() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data, images }: { data: ICreateProductDto; images: File[] }) =>
-      productService.createWithImages(data, images),
+    mutationFn: ({
+      data,
+      images,
+    }: {
+      data: ICreateProductDto;
+      images: File[];
+    }) => productService.createWithImages(data, images),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.success("Producto creado correctamente");
@@ -229,7 +238,9 @@ export function useDeleteProduct() {
       context?.previous?.forEach(([key, data]) =>
         queryClient.setQueryData(key, data)
       );
-      toast.error(getUserFacingMessage(error, "Error al desactivar el producto"));
+      toast.error(
+        getUserFacingMessage(error, "Error al desactivar el producto")
+      );
     },
     onSuccess: () => {
       toast.success("Producto desactivado");
@@ -258,7 +269,9 @@ export function useReactivateProduct() {
       context?.previous?.forEach(([key, data]) =>
         queryClient.setQueryData(key, data)
       );
-      toast.error(getUserFacingMessage(error, "Error al reactivar el producto"));
+      toast.error(
+        getUserFacingMessage(error, "Error al reactivar el producto")
+      );
     },
     onSuccess: () => {
       toast.success("Producto reactivado");
@@ -276,15 +289,52 @@ export function useAddVariant() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ productId, data }: { productId: string; data: ICreateVariantDto }) =>
-      productService.addVariant(productId, data),
+    mutationFn: ({
+      productId,
+      data,
+    }: {
+      productId: string;
+      data: ICreateVariantDto;
+    }) => productService.addVariant(productId, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["products", variables.productId] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", variables.productId],
+      });
       toast.success("Variante agregada correctamente");
     },
     onError: (error: unknown) => {
       toast.error(getUserFacingMessage(error, "Error al agregar variante"));
+    },
+  });
+}
+
+/**
+ * Mutation para editar una variante existente (Admin).
+ * PUT /products/variants/:variantId — acepta cambios parciales, así que
+ * sirve para corregir stock/precio/disponibilidad sin borrar y recrear
+ */
+export function useUpdateVariant() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      variantId,
+      data,
+    }: {
+      variantId: string;
+      productId: string;
+      data: IUpdateVariantDto;
+    }) => productService.updateVariant(variantId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", variables.productId],
+      });
+      toast.success("Variante actualizada correctamente");
+    },
+    onError: (error: unknown) => {
+      toast.error(getUserFacingMessage(error, "Error al actualizar variante"));
     },
   });
 }
@@ -300,7 +350,9 @@ export function useDeleteVariant() {
       productService.deleteVariant(variantId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["products", variables.productId] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", variables.productId],
+      });
       toast.success("Variante eliminada correctamente");
     },
     onError: (error: unknown) => {
@@ -315,10 +367,8 @@ export function useSeedProducts() {
   return useMutation({
     mutationFn: () => productService.seedProducts(),
     onSuccess: (data) => {
-      // 1. Invalidar la caché de productos para que se refresque la lista
       queryClient.invalidateQueries({ queryKey: ["products"] });
 
-      // 2. Mensaje de éxito correcto
       toast.success(data.message || "Productos precargados exitosamente");
     },
     onError: (error: unknown) => {

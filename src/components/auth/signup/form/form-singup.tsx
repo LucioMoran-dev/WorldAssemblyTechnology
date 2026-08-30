@@ -61,9 +61,9 @@ export function FormSingup() {
   };
 
   return (
-    <div className="bg-card rounded-lg p-8 shadow-sm">
+    <div className="rounded-lg bg-card p-8 shadow-sm">
       <h2 className="mb-2 text-xl font-semibold">Crear Nueva Cuenta</h2>
-      <p className="text-muted-foreground mb-6">
+      <p className="mb-6 text-muted-foreground">
         Completa tu información para crear tu cuenta.
       </p>
 
@@ -180,7 +180,7 @@ export function FormSingup() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2"
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -213,7 +213,7 @@ export function FormSingup() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2"
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
             >
               {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -238,7 +238,7 @@ export function FormSingup() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="text-muted-foreground bg-card px-2">
+            <span className="bg-card px-2 text-muted-foreground">
               O continuar con
             </span>
           </div>

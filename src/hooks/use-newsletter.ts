@@ -50,10 +50,11 @@ export function useNewsletterUnsubscribe() {
 
 // ===== ADMIN =====
 
-export function useNewsletterStats() {
+/** Estadísticas de tracking; campaignType filtra por tipo de campaña */
+export function useNewsletterStats(campaignType?: string) {
   return useQuery({
-    queryKey: ["newsletter", "stats"],
-    queryFn: () => newsletterService.getStats(),
+    queryKey: ["newsletter", "stats", campaignType],
+    queryFn: () => newsletterService.getStats(campaignType),
     staleTime: 2 * 60 * 1000,
   });
 }

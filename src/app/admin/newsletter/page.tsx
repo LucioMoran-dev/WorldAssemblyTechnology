@@ -14,10 +14,12 @@ import {
   useSendMonthlyManual,
   useSendPromo,
 } from "@/hooks";
+import type { CampaignType } from "@/types";
 
 export default function AdminNewsletterPage() {
   const { data: stats, isLoading: isLoadingStats } = useNewsletterStats();
-  const { data: campaigns = [], isLoading: isLoadingCampaigns } = useCampaigns();
+  const { data: campaigns = [], isLoading: isLoadingCampaigns } =
+    useCampaigns();
 
   const sendMonthlyManual = useSendMonthlyManual();
   const sendPromo = useSendPromo();
@@ -32,21 +34,39 @@ export default function AdminNewsletterPage() {
   const [campaignSubject, setCampaignSubject] = useState("");
   const [campaignTitle, setCampaignTitle] = useState("");
   const [campaignBody, setCampaignBody] = useState("");
+  // Antes estaban hardcodeados ("Ver mas", "/", "custom"): ahora son
+  // editables, que es lo que hace útil el botón del email.
+  const [campaignCtaText, setCampaignCtaText] = useState("Ver más");
+  const [campaignCtaUrl, setCampaignCtaUrl] = useState("/");
+  const [campaignType, setCampaignType] = useState<CampaignType>("custom");
+
+  const resetCampaignForm = () => {
+    setCampaignName("");
+    setCampaignSubject("");
+    setCampaignTitle("");
+    setCampaignBody("");
+    setCampaignCtaText("Ver más");
+    setCampaignCtaUrl("/");
+    setCampaignType("custom");
+  };
 
   const handleCreateCampaign = () => {
     if (!campaignName || !campaignSubject || !campaignTitle || !campaignBody) {
       return;
     }
 
-    createCampaign.mutate({
-      name: campaignName,
-      subject: campaignSubject,
-      title: campaignTitle,
-      body: campaignBody,
-      ctaText: "Ver mas",
-      ctaUrl: "/",
-      campaignType: "custom",
-    });
+    createCampaign.mutate(
+      {
+        name: campaignName,
+        subject: campaignSubject,
+        title: campaignTitle,
+        body: campaignBody,
+        ctaText: campaignCtaText,
+        ctaUrl: campaignCtaUrl,
+        campaignType,
+      },
+      { onSuccess: resetCampaignForm }
+    );
   };
 
   const handleConfirmDeleteCampaign = async () => {
@@ -57,13 +77,19 @@ export default function AdminNewsletterPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-foreground">Gestión de newsletter</h1>
+      <h1 className="text-3xl font-bold text-foreground">
+        Gestión de newsletter
+      </h1>
 
       <section className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-4 text-xl font-semibold text-foreground">Estadisticas</h2>
+        <h2 className="mb-4 text-xl font-semibold text-foreground">
+          Estadisticas
+        </h2>
 
         {isLoadingStats ? (
-          <p className="text-sm text-muted-foreground">Cargando estadisticas...</p>
+          <p className="text-sm text-muted-foreground">
+            Cargando estadisticas...
+          </p>
         ) : (
           <div className="grid gap-4 md:grid-cols-5">
             <div className="rounded-lg bg-muted/40 p-4">
@@ -91,7 +117,9 @@ export default function AdminNewsletterPage() {
       </section>
 
       <section className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-4 text-xl font-semibold text-foreground">Acciones rapidas</h2>
+        <h2 className="mb-4 text-xl font-semibold text-foreground">
+          Acciones rapidas
+        </h2>
 
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <input
@@ -101,7 +129,9 @@ export default function AdminNewsletterPage() {
             onChange={(event) => setPromoCode(event.target.value)}
           />
           <Button
-            onClick={() => sendPromo.mutate({ promoCode: promoCode.trim().toUpperCase() })}
+            onClick={() =>
+              sendPromo.mutate({ promoCode: promoCode.trim().toUpperCase() })
+            }
             disabled={sendPromo.isPending || !promoCode.trim()}
           >
             <Send className="mr-2 h-4 w-4" />
@@ -121,7 +151,9 @@ export default function AdminNewsletterPage() {
       </section>
 
       <section className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-4 text-xl font-semibold text-foreground">Crear campania</h2>
+        <h2 className="mb-4 text-xl font-semibold text-foreground">
+          Crear campania
+        </h2>
 
         <div className="grid gap-3 md:grid-cols-2">
           <input
@@ -142,14 +174,30 @@ export default function AdminNewsletterPage() {
             value={campaignTitle}
             onChange={(event) => setCampaignTitle(event.target.value)}
           />
-          <Button
-            onClick={handleCreateCampaign}
-            disabled={createCampaign.isPending}
-            className="h-10"
+          <select
+            className="rounded border border-border bg-background px-3 py-2 text-foreground"
+            value={campaignType}
+            onChange={(event) =>
+              setCampaignType(event.target.value as CampaignType)
+            }
           >
-            <Plus className="mr-2 h-4 w-4" />
-            Crear campania
-          </Button>
+            <option value="custom">Tipo: Personalizada</option>
+            <option value="monthly">Tipo: Mensual</option>
+            <option value="promo">Tipo: Promoción</option>
+          </select>
+          {/* Texto y destino del botón del email */}
+          <input
+            className="rounded border border-border px-3 py-2"
+            placeholder="Texto del botón (ej: Ver ofertas)"
+            value={campaignCtaText}
+            onChange={(event) => setCampaignCtaText(event.target.value)}
+          />
+          <input
+            className="rounded border border-border px-3 py-2"
+            placeholder="Link del botón (ej: /products/catalog/laptops)"
+            value={campaignCtaUrl}
+            onChange={(event) => setCampaignCtaUrl(event.target.value)}
+          />
         </div>
 
         <textarea
@@ -158,15 +206,28 @@ export default function AdminNewsletterPage() {
           value={campaignBody}
           onChange={(event) => setCampaignBody(event.target.value)}
         />
+
+        <Button
+          onClick={handleCreateCampaign}
+          disabled={createCampaign.isPending}
+          className="mt-3"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Crear campania
+        </Button>
       </section>
 
       <section className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-4 text-xl font-semibold text-foreground">Campanias</h2>
+        <h2 className="mb-4 text-xl font-semibold text-foreground">
+          Campanias
+        </h2>
 
         {isLoadingCampaigns ? (
           <p className="text-sm text-muted-foreground">Cargando campanias...</p>
         ) : campaigns.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No hay campanias creadas.</p>
+          <p className="text-sm text-muted-foreground">
+            No hay campanias creadas.
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -229,4 +290,3 @@ export default function AdminNewsletterPage() {
     </div>
   );
 }
-

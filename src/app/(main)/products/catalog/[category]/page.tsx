@@ -60,10 +60,6 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
   });
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-  // Resolvemos el slug de la URL al NOMBRE real de la categoría: el back
-  // ahora filtra por ?category_name= (match exacto case-insensitive), así
-  // que necesitamos el nombre tal cual está en la DB, no el UUID.
   const { data: categoryData } = useCategories({
     category: categorySlug,
     limit: 1,
@@ -71,8 +67,11 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
   const categoryInfo = categoryData?.items?.[0];
   const categoryName = categoryInfo?.category_name ?? categoryInfo?.name;
 
-  // Server-side products query with all filters
-  const { data: productsData, isLoading } = useProducts({
+  const {
+    data: productsData,
+    isLoading,
+    isFetching,
+  } = useProducts({
     page,
     limit,
     category_name: categoryName || undefined,
@@ -99,6 +98,8 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
   });
 
   const products = productsData?.items ?? [];
+
+  const isUpdating = isFetching && !isLoading;
 
   return (
     <div className="min-h-screen bg-white">
@@ -145,9 +146,16 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
 
             {/* Toolbar */}
             <div className="mb-6 flex items-center justify-between border-b border-gray-200 pb-4">
-              <span className="text-sm text-gray-600">
+              <span className="flex items-center gap-2 text-sm text-gray-600">
                 Mostrando {products.length} de {productsData?.total ?? 0}{" "}
                 productos
+                {/* Feedback sutil mientras se refetchean resultados filtrados */}
+                {isUpdating && (
+                  <span className="flex items-center gap-1.5 text-blue-600">
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                    Actualizando resultados…
+                  </span>
+                )}
               </span>
               <div className="flex items-center gap-2">
                 <Button
@@ -190,7 +198,11 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
             ) : products.length > 0 ? (
               <>
                 {viewMode === "grid" ? (
-                  <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                  <div
+                    className={`mb-8 grid grid-cols-2 gap-4 transition-opacity sm:grid-cols-3 lg:grid-cols-4 ${
+                      isUpdating ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
                     {products.map((product) => (
                       <ProductCard
                         key={product.id}
@@ -199,7 +211,11 @@ function CatalogContent({ categorySlug }: { categorySlug: string }) {
                     ))}
                   </div>
                 ) : (
-                  <div className="mb-8 space-y-4">
+                  <div
+                    className={`mb-8 space-y-4 transition-opacity ${
+                      isUpdating ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
                     {products.map((product) => (
                       <div
                         key={product.id}

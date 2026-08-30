@@ -1,7 +1,12 @@
 "use client";
 
-import { ChevronUp, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface FilterSectionProps {
   title: string;
@@ -9,23 +14,21 @@ interface FilterSectionProps {
   defaultOpen?: boolean;
 }
 
-export function FilterSection({ title, children, defaultOpen = true }: FilterSectionProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
+export function FilterSection({
+  title,
+  children,
+  defaultOpen = true,
+}: FilterSectionProps) {
   return (
-    <div className="border-b border-gray-200 pb-4">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between py-2 text-sm font-semibold text-gray-900"
-      >
+    <Collapsible
+      defaultOpen={defaultOpen}
+      className="group border-b border-gray-200 pb-4"
+    >
+      <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between py-2 text-sm font-semibold text-gray-900">
         {title}
-        {isOpen ? (
-          <ChevronUp className="h-4 w-4 text-gray-500" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-gray-500" />
-        )}
-      </button>
-      {isOpen && <div className="mt-2">{children}</div>}
-    </div>
+        <ChevronDown className="h-4 w-4 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-2">{children}</CollapsibleContent>
+    </Collapsible>
   );
 }

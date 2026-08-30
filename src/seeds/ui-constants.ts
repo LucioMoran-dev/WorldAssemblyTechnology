@@ -84,8 +84,10 @@ export const dashboardMenuItems = [
   { label: "Panel Principal", href: "/dashboard" },
   { label: "Información de la Cuenta", href: "/dashboard/account-info" },
   { label: "Mis Pedidos", href: "/dashboard/orders" },
+  { label: "Mis Reembolsos", href: "/dashboard/refunds" },
   { label: "Mis Direcciones", href: "/dashboard/addresses" },
   { label: "Lista de Deseos", href: "/dashboard/wishlist" },
+  { label: "Mis Reseñas", href: "/dashboard/reviews" },
   { label: "Acuerdos de Facturación", href: "/dashboard/billing" },
   { label: "Suscripciones al Boletín", href: "/dashboard/newsletter" },
 ];
@@ -288,9 +290,7 @@ export const CONDITION_OPTIONS = [
   { value: "used", label: "Usado" },
 ];
 
-// Switches de teclados mecánicos. El filtro del back hace match PARCIAL
-// case-insensitive, así que con la marca/familia alcanza (ej. "Cherry"
-// matchea "Cherry MX Red" y "Cherry MX Brown").
+// Switches de teclados mecánicos.
 export const SWITCH_OPTIONS = [
   { value: "Cherry", label: "Cherry MX" },
   { value: "Gateron", label: "Gateron" },
@@ -303,31 +303,95 @@ export const SWITCH_OPTIONS = [
 // ─── Mapeo de filtros de specs por categoría ───
 
 export const CATEGORY_SPEC_FILTERS: Record<string, string[]> = {
-  laptops: ["processor", "ram", "storage", "vram", "screen_size", "resolution", "refresh_rate", "connectivity", "condition"],
-  "desktop-pcs": ["processor", "ram", "storage", "vram", "connectivity", "condition"],
-  monitors: ["screen_size", "resolution", "refresh_rate", "connectivity", "condition"],
+  laptops: [
+    "processor",
+    "ram",
+    "storage",
+    "vram",
+    "screen_size",
+    "resolution",
+    "refresh_rate",
+    "connectivity",
+    "condition",
+  ],
+  "desktop-pcs": [
+    "processor",
+    "ram",
+    "storage",
+    "vram",
+    "connectivity",
+    "condition",
+  ],
+  monitors: [
+    "screen_size",
+    "resolution",
+    "refresh_rate",
+    "connectivity",
+    "condition",
+  ],
   networking: ["connectivity", "condition"],
   printers: ["connectivity", "condition"],
   "pc-parts": ["processor", "ram", "storage", "vram", "condition"],
-  "custom-builds": ["processor", "ram", "storage", "vram", "connectivity", "condition"],
+  "custom-builds": [
+    "processor",
+    "ram",
+    "storage",
+    "vram",
+    "connectivity",
+    "condition",
+  ],
   // El filtro de switch solo tiene sentido para teclados
   keyboards: ["switch", "connectivity", "condition"],
 };
 
 export const ALL_SPEC_FILTER_KEYS = [
-  "processor", "ram", "storage", "vram",
-  "screen_size", "resolution", "refresh_rate",
-  "connectivity", "condition", "switch",
+  "processor",
+  "ram",
+  "storage",
+  "vram",
+  "screen_size",
+  "resolution",
+  "refresh_rate",
+  "connectivity",
+  "condition",
+  "switch",
 ];
 
 export function getVisibleSpecFilters(categorySlug?: string): string[] {
   if (!categorySlug) return ALL_SPEC_FILTER_KEYS;
-  return CATEGORY_SPEC_FILTERS[categorySlug.toLowerCase()] ?? ALL_SPEC_FILTER_KEYS;
+  return (
+    CATEGORY_SPEC_FILTERS[categorySlug.toLowerCase()] ?? ALL_SPEC_FILTER_KEYS
+  );
 }
 
 // Etiquetas en español para los tipos de variante de producto.
 // Se usa en el panel admin (form de producto) y en el selector público
 // de variantes. Las claves son los valores del enum VariantType del back.
+export const COLOR_PALETTE = [
+  { name: "Negro", hex: "#000000" },
+  { name: "Azul", hex: "#0000FF" },
+  { name: "Rojo", hex: "#FF0000" },
+  { name: "Blanco", hex: "#FFFFFF" },
+  { name: "Gris", hex: "#808080" },
+  { name: "Verde", hex: "#008000" },
+  { name: "Plateado", hex: "#C0C0C0" },
+];
+
+/** Colores claros: necesitan borde y check oscuro para verse sobre blanco */
+export const LIGHT_COLOR_NAMES = ["Blanco", "Plateado"];
+
+/**
+ * Busca el hex de un color por nombre (case-insensitive). Devuelve null si
+ * el back manda un color fuera de la paleta, para que la UI pueda hacer
+ * fallback a texto en vez de pintar un swatch vacío.
+ */
+export function getColorHex(colorName: string): string | null {
+  const match = COLOR_PALETTE.find(
+    (c) => c.name.toLowerCase() === colorName.trim().toLowerCase()
+  );
+  return match?.hex ?? null;
+}
+
 export const VARIANT_TYPE_LABELS: Record<string, string> = {
   ram: "RAM",
   storage: "Almacenamiento",
@@ -341,6 +405,24 @@ export const VARIANT_TYPE_LABELS: Record<string, string> = {
   warranty: "Garantía",
   condition: "Condición",
   switch: "Switch",
+};
+
+/**
+ * Traducción de los tipos de pago de Mercado Pago (`payment_type_id`) a algo
+ * legible. MP los manda en inglés y en snake_case; la UI va en español.
+ */
+export const PAYMENT_TYPE_LABELS: Record<string, string> = {
+  credit_card: "Tarjeta de crédito",
+  debit_card: "Tarjeta de débito",
+  prepaid_card: "Tarjeta prepaga",
+  ticket: "Efectivo (cupón)",
+  bank_transfer: "Transferencia",
+  account_money: "Dinero en cuenta",
+  atm: "Cajero automático",
+  digital_wallet: "Billetera digital",
+  digital_currency: "Moneda digital",
+  voucher_card: "Voucher",
+  crypto_transfer: "Cripto",
 };
 
 // iconos y valores para el formulario de reparación

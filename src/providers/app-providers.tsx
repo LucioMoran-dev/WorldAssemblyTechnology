@@ -32,7 +32,6 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <DataInitProvider>
         <AuthInitializer>
           {children}
-          {/* Toaster de sonner para notificaciones */}
           <Toaster
             position="top-right"
             expand={false}

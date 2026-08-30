@@ -4,13 +4,13 @@ import { Button } from "../../ui/button";
 
 function NewCostumer() {
   return (
-    <div className="bg-muted/40 w-full rounded-lg p-8">
+    <div className="w-full rounded-lg bg-muted/40 p-8">
       <h2 className="mb-4 text-xl font-semibold">¿Nuevo Cliente?</h2>
-      <p className="text-muted-foreground mb-4">
+      <p className="mb-4 text-muted-foreground">
         Crear una cuenta tiene muchos beneficios:
       </p>
 
-      <ul className="text-muted-foreground mb-6 space-y-2">
+      <ul className="mb-6 space-y-2 text-muted-foreground">
         <li className="flex items-start">
           <span>Pagar más rápido</span>
         </li>
@@ -22,7 +22,7 @@ function NewCostumer() {
         </li>
       </ul>
 
-      <Link href="/auth/singup">
+      <Link href="/auth/signup">
         <Button className="w-full bg-blue-600 px-8 hover:bg-blue-700 sm:w-auto">
           Crear Una Cuenta
         </Button>

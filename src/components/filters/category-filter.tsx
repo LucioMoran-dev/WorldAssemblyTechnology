@@ -4,8 +4,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCategories } from "@/hooks";
 
 interface CategoryFilterProps {
-  // El valor es el NOMBRE de la categoría: el back filtra con
-  // ?category_name=<nombre> (el viejo categoryId ya no existe)
   value: string;
   onChange: (categoryName: string) => void;
 }
@@ -27,7 +25,7 @@ export function CategoryFilter({ value, onChange }: CategoryFilterProps) {
   if (categories.length === 0) return null;
 
   return (
-    <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+    <div className="max-h-60 space-y-2.5 overflow-y-auto pr-1">
       {categories.map((cat) => {
         const name = cat.category_name ?? cat.name ?? "Sin categoría";
         const count = cat.products?.length;

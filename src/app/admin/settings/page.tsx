@@ -3,9 +3,12 @@
 import { Database, Shield, Bell } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useSeedCategories, useSeedProducts } from "@/hooks";
+import { useIsAdmin, useSeedCategories, useSeedProducts } from "@/hooks";
 
 export default function AdminSettingsPage() {
+  // Los seeders son exclusivos de SUPER_ADMIN en el back: a un admin común
+  // le responderían 403, así que le ocultamos la sección entera.
+  const { isSuperAdmin } = useIsAdmin();
   const { mutate: seedCategories, isPending: isSeedingCategory } =
     useSeedCategories();
   const { mutate: seedProducts, isPending: isSeedingProducts } =
@@ -20,47 +23,49 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Seeders - Solo SUPER_ADMIN */}
-      <section className="rounded-lg border border-border bg-card p-6">
-        <div className="mb-6 flex items-center gap-3">
-          <div className="rounded-lg bg-purple-50 p-2">
-            <Database className="h-6 w-6 text-purple-600" />
+      {isSuperAdmin && (
+        <section className="rounded-lg border border-border bg-card p-6">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="rounded-lg bg-purple-50 p-2">
+              <Database className="h-6 w-6 text-purple-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">
+                Seeders (SUPER_ADMIN)
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Precargar datos de prueba en la base de datos
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-foreground">
-              Seeders (SUPER_ADMIN)
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Precargar datos de prueba en la base de datos
-            </p>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 bg-transparent"
+              onClick={() => seedCategories()}
+              disabled={isSeedingCategory}
+            >
+              <Database
+                className={`h-4 w-4 ${isSeedingCategory ? "animate-pulse text-purple-600" : ""}`}
+              />
+              {isSeedingCategory ? "Cargando..." : "Seed Categorías"}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 bg-transparent"
+              onClick={() => seedProducts()}
+              disabled={isSeedingProducts}
+            >
+              <Database
+                className={`h-4 w-4 ${isSeedingProducts ? "animate-pulse text-purple-600" : ""}`}
+              />
+              {isSeedingProducts ? "Cargando..." : "Seed Productos"}
+            </Button>
           </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 bg-transparent"
-            onClick={() => seedCategories()}
-            disabled={isSeedingCategory}
-          >
-            <Database
-              className={`h-4 w-4 ${isSeedingCategory ? "animate-pulse text-purple-600" : ""}`}
-            />
-            {isSeedingCategory ? "Cargando..." : "Seed Categorías"}
-          </Button>
-
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 bg-transparent"
-            onClick={() => seedProducts()}
-            disabled={isSeedingProducts}
-          >
-            <Database
-              className={`h-4 w-4 ${isSeedingProducts ? "animate-pulse text-purple-600" : ""}`}
-            />
-            {isSeedingProducts ? "Cargando..." : "Seed Productos"}
-          </Button>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Configuración General - Solo lectura (sin endpoint backend) */}
       <section className="rounded-lg border border-border bg-card p-6 opacity-60">
@@ -111,7 +116,9 @@ export default function AdminSettingsPage() {
             <Bell className="h-6 w-6 text-green-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-foreground">Notificaciones</h2>
+            <h2 className="text-xl font-bold text-foreground">
+              Notificaciones
+            </h2>
             <p className="text-sm text-muted-foreground">
               Próximamente — Configurar alertas del sistema
             </p>
@@ -156,4 +163,3 @@ export default function AdminSettingsPage() {
     </div>
   );
 }
-

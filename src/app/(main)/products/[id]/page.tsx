@@ -33,6 +33,8 @@ import {
   useCreateReview,
   useCanReview,
   useAuth,
+  useIsAdmin,
+  useProductDiscount,
   useProductPrice,
   useProductStock,
 } from "@/hooks";
@@ -44,6 +46,8 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const productId = params.id as string;
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  // Los admins no compran: se les ocultan los botones de compra/wishlist
+  const { isAdmin } = useIsAdmin();
 
   const { data: productData, isLoading: isLoadingProduct } =
     useProduct(productId);
@@ -51,6 +55,8 @@ export default function ProductDetailPage() {
   const { data: relatedProductsData } = useRelatedProducts(productId, 4);
   const { data: wishlistCheck } = useCheckWishlist(productId);
   const { data: canReviewData } = useCanReview(productId);
+  // Descuento automático vigente del producto (público, puede ser null)
+  const { data: activeDiscount } = useProductDiscount(productId);
   const { toggle: toggleWishlist, isLoading: isWishlistLoading } =
     useToggleWishlist();
   const addToCart = useAddToCart();
@@ -83,7 +89,8 @@ export default function ProductDetailPage() {
     !hasVariants || variantTypes.every((t) => Boolean(selectedVariants[t]));
 
   const variantIds = useMemo(
-    () => variantTypes.map((t) => selectedVariants[t]).filter(Boolean) as string[],
+    () =>
+      variantTypes.map((t) => selectedVariants[t]).filter(Boolean) as string[],
     [variantTypes, selectedVariants]
   );
 
@@ -383,6 +390,29 @@ export default function ProductDetailPage() {
                   </Badge>
                 )}
               </div>
+
+              {/* Descuento automático vigente (GET /discounts/products/:id).
+                  Antes el descuento solo se infería de originalPrice; ahora
+                  mostramos el dato real del back con su vigencia. */}
+              {activeDiscount?.isActive && (
+                <p className="mt-3 text-sm text-green-700">
+                  <span className="font-semibold">
+                    {activeDiscount.discountType === "percentage"
+                      ? `${activeDiscount.value}% de descuento`
+                      : `$${activeDiscount.value} de descuento`}
+                  </span>
+                  {activeDiscount.endDate && (
+                    <>
+                      {" "}
+                      · válido hasta{" "}
+                      {new Date(activeDiscount.endDate).toLocaleDateString(
+                        "es-AR",
+                        { day: "2-digit", month: "2-digit", year: "numeric" }
+                      )}
+                    </>
+                  )}
+                </p>
+              )}
             </div>
 
             {/* Selector de variantes (solo productos con variantes) */}
@@ -430,55 +460,77 @@ export default function ProductDetailPage() {
               {/* Aviso cuando falta completar la selección de variantes */}
               {hasVariants && !isSelectionComplete && (
                 <p className="text-sm text-orange-600">
-                  Elegí una opción de cada tipo para ver el precio final y
-                  poder comprar.
+                  Elegí una opción de cada tipo para ver el precio final y poder
+                  comprar.
                 </p>
               )}
 
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={
-                    addToCart.isPending ||
-                    !productData ||
-                    (hasVariants && !isSelectionComplete) ||
-                    effectiveStock === 0
-                  }
-                  className="h-12 flex-1 bg-blue-600 text-base text-white hover:bg-blue-700"
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  {addToCart.isPending ? "Agregando..." : "Agregar al Carrito"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={`h-12 w-12 border-gray-300 bg-transparent ${
-                    isInWishlist
-                      ? "border-red-300 text-red-500 hover:text-red-600"
-                      : ""
-                  }`}
-                  onClick={handleToggleWishlist}
-                  disabled={isWishlistLoading}
-                >
-                  <Heart
-                    className={`h-5 w-5 ${isInWishlist ? "fill-red-500" : ""}`}
-                  />
-                </Button>
-              </div>
+              {/* Los admins no compran con su cuenta (least privilege):
+                  en lugar de los botones de compra ven una nota + acceso
+                  directo a gestionar el producto en el panel. */}
+              {isAdmin ? (
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+                  <p>
+                    Estás navegando como administrador: las compras se hacen con
+                    una cuenta de cliente.
+                  </p>
+                  <Link
+                    href="/admin/products"
+                    className="mt-2 inline-block font-medium text-blue-600 hover:underline"
+                  >
+                    Gestionar este producto en el panel →
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleAddToCart}
+                      disabled={
+                        addToCart.isPending ||
+                        !productData ||
+                        (hasVariants && !isSelectionComplete) ||
+                        effectiveStock === 0
+                      }
+                      className="h-12 flex-1 bg-blue-600 text-base text-white hover:bg-blue-700"
+                    >
+                      <ShoppingCart className="mr-2 h-5 w-5" />
+                      {addToCart.isPending
+                        ? "Agregando..."
+                        : "Agregar al Carrito"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className={`h-12 w-12 border-gray-300 bg-transparent ${
+                        isInWishlist
+                          ? "border-red-300 text-red-500 hover:text-red-600"
+                          : ""
+                      }`}
+                      onClick={handleToggleWishlist}
+                      disabled={isWishlistLoading}
+                    >
+                      <Heart
+                        className={`h-5 w-5 ${isInWishlist ? "fill-red-500" : ""}`}
+                      />
+                    </Button>
+                  </div>
 
-              <Button
-                variant="outline"
-                className="h-12 w-full border-gray-300 bg-transparent"
-                onClick={handleBuyNow}
-                disabled={
-                  addToCart.isPending ||
-                  !productData ||
-                  (hasVariants && !isSelectionComplete) ||
-                  effectiveStock === 0
-                }
-              >
-                {addToCart.isPending ? "Procesando..." : "Comprar Ahora"}
-              </Button>
+                  <Button
+                    variant="outline"
+                    className="h-12 w-full border-gray-300 bg-transparent"
+                    onClick={handleBuyNow}
+                    disabled={
+                      addToCart.isPending ||
+                      !productData ||
+                      (hasVariants && !isSelectionComplete) ||
+                      effectiveStock === 0
+                    }
+                  >
+                    {addToCart.isPending ? "Procesando..." : "Comprar Ahora"}
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Features */}

@@ -60,24 +60,30 @@ export const orderService = {
     id: string,
     data: IUpdateOrderStatusDto
   ): Promise<IOrder> => {
-    const response = await apiClient.put<IOrder>(`/orders/${id}/status`, null, {
-      params: { status: data.status },
-    });
+    const { status, ...tracking } = data;
+    const body = Object.fromEntries(
+      Object.entries(tracking).filter(([, v]) => v !== undefined && v !== "")
+    );
+    const response = await apiClient.put<IOrder>(
+      `/orders/${id}/status`,
+      Object.keys(body).length > 0 ? body : null,
+      { params: { status } }
+    );
     return response.data;
   },
 
   /**
    * POST /orders/:id/cancel - Cancelar orden
-   * Requiere: CLIENT+ (solo en estado pending o paid)
+   * Requiere: AUTH (orden propia) · ADMIN (cualquier orden)
+   * Solo en estado pending o paid. Restaura stock y manda mail al cliente.
    */
   cancelOrder: async (
     orderId: string,
-    reason?: string
+    cancellationReason: string
   ): Promise<IOrder> => {
-    const response = await apiClient.post<IOrder>(
-      `/orders/${orderId}/cancel`,
-      { reason }
-    );
+    const response = await apiClient.post<IOrder>(`/orders/${orderId}/cancel`, {
+      cancellationReason,
+    });
     return response.data;
   },
 };
